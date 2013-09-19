@@ -1,7 +1,7 @@
 {
 	"name": "GitHub Notifier",
 	"description": "Displays your GitHub notifications unread count",
-	"version": "1.0.6",
+	"version": "1.0.7",
 	"background": {
 		"persistent": false,
 		"scripts": [
@@ -11,7 +11,6 @@
 	},
 	"permissions": [
 		"alarms",
-		"tabs",
 		"https://github.com/"
 	],
 	"browser_action": {

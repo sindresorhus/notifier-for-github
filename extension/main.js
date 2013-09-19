@@ -19,9 +19,12 @@
 	function update() {
 		gitHubNotifCount(function (count) {
 			if (count !== false) {
+				if (count > 9999) {
+					count = '∞';
+				}
 				render(count, [65, 131, 196, 255], 'GitHub Notifier');
 			} else {
-				render(':(', [166, 41, 41, 255], 'You have to be connected to the internet and logged into GitHub');
+				render('?', [166, 41, 41, 255], 'You have to be connected to the internet and logged into GitHub');
 			}
 		});
 	}

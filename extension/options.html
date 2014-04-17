@@ -16,6 +16,10 @@
 			.chrome-bootstrap button {
 				margin-top: 10px
 			}
+
+			#notification_url {
+				width: 350px;
+			}
 		</style>
 		<script src="api.js"></script>
 		<script src="options.js"></script>
@@ -39,9 +43,9 @@
 					</header>
 					<div class="content">
 						<h2>Custom URL</h2>
-						<p>If you have a enterprise installation please specify the notification URL.</p>
+						<p>Specify the notification URL to your GitHub Enterprise</p>
 						<label for="notification_url">Notification URL</label>
-						<input type="text" id="notification_url">
+						<input type="text" id="notification_url" autofocus>
 						<br>
 						<button id="save">Save</button>
 						<button id="reset">Reset to Default</button>

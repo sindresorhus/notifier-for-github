@@ -16,7 +16,7 @@
 
 	window.GitHubNotify = (function () {
 		var defaults = {
-			notificationUrl: 'http://github.com/notifications'
+			notificationUrl: 'https://github.com/notifications'
 		};
 
 		var api = {

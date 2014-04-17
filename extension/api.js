@@ -1,4 +1,3 @@
-/*globals GitHubNotify:true */
 (function () {
 	'use strict';
 
@@ -19,6 +18,7 @@
 		var defaults = {
 			notificationUrl: 'http://github.com/notifications'
 		};
+
 		var api = {
 			settings: {
 				get: function (name) {
@@ -32,6 +32,7 @@
 				revert: localStorage.removeItem.bind(localStorage)
 			}
 		};
+
 		return api;
 	})();
 

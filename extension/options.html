@@ -1,52 +1,53 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="utf-8"/>
-    <title>GitHub Notifier</title>
-    <link rel="stylesheet" type="text/css" href="chrome-bootstrap/chrome-bootstrap.css"/>
-    <style type="text/css">
-        .chrome-bootstrap .frame .view {
-            -webkit-margin-start: 170px
-        }
+	<head>
+		<meta charset="utf-8">
+		<title>GitHub Notifier</title>
+		<link rel="stylesheet" href="chrome-bootstrap/chrome-bootstrap.css">
+		<style>
+			.chrome-bootstrap .frame .view {
+				-webkit-margin-start: 170px
+			}
 
-        .chrome-bootstrap select,
-        .chrome-bootstrap input[type='checkbox'],
-        .chrome-bootstrap input[type='radio'],
-        .chrome-bootstrap input[type='button'],
-        .chrome-bootstrap button {
-            margin-top: 10px
-        }
-    </style>
-    <script type="text/javascript" src="api.js"></script>
-    <script type="text/javascript" src="options.js"></script>
-</head>
-<body class="chrome-bootstrap">
-<div class="frame">
-    <div class="navigation">
-        <h1><a href="https://github.com/sindresorhus/GitHub-Notifier">GitHub Notifier</a></h1>
-        <ul class="menu">
-            <li class="selected">
-                <a href="#notifications">Notifications</a>
-            </li>
-        </ul>
-    </div>
-    <div class="mainview view">
-        <div id="settings" class="selected">
-            <header>
-                <h1>Notifications</h1>
-            </header>
-            <div class="content">
-                <h2>Custom URL</h2>
-
-                <p>If you have a enterprise installation please specify the notification URL.</p>
-                <label for="notification_url">Notification URL</label>
-                <input type="text" id="notification_url"/>
-                <br/>
-                <button id="save">Save</button>
-                <button id="reset">Reset to Default</button>
-            </div>
-        </div>
-    </div>
-</div>
-</body>
+			.chrome-bootstrap select,
+			.chrome-bootstrap input[type='checkbox'],
+			.chrome-bootstrap input[type='radio'],
+			.chrome-bootstrap input[type='button'],
+			.chrome-bootstrap button {
+				margin-top: 10px
+			}
+		</style>
+		<script src="api.js"></script>
+		<script src="options.js"></script>
+	</head>
+	<body class="chrome-bootstrap">
+		<div class="frame">
+			<div class="navigation">
+				<h1>
+					<a href="https://github.com/sindresorhus/GitHub-Notifier">GitHub Notifier</a>
+				</h1>
+				<ul class="menu">
+					<li class="selected">
+						<a href="#notifications">Notifications</a>
+					</li>
+				</ul>
+			</div>
+			<div class="mainview view">
+				<div id="settings" class="selected">
+					<header>
+						<h1>Notifications</h1>
+					</header>
+					<div class="content">
+						<h2>Custom URL</h2>
+						<p>If you have a enterprise installation please specify the notification URL.</p>
+						<label for="notification_url">Notification URL</label>
+						<input type="text" id="notification_url">
+						<br>
+						<button id="save">Save</button>
+						<button id="reset">Reset to Default</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
 </html>

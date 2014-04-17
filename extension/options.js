@@ -1,6 +1,6 @@
-/*globals chrome:true, GitHubNotify:true */
 (function () {
 	'use strict';
+
 	document.addEventListener('DOMContentLoaded', function () {
 		var formNotificationUrl = document.getElementById('notification_url');
 
@@ -29,6 +29,7 @@
 			chrome.permissions.remove({
 				origins: [GitHubNotify.settings.get('notificationUrl')]
 			});
+
 			GitHubNotify.settings.reset();
 			loadSettings();
 		});

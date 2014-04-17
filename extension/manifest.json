@@ -11,9 +11,9 @@
 	},
 	"permissions": [
 		"alarms",
-        "*://github.com/"
+		"https://github.com/"
 	],
-    "optional_permissions": ["*://*/"],
+	"optional_permissions": ["*://*/"],
 	"browser_action": {
 		"default_icon": {
 			"19": "icon-19.png",

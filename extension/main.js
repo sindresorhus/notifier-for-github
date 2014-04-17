@@ -1,4 +1,3 @@
-/*globals chrome:true, gitHubNotifCount:true, GitHubNotify:true */
 (function () {
 	'use strict';
 

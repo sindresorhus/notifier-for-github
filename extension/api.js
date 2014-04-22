@@ -6,7 +6,7 @@
 		return function (method, url, callback) {
 			xhr.onreadystatechange = function () {
 				if (xhr.readyState === 4) {
-					callback(xhr.responseText);
+					callback(xhr.responseText, xhr.status);
 				}
 			};
 			xhr.open(method, url);
@@ -16,7 +16,8 @@
 
 	window.GitHubNotify = (function () {
 		var defaults = {
-			notificationUrl: 'https://github.com/notifications'
+			notificationUrl: 'https://github.com/notifications',
+			counterSelector: 'a[href="/notifications"] .count'
 		};
 
 		var api = {
@@ -36,19 +37,23 @@
 		return api;
 	})();
 
-	window.gitHubNotifCount = function (callback) {
-		var NOTIFICATIONS_URL = GitHubNotify.settings.get('notificationUrl');
+	window.gitHubNotifCount = function (callback, settings) {
+		settings = settings || {};
+		var NOTIFICATIONS_URL = settings.notificationUrl || GitHubNotify.settings.get('notificationUrl');
+		var COUNTER_SELECTOR = settings.counterSelector || GitHubNotify.settings.get('counterSelector');
 		var tmp = document.createElement('div');
 
-		xhr('GET', NOTIFICATIONS_URL, function (data) {
-			var countElem;
-			tmp.innerHTML = data;
-			countElem = tmp.querySelector('a[href="/notifications"] .count');
-
-			if (countElem) {
-				callback(countElem.textContent !== '0' ? countElem.textContent : '');
+		xhr('GET', NOTIFICATIONS_URL, function (data, status) {
+			if (status >= 400) {
+				callback(-1);
 			} else {
-				callback(false);
+				tmp.innerHTML = data;
+				var countElem = tmp.querySelector(COUNTER_SELECTOR);
+				if (countElem) {
+					callback(parseInt(countElem.textContent));
+				} else {
+					callback(-2);
+				}
 			}
 		});
 	};

@@ -13,14 +13,6 @@
 				width: 350px;
 			}
 
-			.chrome-bootstrap input[type='text'].failure {
-				border-color: #f00;
-			}
-
-			.chrome-bootstrap input[type='text'].success {
-				border-color: #0f0;
-			}
-
 			#success_message {
 				margin-top: 10px;
 				padding: 5px 10px;
@@ -31,11 +23,6 @@
 
 			#success_message.visible {
 				opacity: 1;
-			}
-
-			#test_count:not(:empty):before {
-				content: "Unread count is";
-				padding-right: 5px;
 			}
 		</style>
 		<script src="api.js"></script>
@@ -66,17 +53,14 @@
 							<input type="text" id="notification_url" autofocus>
 						</section>
 						<section>
-							<h3>Custom Selector</h3>
-							<p>Specify the selector to obtain the count of unread notifications</p>
-							<label for="counter_selector">Counter Selector</label>
-							<input type="text" id="counter_selector">
+							<h3>Use Participating Count</h3>
+							<p>Check this if you only want updates for issues you're participating in</p>
+							<input type="checkbox" id="use_participating">
+							<label for="use_participating">Use participating count</label>
 						</section>
 						<div class="controls">
 							<button id="save">Save</button>
 							<button id="reset">Reset to Default</button>
-							<div class="spacer"></div>
-							<span id="test_count"></span>
-							<button id="test">Test</button>
 						</div>
 						<div id="success_message" class="alert">Options saved</div>
 					</div>

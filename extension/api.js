@@ -17,14 +17,19 @@
 	window.GitHubNotify = (function () {
 		var defaults = {
 			notificationUrl: 'https://github.com/notifications',
-			counterSelector: 'a[href="/notifications"] .count'
+			useParticipatingCount: false
 		};
 
 		var api = {
 			settings: {
 				get: function (name) {
 					var item = localStorage.getItem(name);
-					return item === null ? ({}.hasOwnProperty.call(defaults, name) ? defaults[name] : void 0) : item;
+					if (item === null) {
+						return ({}.hasOwnProperty.call(defaults, name) ? defaults[name] : void 0);
+					} else if (item === 'true' || item === 'false') {
+						return (item === 'true');
+					}
+					return item;
 				},
 				set: localStorage.setItem.bind(localStorage),
 				reset: function () {
@@ -37,23 +42,26 @@
 		return api;
 	})();
 
-	window.gitHubNotifCount = function (callback, settings) {
-		settings = settings || {};
-		var NOTIFICATIONS_URL = settings.notificationUrl || GitHubNotify.settings.get('notificationUrl');
-		var COUNTER_SELECTOR = settings.counterSelector || GitHubNotify.settings.get('counterSelector');
+	window.gitHubNotifCount = function (callback) {
+		var NOTIFICATIONS_URL = GitHubNotify.settings.get('notificationUrl');
+		var USE_PARTICIPATING = GitHubNotify.settings.get('useParticipatingCount');
+
 		var tmp = document.createElement('div');
 
 		xhr('GET', NOTIFICATIONS_URL, function (data, status) {
 			if (status >= 400) {
 				callback(-1);
+				return;
+			}
+
+			tmp.innerHTML = data;
+
+			var participating = (USE_PARTICIPATING) ? '/participating' : '';
+			var countElem = tmp.querySelector('a[href="/notifications' + participating + '"] .count');
+			if (countElem) {
+				callback(countElem.textContent !== '0' ? countElem.textContent : '');
 			} else {
-				tmp.innerHTML = data;
-				var countElem = tmp.querySelector(COUNTER_SELECTOR);
-				if (countElem) {
-					callback(parseInt(countElem.textContent));
-				} else {
-					callback(-2);
-				}
+				callback(-2);
 			}
 		});
 	};

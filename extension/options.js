@@ -3,21 +3,13 @@
 
 	document.addEventListener('DOMContentLoaded', function () {
 		var formNotificationUrl = document.getElementById('notification_url');
-		var formCounterSelector = document.getElementById('counter_selector');
-		var testButton = document.getElementById('test');
-		var testCount = document.getElementById('test_count');
+		var formUseParticipating = document.getElementById('use_participating');
 		var successMessage = document.getElementById('success_message');
 		var successTimeout = null;
 
-		function resetTest() {
-			testCount.textContent = '';
-			formNotificationUrl.classList.remove('success', 'failure');
-			formCounterSelector.classList.remove('success', 'failure');
-		}
-
 		function loadSettings() {
 			formNotificationUrl.value = GitHubNotify.settings.get('notificationUrl');
-			formCounterSelector.value = GitHubNotify.settings.get('counterSelector');
+			formUseParticipating.checked = GitHubNotify.settings.get('useParticipatingCount');
 		}
 
 		loadSettings();
@@ -36,7 +28,7 @@
 				}
 			});
 
-			GitHubNotify.settings.set('counterSelector', formCounterSelector.value);
+			GitHubNotify.settings.set('useParticipatingCount', formUseParticipating.checked);
 
 			clearTimeout(successTimeout);
 
@@ -44,8 +36,6 @@
 			successTimeout = setTimeout(function() {
 				successMessage.classList.remove('visible');
 			}, 2000);
-
-			resetTest();
 		});
 
 		document.getElementById('reset').addEventListener('click', function () {
@@ -55,27 +45,6 @@
 
 			GitHubNotify.settings.reset();
 			loadSettings();
-		});
-
-		testButton.addEventListener('click', function () {
-			testButton.disabled = true;
-
-			resetTest();
-
-			var options = {
-				notificationUrl: formNotificationUrl.value,
-				counterSelector: formCounterSelector.value
-			};
-			gitHubNotifCount(function (count) {
-				formNotificationUrl.classList.add((count === -1) ? 'failure' : 'success');
-				formCounterSelector.classList.add((count === -2 || isNaN(count)) ? 'failure' : 'success');
-
-				if (count >= 0) {
-					testCount.textContent = count;
-				}
-
-				testButton.disabled = false;
-			}, options);
 		});
 	});
 })();

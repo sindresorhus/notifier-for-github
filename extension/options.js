@@ -14,6 +14,15 @@
 
 		loadSettings();
 
+		function updateBadge() {
+			chrome.runtime.sendMessage('update');
+		}
+
+		formUseParticipating.addEventListener('change', function() {
+			GitHubNotify.settings.set('useParticipatingCount', formUseParticipating.checked);
+			updateBadge();
+		});
+
 		document.getElementById('save').addEventListener('click', function () {
 			chrome.permissions.request({
 				origins: [formNotificationUrl.value]
@@ -28,7 +37,7 @@
 				}
 			});
 
-			GitHubNotify.settings.set('useParticipatingCount', formUseParticipating.checked);
+			updateBadge();
 
 			clearTimeout(successTimeout);
 

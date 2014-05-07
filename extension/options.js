@@ -18,7 +18,7 @@
 			chrome.runtime.sendMessage('update');
 		}
 
-		formUseParticipating.addEventListener('change', function() {
+		formUseParticipating.addEventListener('change', function () {
 			GitHubNotify.settings.set('useParticipatingCount', formUseParticipating.checked);
 			updateBadge();
 		});

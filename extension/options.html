@@ -9,16 +9,20 @@
 				-webkit-margin-start: 170px
 			}
 
-			.chrome-bootstrap select,
-			.chrome-bootstrap input[type='checkbox'],
-			.chrome-bootstrap input[type='radio'],
-			.chrome-bootstrap input[type='button'],
-			.chrome-bootstrap button {
-				margin-top: 10px
+			input[type='text'] {
+				width: 350px;
 			}
 
-			#notification_url {
-				width: 350px;
+			#success_message {
+				margin-top: 10px;
+				padding: 5px 10px;
+
+				opacity: 0;
+				transition: opacity 0.5s ease-out;
+			}
+
+			#success_message.visible {
+				opacity: 1;
 			}
 		</style>
 		<script src="api.js"></script>
@@ -42,13 +46,22 @@
 						<h1>Notifications</h1>
 					</header>
 					<div class="content">
-						<h2>Custom URL</h2>
-						<p>Specify the notification URL to your GitHub Enterprise</p>
-						<label for="notification_url">Notification URL</label>
-						<input type="text" id="notification_url" autofocus>
-						<br>
-						<button id="save">Save</button>
-						<button id="reset">Reset to Default</button>
+						<section>
+							<h3>Custom URL</h3>
+							<p>Specify the notification URL to your GitHub Enterprise</p>
+							<label for="notification_url">Notification URL</label>
+							<input type="text" id="notification_url" autofocus>
+						</section>
+						<section>
+							<h3>Participating Count</h3>
+							<input type="checkbox" id="use_participating">
+							<label for="use_participating">Only show unread count for issues I'm participating in</label>
+						</section>
+						<div class="controls">
+							<button id="save">Save</button>
+							<button id="reset">Reset to Default</button>
+						</div>
+						<div id="success_message" class="alert">Options saved</div>
 					</div>
 				</div>
 			</div>

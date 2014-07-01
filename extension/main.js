@@ -39,14 +39,13 @@
 	chrome.runtime.onMessage.addListener(update);
 
 	chrome.browserAction.onClicked.addListener(function (tab) {
-		if (tab.url === '' || tab.url === 'chrome://newtab/' || tab.url === GitHubNotify.settings.get('notificationUrl')) {
-			chrome.tabs.update(null, {
-				url: GitHubNotify.settings.get('notificationUrl')
-			});
+		var notifTab = {
+			url: GitHubNotify.settings.get('notificationUrl') 
+		};
+		if (tab.url === '' || tab.url === 'chrome://newtab/' || tab.url === notifTab.url) {
+			chrome.tabs.update(null, notifTab);
 		} else {
-			chrome.tabs.create({
-				url: GitHubNotify.settings.get('notificationUrl')
-			});
+			chrome.tabs.create(notifTab);
 		}
 	});
 

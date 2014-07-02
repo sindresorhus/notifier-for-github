@@ -38,10 +38,15 @@
 	chrome.alarms.onAlarm.addListener(update);
 	chrome.runtime.onMessage.addListener(update);
 
-	chrome.browserAction.onClicked.addListener(function () {
-		chrome.tabs.create({
-			url: GitHubNotify.settings.get('notificationUrl')
-		});
+	chrome.browserAction.onClicked.addListener(function (tab) {
+		var notifTab = {
+			url: GitHubNotify.settings.get('notificationUrl') 
+		};
+		if (tab.url === '' || tab.url === 'chrome://newtab/' || tab.url === notifTab.url) {
+			chrome.tabs.update(null, notifTab);
+		} else {
+			chrome.tabs.create(notifTab);
+		}
 	});
 
 	update();

@@ -9,7 +9,7 @@ Supports GitHub Enterprise.
 
 ## Install
 
-Install from the [Chrome webstore](https://chrome.google.com/webstore/detail/github-notifier/lmjdlojahmbbcodnpecnjnmlddbkjhnn).
+Install from the [Chrome Web Store](https://chrome.google.com/webstore/detail/github-notifier/lmjdlojahmbbcodnpecnjnmlddbkjhnn).
 
 
 ## Related
@@ -19,4 +19,4 @@ Also available on [Opera](https://github.com/sindresorhus/github-notifier-opera)
 
 ## License
 
-[MIT](http://opensource.org/licenses/MIT) © [Sindre Sorhus](http://sindresorhus.com)
+MIT © [Sindre Sorhus](http://sindresorhus.com)

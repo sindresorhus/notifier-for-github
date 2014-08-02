@@ -1,15 +1,12 @@
-# GitHub Notifier for Chrome
+# <img src="extension/icon-128.png" width="30"> GitHub Notifier
 
-> Extension that displays your GitHub notifications unread count
+> Chrome extension - Displays your GitHub notifications unread count
 
-Supports GitHub Enterprise.
+[![](screenshot.png)][install]
+[![](screenshot-webstore2.png)][install]
 
-![](screenshot.png)
 
-
-## Install
-
-Install from the [Chrome Web Store](https://chrome.google.com/webstore/detail/github-notifier/lmjdlojahmbbcodnpecnjnmlddbkjhnn).
+## [Install][install]
 
 
 ## Related
@@ -20,3 +17,6 @@ Also available on [Opera](https://github.com/sindresorhus/github-notifier-opera)
 ## License
 
 MIT © [Sindre Sorhus](http://sindresorhus.com)
+
+
+[install]: https://chrome.google.com/webstore/detail/github-notifier/lmjdlojahmbbcodnpecnjnmlddbkjhnn

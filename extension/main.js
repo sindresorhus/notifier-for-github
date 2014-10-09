@@ -38,16 +38,28 @@
 	chrome.alarms.onAlarm.addListener(update);
 	chrome.runtime.onMessage.addListener(update);
 
-	chrome.browserAction.onClicked.addListener(function (tab) {
-		var notifTab = {
-			url: GitHubNotify.settings.get('notificationUrl') 
-		};
-		if (tab.url === '' || tab.url === 'chrome://newtab/' || tab.url === notifTab.url) {
-			chrome.tabs.update(null, notifTab);
-		} else {
-			chrome.tabs.create(notifTab);
-		}
-	});
+	function getGitUrl() {
+		return GitHubNotify.settings.get('notificationUrl');
+	}
+
+	function goToNotification() {
+		chrome.tabs.query({currentWindow: true}, function(tabs) {
+			for (var i = 0, tab; tab = tabs[i]; i++) {
+				if (tab.url === getGitUrl()) {
+					chrome.tabs.update(tab.id, {selected: true, url: getGitUrl()});
+					return;
+				}
+			}
+			chrome.tabs.query({active: true}, function(tabs){
+				if (tabs[0].url === 'chrome://newtab/') {
+					chrome.tabs.update(tabs[0].id, {url: getGitUrl()})
+				} else {
+					chrome.tabs.create({url: getGitUrl()});
+				}
+			});
+		});
+	}
+	chrome.browserAction.onClicked.addListener(goToNotification);
 
 	update();
 })();

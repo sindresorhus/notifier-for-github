@@ -24,27 +24,32 @@
 		});
 
 		document.getElementById('save').addEventListener('click', function () {
+			var url = formNotificationUrl.value;
+			url = /\/$/.test(url) ? url : url + '/';
+
 			chrome.permissions.request({
-				origins: [formNotificationUrl.value]
+				origins: [url]
 			}, function (granted) {
 				if (granted) {
 					chrome.permissions.remove({
 						origins: [GitHubNotify.settings.get('notificationUrl')]
 					});
-					GitHubNotify.settings.set('notificationUrl', formNotificationUrl.value);
+					GitHubNotify.settings.set('notificationUrl', url);
+
+					updateBadge();
+					loadSettings();
+
+					clearTimeout(successTimeout);
+					successMessage.classList.add('visible');
+					successTimeout = setTimeout(function() {
+						successMessage.classList.remove('visible');
+					}, 3000);
 				} else {
 					loadSettings();
+					// TODO: Use a similar message as `successMessage` to show this too
+					console.error('Permission not granted', chrome.runtime.lastError.message);
 				}
 			});
-
-			updateBadge();
-
-			clearTimeout(successTimeout);
-
-			successMessage.classList.add('visible');
-			successTimeout = setTimeout(function() {
-				successMessage.classList.remove('visible');
-			}, 2000);
 		});
 
 		document.getElementById('reset').addEventListener('click', function () {

@@ -13,7 +13,7 @@
 	"permissions": [
 		"alarms",
 		"activeTab",
-		"https://github.com/"
+		"*://*/"
 	],
 	"optional_permissions": [
 		"*://*/"

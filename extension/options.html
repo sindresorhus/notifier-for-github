@@ -47,9 +47,15 @@
 					<div class="content">
 						<section>
 							<h3>Custom URL</h3>
-							<p>Specify the notification URL to your GitHub Enterprise</p>
-							<label for="notification_url">Notification URL</label>
-							<input type="text" id="notification_url" autofocus>
+							<p>Specify the root URL to your GitHub Enterprise</p>
+							<label for="root_url">Root URL</label>
+							<input type="text" id="root_url" autofocus placeholder="e.g. https://github.yourco.com/">
+						</section>
+						<section>
+							<h3>OAuth Token</h3>
+							<p><a id="gh_link" href="https://github.com/settings/tokens/new" target="gh_target">Create an oauth token</a> with the <strong>notifications</strong> permission and specify it below</p>
+							<label for="oauth_token">OAuth Token</label>
+							<input type="text" id="oauth_token">
 						</section>
 						<section>
 							<h3>Participating Count</h3>

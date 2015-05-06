@@ -58,14 +58,14 @@
 	})();
 
 	window.gitHubNotifCount = function (cb) {
-		var token = GitHubNotify.settings.get('oauthToken');
+		var token = window.GitHubNotify.settings.get('oauthToken');
 		var opts = {
 			Authorization: 'token ' + token
 		};
-		var participating = GitHubNotify.settings.get('useParticipatingCount')
+		var participating = window.GitHubNotify.settings.get('useParticipatingCount')
 			? '?participating=true'
 			: '';
-		var url = GitHubNotify.settings.get('rootUrl');
+		var url = window.GitHubNotify.settings.get('rootUrl');
 
 		if (!token) {
 			cb(new Error('missing token'));

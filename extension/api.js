@@ -95,7 +95,7 @@
 			}
 
 			if (data && data.hasOwnProperty('length')) {
-				callback(String(data.length), interval);
+				callback(data.length, interval);
 				return;
 			}
 			callback(-2, interval);

@@ -18,7 +18,7 @@
 	function update() {
 		gitHubNotifCount(function (count, interval) {
 			var period = 1;
-			if (interval !== GitHubNotify.settings.get('interval')) {
+			if (interval !== parseInt(GitHubNotify.settings.get('interval'), 10)) {
 				GitHubNotify.settings.set('interval', interval);
 				period = Math.ceil(interval / 60);
 				if (period < 1) {

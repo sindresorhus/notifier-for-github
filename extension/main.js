@@ -47,7 +47,7 @@
 				if (count > 9999) {
 					count = '∞';
 				}
-				render(count, [65, 131, 196, 255], 'GitHub Notifier');
+				render(String(count), [65, 131, 196, 255], 'GitHub Notifier');
 			}
 		});
 	}

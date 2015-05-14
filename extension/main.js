@@ -24,8 +24,8 @@
 				if (period < 1) {
 					period = 1;
 				}
-                chrome.alarms.create({when: Date.now() + 2000 + (period * 60 * 1000)});
 			}
+			chrome.alarms.create({when: Date.now() + 2000 + (period * 60 * 1000)});
 			if (count < 0) {
 				var text;
 				if (count === -1) {

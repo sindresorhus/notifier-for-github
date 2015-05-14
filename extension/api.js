@@ -68,7 +68,7 @@
 			callback(-4);
 			return;
 		}
-		if (/github.com\/?/.test(url)) {
+		if (/(^(https:\/\/)?(api\.)?github\.com)/.test(url)) {
 			url = 'https://api.github.com/notifications';
 		} else {
 			url += 'api/v3/notifications';

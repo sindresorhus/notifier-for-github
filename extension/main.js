@@ -24,11 +24,7 @@
 				if (period < 1) {
 					period = 1;
 				}
-				chrome.alarms.clearAll(function () {
-					chrome.alarms.create({periodInMinutes: period});
-					chrome.alarms.onAlarm.addListener(update);
-					chrome.runtime.onMessage.addListener(update);
-				});
+                chrome.alarms.create({when: Date.now() + 2000 + (period * 60 * 1000)});
 			}
 			if (count < 0) {
 				var text;
@@ -45,7 +41,7 @@
 				render('?', [166, 41, 41, 255], text);
 			} else {
 				if (count === 0) {
-					count = ''
+					count = '';
 				} else if (count > 9999) {
 					count = '∞';
 				}
@@ -54,7 +50,7 @@
 		});
 	}
 
-	chrome.alarms.create({periodInMinutes: 1});
+	chrome.alarms.create({when: Date.now() + 2000});
 	chrome.alarms.onAlarm.addListener(update);
 	chrome.runtime.onMessage.addListener(update);
 

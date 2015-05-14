@@ -18,7 +18,7 @@
 	function update() {
 		gitHubNotifCount(function (count, interval) {
 			var period = 1;
-			if (interval !== GitHubNotify.settings.get('interval')) {
+			if (interval !== parseInt(GitHubNotify.settings.get('interval'), 10)) {
 				GitHubNotify.settings.set('interval', interval);
 				period = Math.ceil(interval / 60);
 				if (period < 1) {
@@ -44,10 +44,12 @@
 				}
 				render('?', [166, 41, 41, 255], text);
 			} else {
-				if (count > 9999) {
+				if (count === 0) {
+					count = ''
+				} else if (count > 9999) {
 					count = '∞';
 				}
-				render(count, [65, 131, 196, 255], 'GitHub Notifier');
+				render(String(count), [65, 131, 196, 255], 'GitHub Notifier');
 			}
 		});
 	}

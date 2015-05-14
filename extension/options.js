@@ -33,7 +33,7 @@
 		}
 
 		formRootUrl.addEventListener('change', function () {
-			var url = normalizeRoot(formRootUrl.value) + 'settings/tokens/new';
+			var url = normalizeRoot(formRootUrl.value) + 'settings/tokens/new?scopes=notifications';
 			ghSettingsUrl.href = url;
 		});
 		formUseParticipating.addEventListener('change', function () {

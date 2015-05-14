@@ -44,7 +44,9 @@
 				}
 				render('?', [166, 41, 41, 255], text);
 			} else {
-				if (count > 9999) {
+				if (count === 0) {
+					count = ''
+				} else if (count > 9999) {
 					count = '∞';
 				}
 				render(String(count), [65, 131, 196, 255], 'GitHub Notifier');

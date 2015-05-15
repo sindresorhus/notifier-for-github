@@ -20,6 +20,7 @@
 					xhr.setRequestHeader(k, headers[k]);
 				});
 			}
+			xhr.setRequestHeader('If-Modified-Since', '');
 			xhr.send();
 		};
 	})();

@@ -58,7 +58,7 @@
 	window.gitHubNotifCount = function (callback) {
 		var token = GitHubNotify.settings.get('oauthToken');
 		var opts = {
-				Authorization: 'token ' + token
+			Authorization: 'token ' + token
 		};
 		var participating = GitHubNotify.settings.get('useParticipatingCount')
 			? '?participating=true'
@@ -66,7 +66,7 @@
 		var url = GitHubNotify.settings.get('rootUrl');
 
 		if (!token) {
-			callback(-4);
+			callback(new Error('missing token'));
 			return;
 		}
 		if (/(^(https:\/\/)?(api\.)?github\.com)/.test(url)) {
@@ -79,27 +79,27 @@
 		xhr('GET', url, opts, function (data, status, response) {
 			var interval = Number(response.getResponseHeader('X-Poll-Interval'));
 			if (status >= 400) {
-				callback(-1, interval);
+				callback(new Error('server error'), null, interval);
 				return;
 			}
 
 			if (status === 304) {
-				callback(-3, interval);
+				callback(null, 'cached', interval);
 				return;
 			}
 
 			try {
 				data = JSON.parse(data);
 			} catch (err) {
-				callback(-1, interval);
+				callback(new Error('parse error'), null, interval);
 				return;
 			}
 
 			if (data && data.hasOwnProperty('length')) {
-				callback(data.length, interval);
+				callback(null, data.length, interval);
 				return;
 			}
-			callback(-2, interval);
+			callback(new Error('data format error'), null, interval);
 			return;
 		});
 	};

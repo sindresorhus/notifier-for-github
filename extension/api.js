@@ -69,6 +69,7 @@
 			callback(new Error('missing token'));
 			return;
 		}
+
 		if (/(^(https:\/\/)?(api\.)?github\.com)/.test(url)) {
 			url = 'https://api.github.com/notifications';
 		} else {
@@ -78,13 +79,14 @@
 
 		xhr('GET', url, opts, function (data, status, response) {
 			var interval = Number(response.getResponseHeader('X-Poll-Interval'));
-			if (status >= 400) {
+
+			if (status >= 500) {
 				callback(new Error('server error'), null, interval);
 				return;
 			}
 
-			if (status === 304) {
-				callback(null, 'cached', interval);
+			if (status >= 400) {
+				callback(new Error('client error: '+data), null, interval);
 				return;
 			}
 

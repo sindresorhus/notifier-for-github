@@ -32,10 +32,7 @@
 					return item;
 				},
 				set: localStorage.setItem.bind(localStorage),
-				reset: function () {
-					Object.keys(localStorage).forEach(api.settings.revert);
-				},
-				revert: localStorage.removeItem.bind(localStorage)
+				reset: localStorage.clear.bind(localStorage)
 			}
 		};
 

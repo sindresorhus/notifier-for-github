@@ -12,11 +12,7 @@
 	},
 	"permissions": [
 		"alarms",
-		"activeTab",
-		"https://github.com/"
-	],
-	"optional_permissions": [
-		"*://*/"
+		"activeTab"
 	],
 	"background": {
 		"persistent": false,

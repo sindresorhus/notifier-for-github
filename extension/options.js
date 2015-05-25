@@ -2,13 +2,16 @@
 	'use strict';
 
 	document.addEventListener('DOMContentLoaded', function () {
-		var formNotificationUrl = document.getElementById('notification_url');
+		var formRootUrl = document.getElementById('root_url');
+		var ghSettingsUrl = document.getElementById('gh_link');
+		var formOauthToken = document.getElementById('oauth_token');
 		var formUseParticipating = document.getElementById('use_participating');
 		var successMessage = document.getElementById('success_message');
 		var successTimeout = null;
 
 		function loadSettings() {
-			formNotificationUrl.value = GitHubNotify.settings.get('notificationUrl');
+			formRootUrl.value = GitHubNotify.settings.get('rootUrl');
+			formOauthToken.value = GitHubNotify.settings.get('oauthToken');
 			formUseParticipating.checked = GitHubNotify.settings.get('useParticipatingCount');
 		}
 
@@ -18,45 +21,45 @@
 			chrome.runtime.sendMessage('update');
 		}
 
+		function normalizeRoot(url) {
+			if (!/^https?:\/\//.test(url)) {
+				// assume it is https
+				url = 'https://' + url;
+			}
+			if (!/\/$/.test(url)) {
+				url += '/';
+			}
+			return url;
+		}
+
+		formRootUrl.addEventListener('change', function () {
+			var url = normalizeRoot(formRootUrl.value) + 'settings/tokens/new?scopes=notifications';
+			ghSettingsUrl.href = url;
+		});
 		formUseParticipating.addEventListener('change', function () {
 			GitHubNotify.settings.set('useParticipatingCount', formUseParticipating.checked);
 			updateBadge();
 		});
 
 		document.getElementById('save').addEventListener('click', function () {
-			var url = formNotificationUrl.value;
-			url = /\/$/.test(url) ? url : url + '/';
+			var url = normalizeRoot(formRootUrl.value);
+			var token = formOauthToken.value;
 
-			chrome.permissions.request({
-				origins: [url]
-			}, function (granted) {
-				if (granted) {
-					chrome.permissions.remove({
-						origins: [GitHubNotify.settings.get('notificationUrl')]
-					});
-					GitHubNotify.settings.set('notificationUrl', url);
+			GitHubNotify.settings.set('oauthToken', token);
 
-					updateBadge();
-					loadSettings();
+			GitHubNotify.settings.set('rootUrl', url);
 
-					clearTimeout(successTimeout);
-					successMessage.classList.add('visible');
-					successTimeout = setTimeout(function() {
-						successMessage.classList.remove('visible');
-					}, 3000);
-				} else {
-					loadSettings();
-					// TODO: Use a similar message as `successMessage` to show this too
-					console.error('Permission not granted', chrome.runtime.lastError.message);
-				}
-			});
+			updateBadge();
+			loadSettings();
+
+			clearTimeout(successTimeout);
+			successMessage.classList.add('visible');
+			successTimeout = setTimeout(function () {
+				successMessage.classList.remove('visible');
+			}, 3000);
 		});
 
 		document.getElementById('reset').addEventListener('click', function () {
-			chrome.permissions.remove({
-				origins: [GitHubNotify.settings.get('notificationUrl')]
-			});
-
 			GitHubNotify.settings.reset();
 			loadSettings();
 		});

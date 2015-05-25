@@ -36,6 +36,7 @@
 			var url = normalizeRoot(formRootUrl.value) + 'settings/tokens/new?scopes=notifications';
 			ghSettingsUrl.href = url;
 		});
+
 		formUseParticipating.addEventListener('change', function () {
 			GitHubNotify.settings.set('useParticipatingCount', formUseParticipating.checked);
 			updateBadge();
@@ -46,7 +47,6 @@
 			var token = formOauthToken.value;
 
 			GitHubNotify.settings.set('oauthToken', token);
-
 			GitHubNotify.settings.set('rootUrl', url);
 
 			updateBadge();

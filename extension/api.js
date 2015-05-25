@@ -3,23 +3,28 @@
 
 	var xhr = (function () {
 		var xhr = new XMLHttpRequest();
-		return function (method, url, headers, callback) {
-			if (!callback && typeof headers === 'function') {
-				callback = headers;
+
+		return function (method, url, headers, cb) {
+			if (!cb && typeof headers === 'function') {
+				cb = headers;
 				headers = null;
 			}
+
 			xhr.onreadystatechange = function () {
 				if (xhr.readyState === 4) {
-					callback(xhr.responseText, xhr.status, xhr);
+					cb(xhr.responseText, xhr.status, xhr);
 					return;
 				}
 			};
+
 			xhr.open(method, url);
+
 			if (headers) {
 				Object.keys(headers).forEach(function (k) {
 					xhr.setRequestHeader(k, headers[k]);
 				});
 			}
+
 			xhr.setRequestHeader('If-Modified-Since', '');
 			xhr.send();
 		};
@@ -52,7 +57,7 @@
 		return api;
 	})();
 
-	window.gitHubNotifCount = function (callback) {
+	window.gitHubNotifCount = function (cb) {
 		var token = GitHubNotify.settings.get('oauthToken');
 		var opts = {
 			Authorization: 'token ' + token
@@ -63,7 +68,7 @@
 		var url = GitHubNotify.settings.get('rootUrl');
 
 		if (!token) {
-			callback(new Error('missing token'));
+			cb(new Error('missing token'));
 			return;
 		}
 
@@ -72,33 +77,35 @@
 		} else {
 			url += 'api/v3/notifications';
 		}
+
 		url += participating;
 
 		xhr('GET', url, opts, function (data, status, response) {
 			var interval = Number(response.getResponseHeader('X-Poll-Interval'));
 
 			if (status >= 500) {
-				callback(new Error('server error'), null, interval);
+				cb(new Error('server error'), null, interval);
 				return;
 			}
 
 			if (status >= 400) {
-				callback(new Error('client error: '+data), null, interval);
+				cb(new Error('client error: ' + data), null, interval);
 				return;
 			}
 
 			try {
 				data = JSON.parse(data);
 			} catch (err) {
-				callback(new Error('parse error'), null, interval);
+				cb(new Error('parse error'), null, interval);
 				return;
 			}
 
 			if (data && data.hasOwnProperty('length')) {
-				callback(null, data.length, interval);
+				cb(null, data.length, interval);
 				return;
 			}
-			callback(new Error('data format error'), null, interval);
+
+			cb(new Error('data format error'), null, interval);
 			return;
 		});
 	};

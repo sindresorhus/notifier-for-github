@@ -2,6 +2,10 @@
 
 > Chrome/Opera extension - Displays your GitHub notifications unread count
 
+It checks the GitHub Notifications API every minute. Supports GitHub Enterprise and an option to only show unread count for issues you're participating in.
+
+Make sure to add a token in the Options page.
+
 ![](screenshot.png)
 ![](screenshot-webstore2.png)
 

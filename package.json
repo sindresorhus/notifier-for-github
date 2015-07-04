@@ -1,38 +1,34 @@
 {
   "name": "github-notifier-chrome",
   "version": "2.0.0",
-  "description": "> Chrome/Opera extension - Displays your GitHub notifications unread count",
+  "description": "Chrome/Opera extension - Displays your GitHub notifications unread count",
   "main": "index.js",
   "scripts": {
-    "lint": "eslint extension/*.js",
+    "lint": "eslint extension/*.js test/*.js",
     "test": "mocha"
   },
-  "pre-commit": [
-    "lint",
-    "test"
-  ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/sindresorhus/github-notifier-chrome.git"
+    "url": "sindresorhus/github-notifier-chrome"
   },
   "keywords": [
     "github",
     "notifier",
-    "chrome"
+    "chrome",
+    "extension"
   ],
-  "author": "Sindre Sorhus",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/sindresorhus/github-notifier-chrome/issues"
+  "author": {
+    "name": "Sindre Sorhus",
+    "email": "sindresorhus@gmail.com",
+    "url": "sindresorhus.com"
   },
-  "homepage": "https://github.com/sindresorhus/github-notifier-chrome#readme",
+  "license": "MIT",
   "devDependencies": {
     "chrome-stub": "^1.2.0",
     "eslint": "^0.20.0",
     "istanbul": "^0.3.13",
     "mocha": "^2.2.4",
     "mock-localstorage": "^0.1.3",
-    "pre-commit": "^1.0.7",
     "sinon": "^1.15.4"
   }
 }

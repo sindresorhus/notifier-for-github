@@ -1,5 +1,4 @@
 {
-  "name": "github-notifier-chrome",
   "scripts": {
     "lint": "eslint extension/*.js test/*.js",
     "test": "mocha"

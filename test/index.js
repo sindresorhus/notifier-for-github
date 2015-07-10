@@ -33,7 +33,7 @@ XMLHttpRequest.prototype.send = function send() {
 	this.status = 200;
 	this.responseHeaders['X-Poll-Interval'] = '60';
 	if (this.onreadystatechange) {
-	setTimeout(this.onreadystatechange, 50);
+		setTimeout(this.onreadystatechange, 50);
 	}
 };
 

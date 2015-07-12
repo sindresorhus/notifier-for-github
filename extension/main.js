@@ -16,12 +16,12 @@
 	}
 
 	function update() {
-		gitHubNotifCount(function (err, count, interval) {
+		window.gitHubNotifCount(function (err, count, interval) {
 			var period = 1;
 			var text;
 
-			if (interval !== null && interval !== parseInt(GitHubNotify.settings.get('interval'), 10)) {
-				GitHubNotify.settings.set('interval', interval);
+			if (interval !== null && interval !== parseInt(window.GitHubNotify.settings.get('interval'), 10)) {
+				window.GitHubNotify.settings.set('interval', interval);
 				period = Math.ceil(interval / 60);
 
 				if (period < 1) {
@@ -72,7 +72,7 @@
 	chrome.runtime.onMessage.addListener(update);
 
 	chrome.browserAction.onClicked.addListener(function (tab) {
-		var url = GitHubNotify.settings.get('rootUrl');
+		var url = window.GitHubNotify.settings.get('rootUrl');
 
 		if (/api.github.com\/$/.test(url)) {
 			url = 'https://github.com/';

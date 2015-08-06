@@ -5,7 +5,7 @@
   },
   "devDependencies": {
     "chrome-stub": "^1.2.0",
-    "eslint": "^0.24.1",
+    "eslint": "^1.0.0",
     "istanbul": "^0.3.13",
     "mocha": "*",
     "mock-localstorage": "^0.1.3",

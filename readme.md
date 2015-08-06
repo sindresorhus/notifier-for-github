@@ -1,5 +1,7 @@
 # <img src="extension/icon-128.png" width="30"> GitHub Notifier
 
+[![Build Status](https://travis-ci.org/sindresorhus/github-notifier-chrome.svg?branch=master)](https://travis-ci.org/sindresorhus/github-notifier-chrome)
+
 > Chrome/Opera extension - Displays your GitHub notifications unread count
 
 It checks the GitHub Notifications API every minute. Supports GitHub Enterprise and an option to only show unread count for issues you're participating in.

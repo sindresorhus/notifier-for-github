@@ -43,9 +43,9 @@
 				get: function (name) {
 					var item = localStorage.getItem(name);
 					if (item === null) {
-						return ({}.hasOwnProperty.call(defaults, name) ? defaults[name] : void 0);
+						return {}.hasOwnProperty.call(defaults, name) ? defaults[name] : undefined;
 					} else if (item === 'true' || item === 'false') {
-						return (item === 'true');
+						return item === 'true';
 					}
 					return item;
 				},

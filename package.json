@@ -1,14 +1,23 @@
 {
   "scripts": {
-    "lint": "eslint extension/*.js test/*.js",
-    "test": "mocha"
+    "test": "xo && mocha"
   },
   "devDependencies": {
     "chrome-stub": "^1.2.0",
-    "eslint": "^1.0.0",
     "istanbul": "^0.3.13",
     "mocha": "*",
     "mock-localstorage": "^0.1.3",
-    "sinon": "^1.15.4"
+    "sinon": "^1.15.4",
+    "xo": "*"
+  },
+  "xo": {
+    "envs": [
+      "browser",
+      "mocha"
+    ],
+    "globals": [
+      "chrome",
+      "GitHubNotify"
+    ]
   }
 }

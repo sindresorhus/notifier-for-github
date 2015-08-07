@@ -13,6 +13,15 @@
 		chrome.browserAction.setTitle({
 			title: title
 		});
+
+		if (badge && window.GitHubNotify.settings.get('showDesktopNotif')) {
+			chrome.notifications.create('github-notifier', {
+				title: 'GitHub',
+				iconUrl: 'icon-128.png',
+				type: 'basic',
+				message: 'You have new unread notifications'
+			}, function () { });
+		}
 	}
 
 	function update() {
@@ -67,12 +76,8 @@
 		});
 	}
 
-	chrome.alarms.create({when: Date.now() + 2000});
-	chrome.alarms.onAlarm.addListener(update);
-	chrome.runtime.onMessage.addListener(update);
-
-	chrome.browserAction.onClicked.addListener(function (tab) {
-		var url = window.GitHubNotify.settings.get('rootUrl');
+	function openNotifPage(tab) {
+		var url = GitHubNotify.settings.get('rootUrl');
 
 		if (/api.github.com\/$/.test(url)) {
 			url = 'https://github.com/';
@@ -82,11 +87,19 @@
 			url: url + 'notifications'
 		};
 
-		if (tab.url === '' || tab.url === 'chrome://newtab/' || tab.url === notifTab.url) {
+		if (tab && (tab.url === '' || tab.url === 'chrome://newtab/' || tab.url === notifTab.url)) {
 			chrome.tabs.update(null, notifTab);
 		} else {
 			chrome.tabs.create(notifTab);
 		}
+	}
+
+	chrome.alarms.create({when: Date.now() + 2000});
+	chrome.alarms.onAlarm.addListener(update);
+	chrome.runtime.onMessage.addListener(update);
+	chrome.browserAction.onClicked.addListener(openNotifPage);
+	chrome.notifications.onClicked.addListener(function () {
+		openNotifPage(null);
 	});
 
 	update();

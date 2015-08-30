@@ -75,25 +75,23 @@
 
 	chrome.browserAction.onClicked.addListener(function (tab) {
 		var url = window.GitHubNotify.settings.get('rootUrl');
-
 		if (/api.github.com\/$/.test(url)) {
 			url = 'https://github.com/';
 		}
 
+		var GitHubTab = {
+			url: url
+		};
 		if (window.GitHubNotify.settings.get('count') > 0) {
-			var notifTab = {
+			GitHubTab = {
 				url: url + 'notifications'
-			};
-		} else {
-			var notifTab = {
-				url: url
 			};
 		}
 
-		if (tab.url === '' || tab.url === 'chrome://newtab/' || tab.url === notifTab.url) {
-			chrome.tabs.update(null, notifTab);
+		if (tab.url === '' || tab.url === 'chrome://newtab/' || tab.url === GitHubTab.url) {
+			chrome.tabs.update(null, GitHubTab);
 		} else {
-			chrome.tabs.create(notifTab);
+			chrome.tabs.create(GitHubTab);
 		}
 	});
 

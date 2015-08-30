@@ -81,14 +81,14 @@
 		}
 
 		if (window.GitHubNotify.settings.get('count') > 0) {
-            var notifTab = {
-                url: url + 'notifications'
-            };
-        } else {
-            var notifTab = {
-                url: url
-            };
-        }
+			var notifTab = {
+				url: url + 'notifications'
+			};
+		} else {
+			var notifTab = {
+				url: url
+			};
+		}
 
 		if (tab.url === '' || tab.url === 'chrome://newtab/' || tab.url === notifTab.url) {
 			chrome.tabs.update(null, notifTab);

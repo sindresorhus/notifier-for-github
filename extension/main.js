@@ -79,13 +79,11 @@
 			url = 'https://github.com/';
 		}
 
-		var GitHubTab = {
+		var ghTab = {
 			url: url
 		};
 		if (window.GitHubNotify.settings.get('count') > 0) {
-			GitHubTab = {
-				url: url + 'notifications'
-			};
+			ghTab.url = url + 'notifications';
 		}
 
 		if (tab.url === '' || tab.url === 'chrome://newtab/' || tab.url === GitHubTab.url) {

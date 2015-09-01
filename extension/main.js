@@ -86,10 +86,10 @@
 			ghTab.url = url + 'notifications';
 		}
 
-		if (tab.url === '' || tab.url === 'chrome://newtab/' || tab.url === GitHubTab.url) {
-			chrome.tabs.update(null, GitHubTab);
+		if (tab.url === '' || tab.url === 'chrome://newtab/' || tab.url === ghTab.url) {
+			chrome.tabs.update(null, ghTab);
 		} else {
-			chrome.tabs.create(GitHubTab);
+			chrome.tabs.create(ghTab);
 		}
 	});
 

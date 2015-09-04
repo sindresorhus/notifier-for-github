@@ -62,9 +62,7 @@
 		var opts = {
 			Authorization: 'token ' + token
 		};
-		var participating = window.GitHubNotify.settings.get('useParticipatingCount')
-			? '?participating=true'
-			: '';
+		var participating = window.GitHubNotify.settings.get('useParticipatingCount') ? '?participating=true' : '';
 		var url = window.GitHubNotify.settings.get('rootUrl');
 
 		if (!token) {

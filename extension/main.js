@@ -53,6 +53,8 @@
 				return;
 			}
 
+			window.GitHubNotify.settings.set('count', count);
+
 			if (count === 'cached') {
 				return;
 			}
@@ -73,19 +75,21 @@
 
 	chrome.browserAction.onClicked.addListener(function (tab) {
 		var url = window.GitHubNotify.settings.get('rootUrl');
-
 		if (/api.github.com\/$/.test(url)) {
 			url = 'https://github.com/';
 		}
 
-		var notifTab = {
-			url: url + 'notifications'
+		var ghTab = {
+			url: url
 		};
+		if (window.GitHubNotify.settings.get('count') > 0) {
+			ghTab.url = url + 'notifications';
+		}
 
-		if (tab.url === '' || tab.url === 'chrome://newtab/' || tab.url === notifTab.url) {
-			chrome.tabs.update(null, notifTab);
+		if (tab.url === '' || tab.url === 'chrome://newtab/' || tab.url === ghTab.url) {
+			chrome.tabs.update(null, ghTab);
 		} else {
-			chrome.tabs.create(notifTab);
+			chrome.tabs.create(ghTab);
 		}
 	});
 

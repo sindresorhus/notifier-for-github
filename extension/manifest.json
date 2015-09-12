@@ -11,6 +11,7 @@
 		"128": "icon-128.png"
 	},
 	"permissions": [
+		"notifications",
 		"alarms",
 		"activeTab"
 	],

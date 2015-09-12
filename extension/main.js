@@ -15,6 +15,64 @@
 		});
 	}
 
+	function openGithub(tab) {
+		var url = window.GitHubNotify.settings.get('rootUrl');
+		if (/api.github.com\/$/.test(url)) {
+			url = 'https://github.com/';
+		}
+
+		var ghTab = {
+			url: url
+		};
+		if (window.GitHubNotify.settings.get('count') > 0) {
+			ghTab.url = url + 'notifications';
+		}
+
+		if (window.GitHubNotify.settings.get('useParticipatingCount')) {
+			ghTab.url += '/participating';
+		}
+
+		if (typeof tab !== 'undefined' && (tab.url === '' || tab.url === 'chrome://newtab/' || tab.url === ghTab.url)) {
+			chrome.tabs.update(null, ghTab);
+		} else {
+			chrome.tabs.create(ghTab);
+		}
+	}
+
+	function notify(count) {
+
+		// Defensive
+		var countDisplay = (typeof count !== 'number') ? '' : count;
+
+		// Let's check if the browser supports notifications
+		if (!("Notification" in window)) {
+			alert("This browser does not support desktop notification");
+		}
+
+		// Let's check if the user is okay to get some notification
+		else if (Notification.permission === "granted") {
+			// If it's okay let's create a notification
+			var notification = new Notification(countDisplay + " Unread github notifications!");
+
+			notification.onclick = function () {
+				openGithub();
+			};
+		}
+
+		// Otherwise, we need to ask the user for permission
+		else if (Notification.permission !== 'denied') {
+			Notification.requestPermission(function (permission) {
+				// If the user is okay, let's create a notification
+				if (permission === "granted") {
+					var notification = new Notification("All setup!");
+				}
+			});
+		}
+
+		// At last, if the user already denied any notification, and you 
+		// want to be respectful there is no need to bother them any more.
+	}
+
 	function update() {
 		window.gitHubNotifCount(function (err, count, interval) {
 			var intervalSetting = parseInt(window.GitHubNotify.settings.get('interval'), 10);
@@ -54,6 +112,10 @@
 				return;
 			}
 
+			if (parseInt(window.GitHubNotify.settings.get('count'), 10) < count) {
+				notify(count);
+			}
+
 			window.GitHubNotify.settings.set('count', count);
 
 			if (count === 'cached') {
@@ -74,29 +136,7 @@
 	chrome.alarms.onAlarm.addListener(update);
 	chrome.runtime.onMessage.addListener(update);
 
-	chrome.browserAction.onClicked.addListener(function (tab) {
-		var url = window.GitHubNotify.settings.get('rootUrl');
-		if (/api.github.com\/$/.test(url)) {
-			url = 'https://github.com/';
-		}
-
-		var ghTab = {
-			url: url
-		};
-		if (window.GitHubNotify.settings.get('count') > 0) {
-			ghTab.url = url + 'notifications';
-		}
-
-		if (window.GitHubNotify.settings.get('useParticipatingCount')) {
-			ghTab.url += '/participating';
-		}
-
-		if (typeof tab !== 'undefined' && (tab.url === '' || tab.url === 'chrome://newtab/' || tab.url === ghTab.url)) {
-			chrome.tabs.update(null, ghTab);
-		} else {
-			chrome.tabs.create(ghTab);
-		}
-	});
+	chrome.browserAction.onClicked.addListener(openGithub);
 
 	update();
 })();

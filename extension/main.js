@@ -86,7 +86,11 @@
 			ghTab.url = url + 'notifications';
 		}
 
-		if (tab.url === '' || tab.url === 'chrome://newtab/' || tab.url === ghTab.url) {
+		if (window.GitHubNotify.settings.get('useParticipatingCount')) {
+			ghTab.url += '/participating';
+		}
+
+		if (typeof tab !== 'undefined' && (tab.url === '' || tab.url === 'chrome://newtab/' || tab.url === ghTab.url)) {
 			chrome.tabs.update(null, ghTab);
 		} else {
 			chrome.tabs.create(ghTab);

@@ -23,10 +23,10 @@
 			if (interval !== null && interval !== parseInt(window.GitHubNotify.settings.get('interval'), 10)) {
 				window.GitHubNotify.settings.set('interval', interval);
 				period = Math.ceil(interval / 60);
+			}
 
-				if (period < 1) {
-					period = 1;
-				}
+			if (period < 1 || typeof interval !== 'number') {
+				period = 1;
 			}
 
 			// unconditionally schedule alarm

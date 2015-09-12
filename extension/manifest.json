@@ -27,5 +27,10 @@
 			"38": "icon-38.png"
 		}
 	},
-	"options_page": "options.html"
+	"options_page": "options.html",
+	"options_ui": {
+		"page": "options.html",
+		"chrome_style": true
+		//,"open_in_tab": true
+	}
 }

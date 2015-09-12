@@ -3,73 +3,68 @@
 	<head>
 		<meta charset="utf-8">
 		<title>GitHub Notifier</title>
-		<link rel="stylesheet" href="chrome-bootstrap/chrome-bootstrap.css">
 		<style>
-			.chrome-bootstrap .frame .view {
-				-webkit-margin-start: 170px
+			section {
+				-webkit-padding-start: 18px;
 			}
-
+			section h3 {
+				-webkit-margin-start: -18px;
+			}
 			input[type='text'] {
 				width: 350px;
 			}
-
+			span.description {
+				font-style: italic;
+				color: grey;
+			}
+			div.controls {
+				display: inline-block;
+				margin-top: 20px;
+			}
 			#success_message {
+				display: inline-block;
 				margin-top: 10px;
 				padding: 5px 10px;
 				opacity: 0;
 				transition: opacity 0.5s ease-out;
 			}
-
 			#success_message.visible {
 				opacity: 1;
+			}
+			.alert {
+				border-radius: 3px;
+				background: rgba(147, 184, 252, 0.2);
+				display: block;
+				position: relative;
+				padding: 10px 30px 10px 10px;
+				line-height: 17px;
 			}
 		</style>
 		<script src="api.js"></script>
 		<script src="options.js"></script>
 	</head>
-	<body class="chrome-bootstrap">
-		<div class="frame">
-			<div class="navigation">
-				<h1>
-					<a href="https://github.com/sindresorhus/github-notifier-chrome">GitHub Notifier</a>
-				</h1>
-				<ul class="menu">
-					<li class="selected">
-						<a href="#notifications">Notifications</a>
-					</li>
-				</ul>
-			</div>
-			<div class="mainview view">
-				<div id="settings" class="selected">
-					<header>
-						<h1>Notifications</h1>
-					</header>
-					<div class="content">
-						<section>
-							<h3>Custom URL</h3>
-							<p>Specify the root URL to your GitHub Enterprise</p>
-							<label for="root_url">Root URL</label>
-							<input type="text" id="root_url" autofocus placeholder="e.g. https://github.yourco.com/">
-						</section>
-						<section>
-							<h3>Token</h3>
-							<p><a id="gh_link" href="https://github.com/settings/tokens/new?scopes=notifications&description=GitHub Notifier Chrome extension" target="gh_target">Create a token</a> with the <strong>notifications</strong> permission and specify it below</p>
-							<label for="oauth_token">Token</label>
-							<input type="text" id="oauth_token">
-						</section>
-						<section>
-							<h3>Participating Count</h3>
-							<input type="checkbox" id="use_participating">
-							<label for="use_participating">Only show unread count for issues I'm participating in</label>
-						</section>
-						<div class="controls">
-							<button id="save">Save</button>
-							<button id="reset">Reset to Default</button>
-						</div>
-						<div id="success_message" class="alert">Options saved</div>
-					</div>
-				</div>
-			</div>
+	<body>
+		<section>
+			<h3>Custom URL</h3>
+			<label for="root_url">Root URL</label>
+			<input type="text" id="root_url" autofocus placeholder="e.g. https://github.yourco.com/">
+			<span class="description">Specify the root URL to your GitHub Enterprise</span>
+		</section>
+		<section>
+			<h3>API access</h3>
+			<label for="oauth_token">Token</label>
+			<input type="text" id="oauth_token">
+			<span class="description"><a id="gh_link" href="https://github.com/settings/tokens/new?scopes=notifications&description=GitHub Notifier Chrome extension" target="gh_target">Create a token</a> with the <strong>notifications</strong> permission and specify it below</span>
+		</section>
+		<section>
+			<h3>Participating Count</h3>
+			<input type="checkbox" id="use_participating">
+			<label for="use_participating">Only show unread count for issues I'm participating in</label>
+		</section>
+		<div class="controls">
+			<button id="save">Save</button>
+			<button id="reset">Reset to Default</button>
 		</div>
+		<div id="success_message" class="alert">Options saved</div>
 	</body>
 </html>

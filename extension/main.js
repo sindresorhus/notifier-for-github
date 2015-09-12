@@ -40,36 +40,33 @@
 	}
 
 	function notify(count) {
+		// Bail if no notifications
+		if (!window.GitHubNotify.settings.get('showDesktopNotifications')) {
+			return;
+		}
 
 		// Defensive
 		var countDisplay = (typeof count !== 'number') ? '' : count;
 
-		// Let's check if the browser supports notifications
-		if (!("Notification" in window)) {
-			alert("This browser does not support desktop notification");
+		if (!('Notification' in window)) {
+			// Let's check if the browser supports notifications
+			return;
 		}
 
-		// Let's check if the user is okay to get some notification
-		else if (Notification.permission === "granted") {
+		if (Notification.permission === 'granted') {
+			// Let's check if the user is okay to get some notification
 			// If it's okay let's create a notification
-			var notification = new Notification(countDisplay + " Unread github notifications!");
+			var notification = new Notification(countDisplay + ' unread GitHub notifications!');
 
 			notification.onclick = function () {
 				openGithub();
 			};
+		} else if (Notification.permission !== 'denied') {
+			// Otherwise, we need to ask the user for permission
+			Notification.requestPermission();
 		}
 
-		// Otherwise, we need to ask the user for permission
-		else if (Notification.permission !== 'denied') {
-			Notification.requestPermission(function (permission) {
-				// If the user is okay, let's create a notification
-				if (permission === "granted") {
-					var notification = new Notification("All setup!");
-				}
-			});
-		}
-
-		// At last, if the user already denied any notification, and you 
+		// At last, if the user already denied any notification, and you
 		// want to be respectful there is no need to bother them any more.
 	}
 

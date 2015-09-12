@@ -6,6 +6,7 @@
 		var ghSettingsUrl = document.getElementById('gh_link');
 		var formOauthToken = document.getElementById('oauth_token');
 		var formUseParticipating = document.getElementById('use_participating');
+		var showDesktopNotifications = document.getElementById('show_desktop_notifications');
 		var successMessage = document.getElementById('success_message');
 		var successTimeout = null;
 
@@ -13,6 +14,7 @@
 			formRootUrl.value = GitHubNotify.settings.get('rootUrl');
 			formOauthToken.value = GitHubNotify.settings.get('oauthToken');
 			formUseParticipating.checked = GitHubNotify.settings.get('useParticipatingCount');
+			showDesktopNotifications.checked = GitHubNotify.settings.get('showDesktopNotifications');
 		}
 
 		loadSettings();
@@ -41,6 +43,15 @@
 			GitHubNotify.settings.set('useParticipatingCount', formUseParticipating.checked);
 			updateBadge();
 		});
+
+		showDesktopNotifications.addEventListener('change', function () {
+			GitHubNotify.settings.set('showDesktopNotifications', showDesktopNotifications.checked);
+		});
+
+		// Set intial default
+		if (typeof GitHubNotify.settings.get('showDesktopNotifications') === 'undefined') {
+			GitHubNotify.settings.set('showDesktopNotifications', true);
+		}
 
 		document.getElementById('save').addEventListener('click', function () {
 			var url = normalizeRoot(formRootUrl.value);

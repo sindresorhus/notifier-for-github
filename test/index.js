@@ -51,6 +51,13 @@ global.XMLHttpRequest = XMLHttpRequest;
 global.localStorage = new LocalStorageMock();
 global.chrome = chromeStub;
 
+chromeStub.notifications = {
+	create: sinon.stub(),
+	onClicked: {
+		addListener: sinon.stub()
+	}
+};
+
 describe('basic functionality', function () {
 	it('should register alarm callback', function () {
 		require('../extension/api');

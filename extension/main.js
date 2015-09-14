@@ -17,16 +17,17 @@
 
 	function update() {
 		window.gitHubNotifCount(function (err, count, interval) {
+			var intervalSetting = parseInt(window.GitHubNotify.settings.get('interval'), 10);
 			var period = 1;
 			var text;
 
-			if (interval !== null && interval !== parseInt(window.GitHubNotify.settings.get('interval'), 10)) {
-				window.GitHubNotify.settings.set('interval', interval);
-				period = Math.ceil(interval / 60);
+			if (typeof intervalSetting !== 'number') {
+				intervalSetting = 60;
 			}
 
-			if (period < 1 || typeof interval !== 'number') {
-				period = 1;
+			if (interval !== null && interval !== intervalSetting) {
+				window.GitHubNotify.settings.set('interval', interval);
+				period = Math.ceil(interval / 60);
 			}
 
 			// unconditionally schedule alarm

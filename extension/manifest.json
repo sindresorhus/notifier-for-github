@@ -4,7 +4,7 @@
 	"description": "Displays your GitHub notifications unread count",
 	"homepage_url": "https://github.com/sindresorhus/github-notifier-chrome",
 	"manifest_version": 2,
-	"minimum_chrome_version": "36",
+	"minimum_chrome_version": "40",
 	"icons": {
 		"16": "icon-16.png",
 		"48": "icon-48.png",
@@ -27,5 +27,9 @@
 			"38": "icon-38.png"
 		}
 	},
-	"options_page": "options.html"
+	"options_page": "options.html",
+	"options_ui": {
+		"page": "options.html",
+		"chrome_style": true
+	}
 }

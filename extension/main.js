@@ -15,6 +15,61 @@
 		});
 	}
 
+	function openGithub(tab) {
+		var url = window.GitHubNotify.settings.get('rootUrl');
+		if (/api.github.com\/$/.test(url)) {
+			url = 'https://github.com/';
+		}
+
+		var ghTab = {
+			url: url
+		};
+		if (window.GitHubNotify.settings.get('count') > 0) {
+			ghTab.url = url + 'notifications';
+		}
+
+		if (window.GitHubNotify.settings.get('useParticipatingCount')) {
+			ghTab.url += '/participating';
+		}
+
+		if (typeof tab !== 'undefined' && (tab.url === '' || tab.url === 'chrome://newtab/' || tab.url === ghTab.url)) {
+			chrome.tabs.update(null, ghTab);
+		} else {
+			chrome.tabs.create(ghTab);
+		}
+	}
+
+	function notify(count) {
+		// Bail if no notifications
+		if (!window.GitHubNotify.settings.get('showDesktopNotifications')) {
+			return;
+		}
+
+		// Defensive
+		var countDisplay = (typeof count !== 'number') ? '' : count;
+
+		if (!('Notification' in window)) {
+			// Let's check if the browser supports notifications
+			return;
+		}
+
+		if (Notification.permission === 'granted') {
+			// Let's check if the user is okay to get some notification
+			// If it's okay let's create a notification
+			var notification = new Notification(countDisplay + ' unread GitHub notifications!');
+
+			notification.onclick = function () {
+				openGithub();
+			};
+		} else if (Notification.permission !== 'denied') {
+			// Otherwise, we need to ask the user for permission
+			Notification.requestPermission();
+		}
+
+		// At last, if the user already denied any notification, and you
+		// want to be respectful there is no need to bother them any more.
+	}
+
 	function update() {
 		window.gitHubNotifCount(function (err, count, interval) {
 			var intervalSetting = parseInt(window.GitHubNotify.settings.get('interval'), 10);
@@ -54,6 +109,10 @@
 				return;
 			}
 
+			if (parseInt(window.GitHubNotify.settings.get('count'), 10) < count) {
+				notify(count);
+			}
+
 			window.GitHubNotify.settings.set('count', count);
 
 			if (count === 'cached') {
@@ -74,29 +133,7 @@
 	chrome.alarms.onAlarm.addListener(update);
 	chrome.runtime.onMessage.addListener(update);
 
-	chrome.browserAction.onClicked.addListener(function (tab) {
-		var url = window.GitHubNotify.settings.get('rootUrl');
-		if (/api.github.com\/$/.test(url)) {
-			url = 'https://github.com/';
-		}
-
-		var ghTab = {
-			url: url
-		};
-		if (window.GitHubNotify.settings.get('count') > 0) {
-			ghTab.url = url + 'notifications';
-		}
-
-		if (window.GitHubNotify.settings.get('useParticipatingCount')) {
-			ghTab.url += '/participating';
-		}
-
-		if (typeof tab !== 'undefined' && (tab.url === '' || tab.url === 'chrome://newtab/' || tab.url === ghTab.url)) {
-			chrome.tabs.update(null, ghTab);
-		} else {
-			chrome.tabs.create(ghTab);
-		}
-	});
+	chrome.browserAction.onClicked.addListener(openGithub);
 
 	update();
 })();

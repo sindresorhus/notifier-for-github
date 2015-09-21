@@ -50,6 +50,7 @@
 					return item;
 				},
 				set: localStorage.setItem.bind(localStorage),
+				remove: localStorage.removeItem.bind(localStorage),
 				reset: localStorage.clear.bind(localStorage)
 			}
 		};

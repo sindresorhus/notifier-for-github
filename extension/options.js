@@ -3,11 +3,9 @@
 
 	document.addEventListener('DOMContentLoaded', function () {
 		var formRootUrl = document.getElementById('root_url');
-		var ghSettingsUrl = document.getElementById('gh_link');
 		var formOauthToken = document.getElementById('oauth_token');
 		var formUseParticipating = document.getElementById('use_participating');
-		var successMessage = document.getElementById('success_message');
-		var successTimeout = null;
+		var ghSettingsUrl = document.getElementById('gh_link');
 
 		function loadSettings() {
 			formRootUrl.value = GitHubNotify.settings.get('rootUrl');
@@ -33,35 +31,28 @@
 		}
 
 		formRootUrl.addEventListener('change', function () {
-			var url = normalizeRoot(formRootUrl.value) + 'settings/tokens/new?scopes=notifications';
-			ghSettingsUrl.href = url;
+			var url = normalizeRoot(formRootUrl.value);
+			var urlSettings = normalizeRoot(formRootUrl.value) + 'settings/tokens/new?scopes=notifications';
+			// case of url is empty: set to default
+			if (url === normalizeRoot('')) {
+				GitHubNotify.settings.remove('rootUrl');
+				url = GitHubNotify.settings.get('rootUrl');
+			}
+			GitHubNotify.settings.set('rootUrl', url);
+			ghSettingsUrl.href = urlSettings;
+			updateBadge();
+			loadSettings();
+		});
+
+		formOauthToken.addEventListener('change', function () {
+			var token = formOauthToken.value;
+			GitHubNotify.settings.set('oauthToken', token);
+			updateBadge();
 		});
 
 		formUseParticipating.addEventListener('change', function () {
 			GitHubNotify.settings.set('useParticipatingCount', formUseParticipating.checked);
 			updateBadge();
-		});
-
-		document.getElementById('save').addEventListener('click', function () {
-			var url = normalizeRoot(formRootUrl.value);
-			var token = formOauthToken.value;
-
-			GitHubNotify.settings.set('oauthToken', token);
-			GitHubNotify.settings.set('rootUrl', url);
-
-			updateBadge();
-			loadSettings();
-
-			clearTimeout(successTimeout);
-			successMessage.classList.add('visible');
-			successTimeout = setTimeout(function () {
-				successMessage.classList.remove('visible');
-			}, 3000);
-		});
-
-		document.getElementById('reset').addEventListener('click', function () {
-			GitHubNotify.settings.reset();
-			loadSettings();
 		});
 	});
 })();

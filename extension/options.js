@@ -34,7 +34,7 @@
 			var url = normalizeRoot(formRootUrl.value);
 			var urlSettings = normalizeRoot(formRootUrl.value) + 'settings/tokens/new?scopes=notifications';
 			// case of url is empty: set to default
-			if (url == normalizeRoot('')) {
+			if (url === normalizeRoot('')) {
 				GitHubNotify.settings.remove('rootUrl');
 				url = GitHubNotify.settings.get('rootUrl');
 			}

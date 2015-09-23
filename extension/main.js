@@ -21,14 +21,14 @@
 			var period = 1;
 			var text;
 
-			window.GitHubNotify.settings.get('interval', function(items) {
+			window.GitHubNotify.settings.get('interval', function (items) {
 				intervalSetting = parseInt(items.interval, 10);
 				if (typeof intervalSetting !== 'number') {
 					intervalSetting = 60;
 				}
 				if (interval !== null && interval !== intervalSetting) {
-					window.GitHubNotify.settings.set({interval: interval}, function() {
-						period = Math.ceil(interval / 60);	
+					window.GitHubNotify.settings.set({interval: interval}, function () {
+						period = Math.ceil(interval / 60);
 					});
 				}
 				// unconditionally schedule alarm
@@ -56,7 +56,7 @@
 				return;
 			}
 
-			window.GitHubNotify.settings.set({count: count}, function() {
+			window.GitHubNotify.settings.set({count: count}, function () {
 				if (count === 'cached') {
 					return;
 				}
@@ -67,8 +67,8 @@
 					count = '∞';
 				}
 
-				render(String(count), [65, 131, 196, 255], 'GitHub Notifier');	
-			});			
+				render(String(count), [65, 131, 196, 255], 'GitHub Notifier');
+			});
 		});
 	}
 
@@ -77,7 +77,7 @@
 	chrome.runtime.onMessage.addListener(update);
 
 	chrome.browserAction.onClicked.addListener(function (tab) {
-		window.GitHubNotify.settings.get(['rootUrl', 'count', 'useParticipatingCount'], function(items) {
+		window.GitHubNotify.settings.get(['rootUrl', 'count', 'useParticipatingCount'], function (items) {
 			var url = items.rootUrl;
 			if (/api.github.com\/$/.test(url)) {
 				url = 'https://github.com/';
@@ -101,5 +101,5 @@
 
 			update();
 		});
-	});	
+	});
 })();

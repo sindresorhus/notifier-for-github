@@ -53,7 +53,7 @@
 					// temporary
 					data = defaults;
 
-					storage.get(data, function(items) {
+					storage.get(data, function (items) {
 						if (chrome.runtime.error) {
 							console.log(chrome.runtime.lastError);
 						} else {
@@ -65,7 +65,7 @@
 				set: function (data, callback, sync) {
 					sync = true;
 					var storage = sync ? chrome.storage.sync : chrome.storage.local;
-					storage.set(data, function() {
+					storage.set(data, function () {
 						if (chrome.runtime.error) {
 							console.log(chrome.runtime.lastError);
 						} else {
@@ -96,19 +96,17 @@
 		var participating;
 		var url;
 
-		window.GitHubNotify.settings.get(['oauthToken', 'useParticipatingCount', 'rootUrl'], function(items) {
+		window.GitHubNotify.settings.get(['oauthToken', 'useParticipatingCount', 'rootUrl'], function (items) {
 			url = items.rootUrl;
 			token = items.oauthToken;
-			participating = items.useParticipatingCount ? '?participating=true' : '';
-
 			if (!token) {
 				cb(new Error('missing token'));
 				return;
-			} else {
-				opts = {
-					Authorization: 'token ' + token
-				};
 			}
+			opts = {
+				Authorization: 'token ' + token
+			};
+			participating = items.useParticipatingCount ? '?participating=true' : '';
 
 			if (/(^(https:\/\/)?(api\.)?github\.com)/.test(url)) {
 				url = 'https://api.github.com/notifications';

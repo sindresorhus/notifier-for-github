@@ -8,7 +8,7 @@
 		var ghSettingsUrl = document.getElementById('gh_link');
 
 		function loadSettings() {
-			GitHubNotify.settings.get(['rootUrl', 'oauthToken', 'useParticipatingCount'], function(items) {
+			GitHubNotify.settings.get(['rootUrl', 'oauthToken', 'useParticipatingCount'], function (items) {
 				formRootUrl.value = items.rootUrl;
 				formOauthToken.value = items.oauthToken;
 				formUseParticipating.checked = items.useParticipatingCount;
@@ -38,7 +38,7 @@
 			// case of url is empty: set to default
 			if (url === normalizeRoot('')) {
 				GitHubNotify.settings.remove('rootUrl');
-				GitHubNotify.settings.get('rootUrl', function(items) {
+				GitHubNotify.settings.get('rootUrl', function (items) {
 					url = items.rootUrl;
 				});
 			}

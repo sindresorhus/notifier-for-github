@@ -35,23 +35,55 @@
 			rootUrl: 'https://api.github.com/',
 			oauthToken: '',
 			useParticipatingCount: false,
-			interval: 60
+			interval: 60,
+			count: 0
 		};
+
+		if (!chrome.storage) {
+			console.error('Add the "storage" permission!');
+			return;
+		}
 
 		var api = {
 			settings: {
-				get: function (name) {
-					var item = localStorage.getItem(name);
-					if (item === null) {
-						return {}.hasOwnProperty.call(defaults, name) ? defaults[name] : undefined;
-					} else if (item === 'true' || item === 'false') {
-						return item === 'true';
-					}
-					return item;
+				get: function (data, callback, sync) {
+					sync = true;
+					var storage = sync ? chrome.storage.sync : chrome.storage.local;
+					
+					// temporary
+					data = defaults;
+
+					storage.get(data, function(items) {
+						if (chrome.runtime.error) {
+							console.log(chrome.runtime.lastError);
+						} else {
+							console.log(items);
+							callback(items);
+						}
+					});
 				},
-				set: localStorage.setItem.bind(localStorage),
-				remove: localStorage.removeItem.bind(localStorage),
-				reset: localStorage.clear.bind(localStorage)
+				set: function (data, callback, sync) {
+					sync = true;
+					var storage = sync ? chrome.storage.sync : chrome.storage.local;
+					storage.set(data, function() {
+						if (chrome.runtime.error) {
+							console.log(chrome.runtime.lastError);
+						} else {
+							console.log(data);
+							callback();
+						}
+					});
+				},
+				remove: function (data, sync) {
+					sync = true;
+					var storage = sync ? chrome.storage.sync : chrome.storage.local;
+					storage.remove(data);
+				},
+				reset: function (sync) {
+					sync = true;
+					var storage = sync ? chrome.storage.sync : chrome.storage.local;
+					storage.clear();
+				}
 			}
 		};
 
@@ -59,53 +91,60 @@
 	})();
 
 	window.gitHubNotifCount = function (cb) {
-		var token = window.GitHubNotify.settings.get('oauthToken');
-		var opts = {
-			Authorization: 'token ' + token
-		};
-		var participating = window.GitHubNotify.settings.get('useParticipatingCount') ? '?participating=true' : '';
-		var url = window.GitHubNotify.settings.get('rootUrl');
+		var token;
+		var opts;
+		var participating;
+		var url;
 
-		if (!token) {
-			cb(new Error('missing token'));
-			return;
-		}
+		window.GitHubNotify.settings.get(['oauthToken', 'useParticipatingCount', 'rootUrl'], function(items) {
+			url = items.rootUrl;
+			token = items.oauthToken;
+			participating = items.useParticipatingCount ? '?participating=true' : '';
 
-		if (/(^(https:\/\/)?(api\.)?github\.com)/.test(url)) {
-			url = 'https://api.github.com/notifications';
-		} else {
-			url += 'api/v3/notifications';
-		}
-
-		url += participating;
-
-		xhr('GET', url, opts, function (data, status, response) {
-			var interval = Number(response.getResponseHeader('X-Poll-Interval'));
-
-			if (status >= 500) {
-				cb(new Error('server error'), null, interval);
+			if (!token) {
+				cb(new Error('missing token'));
 				return;
+			} else {
+				opts = {
+					Authorization: 'token ' + token
+				};
 			}
 
-			if (status >= 400) {
-				cb(new Error('client error: ' + data), null, interval);
-				return;
+			if (/(^(https:\/\/)?(api\.)?github\.com)/.test(url)) {
+				url = 'https://api.github.com/notifications';
+			} else {
+				url += 'api/v3/notifications';
 			}
+			url += participating;
 
-			try {
-				data = JSON.parse(data);
-			} catch (err) {
-				cb(new Error('parse error'), null, interval);
+			xhr('GET', url, opts, function (data, status, response) {
+				var interval = Number(response.getResponseHeader('X-Poll-Interval'));
+
+				if (status >= 500) {
+					cb(new Error('server error'), null, interval);
+					return;
+				}
+
+				if (status >= 400) {
+					cb(new Error('client error: ' + data), null, interval);
+					return;
+				}
+
+				try {
+					data = JSON.parse(data);
+				} catch (err) {
+					cb(new Error('parse error'), null, interval);
+					return;
+				}
+
+				if (data && data.hasOwnProperty('length')) {
+					cb(null, data.length, interval);
+					return;
+				}
+
+				cb(new Error('data format error'), null, interval);
 				return;
-			}
-
-			if (data && data.hasOwnProperty('length')) {
-				cb(null, data.length, interval);
-				return;
-			}
-
-			cb(new Error('data format error'), null, interval);
-			return;
+			});
 		});
 	};
 })();

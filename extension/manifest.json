@@ -12,7 +12,8 @@
 	},
 	"permissions": [
 		"alarms",
-		"activeTab"
+		"activeTab",
+		"storage"
 	],
 	"background": {
 		"persistent": false,

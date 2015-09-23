@@ -39,20 +39,13 @@
 			count: 0
 		};
 
-		if (!chrome.storage) {
-			console.error('Add the "storage" permission!');
-			return;
-		}
-
 		var api = {
 			settings: {
 				get: function (data, callback, sync) {
 					sync = true;
 					var storage = sync ? chrome.storage.sync : chrome.storage.local;
-					
 					// temporary
 					data = defaults;
-
 					storage.get(data, function (items) {
 						if (chrome.runtime.error) {
 							console.log(chrome.runtime.lastError);

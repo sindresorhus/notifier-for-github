@@ -41,12 +41,11 @@
 
 		var api = {
 			settings: {
-				get: function (data, callback, sync) {
-					sync = true;
-					var storage = sync ? chrome.storage.sync : chrome.storage.local;
-					// temporary
-					data = defaults;
-					storage.get(data, function (items) {
+				get: function (keys, callback) {
+					// temporary: should find a way to pass default value(s) only if necessary
+					keys = defaults;
+					// /temporary
+					chrome.storage.sync.get(keys, function (items) {
 						if (chrome.runtime.error) {
 							console.log(chrome.runtime.lastError);
 						} else {
@@ -55,27 +54,34 @@
 						}
 					});
 				},
-				set: function (data, callback, sync) {
-					sync = true;
-					var storage = sync ? chrome.storage.sync : chrome.storage.local;
-					storage.set(data, function () {
+				set: function (items, callback) {
+					chrome.storage.sync.set(items, function () {
 						if (chrome.runtime.error) {
 							console.log(chrome.runtime.lastError);
 						} else {
-							console.log(data);
+							console.log(items);
 							callback();
 						}
 					});
 				},
-				remove: function (data, sync) {
-					sync = true;
-					var storage = sync ? chrome.storage.sync : chrome.storage.local;
-					storage.remove(data);
+				remove: function (keys, callback) {
+					chrome.storage.sync.remove(keys, function () {
+						if (chrome.runtime.error) {
+							console.log(chrome.runtime.lastError);
+						} else {
+							console.log(keys);
+							callback();
+						}
+					});
 				},
-				reset: function (sync) {
-					sync = true;
-					var storage = sync ? chrome.storage.sync : chrome.storage.local;
-					storage.clear();
+				reset: function (callback) {
+					chrome.storage.sync.clear(function () {
+						if (chrome.runtime.error) {
+							console.log(chrome.runtime.lastError);
+						} else {
+							callback();
+						}
+					});
 				}
 			}
 		};

@@ -99,4 +99,18 @@
 			update();
 		});
 	});
+
+	chrome.runtime.onInstalled.addListener(function (details) {
+		switch (details.reason) {
+			case 'install':
+				// open options page on first install
+				chrome.runtime.openOptionsPage();
+				break;
+			case 'update':
+				// to do: options storage migration here
+				break;
+			default:
+				break;
+		}
+	});
 })();

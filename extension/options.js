@@ -35,28 +35,29 @@
 		formRootUrl.addEventListener('change', function () {
 			var url = normalizeRoot(formRootUrl.value);
 			var urlSettings = normalizeRoot(formRootUrl.value) + 'settings/tokens/new?scopes=notifications';
-			// case of url is empty: set to default
-			if (url === normalizeRoot('')) {
-				GitHubNotify.settings.remove('rootUrl');
-				GitHubNotify.settings.get('rootUrl', function (items) {
-					url = items.rootUrl;
-				});
-			}
-			GitHubNotify.settings.set({rootUrl: url});
-			ghSettingsUrl.href = urlSettings;
-			updateBadge();
-			loadSettings();
+
+			GitHubNotify.settings.set({rootUrl: url}, function () {
+				// case of url is empty: set to default by removing
+				if (url === normalizeRoot('')) {
+					GitHubNotify.settings.remove('rootUrl');
+				}
+				ghSettingsUrl.href = urlSettings;
+				updateBadge();
+				loadSettings();
+			});
 		});
 
 		formOauthToken.addEventListener('change', function () {
 			var token = formOauthToken.value;
-			GitHubNotify.settings.set({oauthToken: token});
-			updateBadge();
+			GitHubNotify.settings.set({oauthToken: token}, function () {
+				updateBadge();
+			});
 		});
 
 		formUseParticipating.addEventListener('change', function () {
-			GitHubNotify.settings.set({useParticipatingCount: formUseParticipating.checked});
-			updateBadge();
+			GitHubNotify.settings.set({useParticipatingCount: formUseParticipating.checked}, function () {
+				updateBadge();
+			});
 		});
 	});
 })();

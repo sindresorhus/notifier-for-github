@@ -49,7 +49,7 @@
 						if (chrome.runtime.error) {
 							console.log(chrome.runtime.lastError);
 						} else {
-							console.log(items);
+							console.debug(items);
 							callback(items);
 						}
 					});
@@ -59,7 +59,7 @@
 						if (chrome.runtime.error) {
 							console.log(chrome.runtime.lastError);
 						} else {
-							console.log(items);
+							console.debug(items);
 							callback();
 						}
 					});
@@ -69,7 +69,7 @@
 						if (chrome.runtime.error) {
 							console.log(chrome.runtime.lastError);
 						} else {
-							console.log(keys);
+							console.debug(keys);
 							callback();
 						}
 					});

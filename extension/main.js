@@ -22,11 +22,8 @@
 			var text;
 
 			window.GitHubNotify.settings.get('interval', function (items) {
-				intervalSetting = parseInt(items.interval, 10);
-				if (typeof intervalSetting !== 'number') {
-					intervalSetting = 60;
-				}
-				if (interval !== null && interval !== intervalSetting) {
+				intervalSetting = items.interval;
+				if (Number.isInteger(interval) && interval !== intervalSetting) {
 					window.GitHubNotify.settings.set({interval: interval}, function () {
 						period = Math.ceil(interval / 60);
 					});

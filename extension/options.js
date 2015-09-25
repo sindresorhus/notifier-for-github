@@ -39,7 +39,16 @@
 			GitHubNotify.settings.set({rootUrl: url}, function () {
 				// case of url is empty: set to default by removing
 				if (url === normalizeRoot('')) {
-					GitHubNotify.settings.remove('rootUrl');
+					GitHubNotify.settings.remove('rootUrl', function () {
+						GitHubNotify.settings.get('rootUrl', function (items) {
+							url = items.rootUrl;
+							if (/api.github.com\/$/.test(url)) {
+								url = 'https://github.com/';
+							}
+							urlSettings = normalizeRoot(url) + 'settings/tokens/new?scopes=notifications';
+							ghSettingsUrl.href = urlSettings;
+						});
+					});
 				}
 				ghSettingsUrl.href = urlSettings;
 				updateBadge();

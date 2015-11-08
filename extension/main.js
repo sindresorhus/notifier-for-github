@@ -73,6 +73,14 @@
 	chrome.alarms.create({when: Date.now() + 2000});
 	chrome.alarms.onAlarm.addListener(update);
 	chrome.runtime.onMessage.addListener(update);
+	
+	// launch options page on first run
+
+	chrome.runtime.onInstalled.addListener(function(details) {
+		if (details.reason == "install") {
+			chrome.tabs.create({url: "options.html"});
+		}
+	});
 
 	chrome.browserAction.onClicked.addListener(function (tab) {
 		var url = window.GitHubNotify.settings.get('rootUrl');

@@ -73,11 +73,11 @@
 	chrome.alarms.create({when: Date.now() + 2000});
 	chrome.alarms.onAlarm.addListener(update);
 	chrome.runtime.onMessage.addListener(update);
-	
+
 	// launch options page on first run
 
-	chrome.runtime.onInstalled.addListener(function(details) {
-		if (details.reason == "install") {
+	chrome.runtime.onInstalled.addListener(function (details) {
+		if (details.reason === 'install') {
 			chrome.runtime.openOptionsPage();
 		}
 	});

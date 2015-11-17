@@ -8,9 +8,11 @@
 		var ghSettingsUrl = document.getElementById('gh_link');
 
 		function loadSettings() {
-			formRootUrl.value = GitHubNotify.settings.get('rootUrl');
-			formOauthToken.value = GitHubNotify.settings.get('oauthToken');
-			formUseParticipating.checked = GitHubNotify.settings.get('useParticipatingCount');
+			GitHubNotify.settings.get(['rootUrl', 'oauthToken', 'useParticipatingCount'], function (items) {
+				formRootUrl.value = items.rootUrl;
+				formOauthToken.value = items.oauthToken;
+				formUseParticipating.checked = items.useParticipatingCount;
+			});
 		}
 
 		loadSettings();
@@ -33,26 +35,38 @@
 		formRootUrl.addEventListener('change', function () {
 			var url = normalizeRoot(formRootUrl.value);
 			var urlSettings = normalizeRoot(formRootUrl.value) + 'settings/tokens/new?scopes=notifications';
-			// case of url is empty: set to default
-			if (url === normalizeRoot('')) {
-				GitHubNotify.settings.remove('rootUrl');
-				url = GitHubNotify.settings.get('rootUrl');
-			}
-			GitHubNotify.settings.set('rootUrl', url);
-			ghSettingsUrl.href = urlSettings;
-			updateBadge();
-			loadSettings();
+
+			GitHubNotify.settings.set({rootUrl: url}, function () {
+				// case of url is empty: set to default by removing
+				if (url === normalizeRoot('')) {
+					GitHubNotify.settings.remove('rootUrl', function () {
+						GitHubNotify.settings.get('rootUrl', function (items) {
+							url = items.rootUrl;
+							if (/api.github.com\/$/.test(url)) {
+								url = 'https://github.com/';
+							}
+							urlSettings = normalizeRoot(url) + 'settings/tokens/new?scopes=notifications';
+							ghSettingsUrl.href = urlSettings;
+						});
+					});
+				}
+				ghSettingsUrl.href = urlSettings;
+				updateBadge();
+				loadSettings();
+			});
 		});
 
 		formOauthToken.addEventListener('change', function () {
 			var token = formOauthToken.value;
-			GitHubNotify.settings.set('oauthToken', token);
-			updateBadge();
+			GitHubNotify.settings.set({oauthToken: token}, function () {
+				updateBadge();
+			});
 		});
 
 		formUseParticipating.addEventListener('change', function () {
-			GitHubNotify.settings.set('useParticipatingCount', formUseParticipating.checked);
-			updateBadge();
+			GitHubNotify.settings.set({useParticipatingCount: formUseParticipating.checked}, function () {
+				updateBadge();
+			});
 		});
 	});
 })();

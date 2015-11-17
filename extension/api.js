@@ -35,23 +35,54 @@
 			rootUrl: 'https://api.github.com/',
 			oauthToken: '',
 			useParticipatingCount: false,
-			interval: 60
+			interval: 60,
+			count: 0
 		};
 
 		var api = {
 			settings: {
-				get: function (name) {
-					var item = localStorage.getItem(name);
-					if (item === null) {
-						return {}.hasOwnProperty.call(defaults, name) ? defaults[name] : undefined;
-					} else if (item === 'true' || item === 'false') {
-						return item === 'true';
-					}
-					return item;
+				get: function (keys, callback) {
+					// temporary: should find a way to pass default value(s) only if necessary
+					keys = defaults;
+					// /temporary
+					chrome.storage.sync.get(keys, function (items) {
+						if (chrome.runtime.error) {
+							console.log(chrome.runtime.lastError);
+						} else {
+							console.debug(items);
+							callback(items);
+						}
+					});
 				},
-				set: localStorage.setItem.bind(localStorage),
-				remove: localStorage.removeItem.bind(localStorage),
-				reset: localStorage.clear.bind(localStorage)
+				set: function (items, callback) {
+					chrome.storage.sync.set(items, function () {
+						if (chrome.runtime.error) {
+							console.log(chrome.runtime.lastError);
+						} else {
+							console.debug(items);
+							callback();
+						}
+					});
+				},
+				remove: function (keys, callback) {
+					chrome.storage.sync.remove(keys, function () {
+						if (chrome.runtime.error) {
+							console.log(chrome.runtime.lastError);
+						} else {
+							console.debug(keys);
+							callback();
+						}
+					});
+				},
+				reset: function (callback) {
+					chrome.storage.sync.clear(function () {
+						if (chrome.runtime.error) {
+							console.log(chrome.runtime.lastError);
+						} else {
+							callback();
+						}
+					});
+				}
 			}
 		};
 
@@ -59,53 +90,58 @@
 	})();
 
 	window.gitHubNotifCount = function (cb) {
-		var token = window.GitHubNotify.settings.get('oauthToken');
-		var opts = {
-			Authorization: 'token ' + token
-		};
-		var participating = window.GitHubNotify.settings.get('useParticipatingCount') ? '?participating=true' : '';
-		var url = window.GitHubNotify.settings.get('rootUrl');
+		var token;
+		var opts;
+		var participating;
+		var url;
 
-		if (!token) {
-			cb(new Error('missing token'));
-			return;
-		}
-
-		if (/(^(https:\/\/)?(api\.)?github\.com)/.test(url)) {
-			url = 'https://api.github.com/notifications';
-		} else {
-			url += 'api/v3/notifications';
-		}
-
-		url += participating;
-
-		xhr('GET', url, opts, function (data, status, response) {
-			var interval = Number(response.getResponseHeader('X-Poll-Interval'));
-
-			if (status >= 500) {
-				cb(new Error('server error'), null, interval);
+		window.GitHubNotify.settings.get(['oauthToken', 'useParticipatingCount', 'rootUrl'], function (items) {
+			url = items.rootUrl;
+			token = items.oauthToken;
+			if (!token) {
+				cb(new Error('missing token'));
 				return;
 			}
+			opts = {
+				Authorization: 'token ' + token
+			};
+			participating = items.useParticipatingCount ? '?participating=true' : '';
 
-			if (status >= 400) {
-				cb(new Error('client error: ' + data), null, interval);
-				return;
+			if (/(^(https:\/\/)?(api\.)?github\.com)/.test(url)) {
+				url = 'https://api.github.com/notifications';
+			} else {
+				url += 'api/v3/notifications';
 			}
+			url += participating;
 
-			try {
-				data = JSON.parse(data);
-			} catch (err) {
-				cb(new Error('parse error'), null, interval);
+			xhr('GET', url, opts, function (data, status, response) {
+				var interval = Number(response.getResponseHeader('X-Poll-Interval'));
+
+				if (status >= 500) {
+					cb(new Error('server error'), null, interval);
+					return;
+				}
+
+				if (status >= 400) {
+					cb(new Error('client error: ' + data), null, interval);
+					return;
+				}
+
+				try {
+					data = JSON.parse(data);
+				} catch (err) {
+					cb(new Error('parse error'), null, interval);
+					return;
+				}
+
+				if (data && data.hasOwnProperty('length')) {
+					cb(null, data.length, interval);
+					return;
+				}
+
+				cb(new Error('data format error'), null, interval);
 				return;
-			}
-
-			if (data && data.hasOwnProperty('length')) {
-				cb(null, data.length, interval);
-				return;
-			}
-
-			cb(new Error('data format error'), null, interval);
-			return;
+			});
 		});
 	};
 })();

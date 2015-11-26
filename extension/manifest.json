@@ -1,6 +1,6 @@
 {
 	"name": "GitHub Notifier",
-	"version": "2.1.0",
+	"version": "2.2.0",
 	"description": "Displays your GitHub notifications unread count",
 	"homepage_url": "https://github.com/sindresorhus/github-notifier-chrome",
 	"manifest_version": 2,

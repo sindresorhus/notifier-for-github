@@ -34,9 +34,11 @@
 			chrome.alarms.create({when: Date.now() + 2000 + (period * 60 * 1000)});
 
 			if (err) {
+				var symbol = '?';
 				switch (err.message) {
 					case 'missing token':
 						text = 'Missing access token, please create one and enter it in Options';
+						symbol = 'X';
 						break;
 					case 'server error':
 						text = 'You have to be connected to the internet';
@@ -50,7 +52,7 @@
 						break;
 				}
 
-				render('?', [166, 41, 41, 255], text);
+				render(symbol, [166, 41, 41, 255], text);
 				return;
 			}
 

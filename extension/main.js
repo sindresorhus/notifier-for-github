@@ -76,6 +76,13 @@
 	chrome.alarms.onAlarm.addListener(update);
 	chrome.runtime.onMessage.addListener(update);
 
+	// launch options page on first run
+	chrome.runtime.onInstalled.addListener(function (details) {
+		if (details.reason === 'install') {
+			chrome.runtime.openOptionsPage();
+		}
+	});
+
 	chrome.browserAction.onClicked.addListener(function (tab) {
 		var url = window.GitHubNotify.settings.get('rootUrl');
 		if (/api.github.com\/$/.test(url)) {

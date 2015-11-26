@@ -55,6 +55,8 @@
 			}
 		};
 
+		api.defaults = defaults;
+
 		return api;
 	})();
 
@@ -67,7 +69,7 @@
 		var url = window.GitHubNotify.settings.get('rootUrl');
 
 		if (!token) {
-			cb(new Error('missing token'));
+			cb(new Error('missing token'), null, window.GitHubNotify.defaults.interval);
 			return;
 		}
 

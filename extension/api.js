@@ -1,16 +1,16 @@
-(function () {
+(() => {
 	'use strict';
 
-	var xhr = (function () {
-		var xhr = new XMLHttpRequest();
+	const xhr = (() => {
+		const xhr = new XMLHttpRequest();
 
-		return function (method, url, headers, cb) {
+		return (method, url, headers, cb) => {
 			if (!cb && typeof headers === 'function') {
 				cb = headers;
 				headers = null;
 			}
 
-			xhr.onreadystatechange = function () {
+			xhr.onreadystatechange = () => {
 				if (xhr.readyState === 4) {
 					cb(xhr.responseText, xhr.status, xhr);
 					return;
@@ -20,8 +20,8 @@
 			xhr.open(method, url);
 
 			if (headers) {
-				Object.keys(headers).forEach(function (k) {
-					xhr.setRequestHeader(k, headers[k]);
+				Object.keys(headers).forEach(x => {
+					xhr.setRequestHeader(x, headers[x]);
 				});
 			}
 
@@ -30,23 +30,27 @@
 		};
 	})();
 
-	window.GitHubNotify = (function () {
-		var defaults = {
+	window.GitHubNotify = (() => {
+		const defaults = {
 			rootUrl: 'https://api.github.com/',
 			oauthToken: '',
 			useParticipatingCount: false,
 			interval: 60
 		};
 
-		var api = {
+		const api = {
 			settings: {
-				get: function (name) {
-					var item = localStorage.getItem(name);
+				get: name => {
+					const item = localStorage.getItem(name);
+
 					if (item === null) {
 						return {}.hasOwnProperty.call(defaults, name) ? defaults[name] : undefined;
-					} else if (item === 'true' || item === 'false') {
+					}
+
+					if (item === 'true' || item === 'false') {
 						return item === 'true';
 					}
+
 					return item;
 				},
 				set: localStorage.setItem.bind(localStorage),
@@ -60,13 +64,13 @@
 		return api;
 	})();
 
-	window.gitHubNotifCount = function (cb) {
-		var token = window.GitHubNotify.settings.get('oauthToken');
-		var opts = {
-			Authorization: 'token ' + token
+	window.gitHubNotifCount = cb => {
+		const token = window.GitHubNotify.settings.get('oauthToken');
+		const opts = {
+			Authorization: `token ${token}`
 		};
-		var participating = window.GitHubNotify.settings.get('useParticipatingCount') ? '?participating=true' : '';
-		var url = window.GitHubNotify.settings.get('rootUrl');
+		const participating = window.GitHubNotify.settings.get('useParticipatingCount') ? '?participating=true' : '';
+		let url = window.GitHubNotify.settings.get('rootUrl');
 
 		if (!token) {
 			cb(new Error('missing token'), null, window.GitHubNotify.defaults.interval);
@@ -81,8 +85,8 @@
 
 		url += participating;
 
-		xhr('GET', url, opts, function (data, status, response) {
-			var interval = Number(response.getResponseHeader('X-Poll-Interval'));
+		xhr('GET', url, opts, (data, status, response) => {
+			const interval = Number(response.getResponseHeader('X-Poll-Interval'));
 
 			if (status >= 500) {
 				cb(new Error('server error'), null, interval);
@@ -90,7 +94,7 @@
 			}
 
 			if (status >= 400) {
-				cb(new Error('client error: ' + data), null, interval);
+				cb(new Error(`client error: ${data}`), null, interval);
 				return;
 			}
 

@@ -1,25 +1,17 @@
 (function () {
 	'use strict';
 
-	function render(badge, color, title) {
-		chrome.browserAction.setBadgeText({
-			text: badge
-		});
-
-		chrome.browserAction.setBadgeBackgroundColor({
-			color: color
-		});
-
-		chrome.browserAction.setTitle({
-			title: title
-		});
+	function render(text, color, title) {
+		chrome.browserAction.setBadgeText({text});
+		chrome.browserAction.setBadgeBackgroundColor({color});
+		chrome.browserAction.setTitle({title});
 	}
 
 	function update() {
-		window.gitHubNotifCount(function (err, count, interval) {
-			var intervalSetting = parseInt(window.GitHubNotify.settings.get('interval'), 10);
-			var period = 1;
-			var text;
+		window.gitHubNotifCount((err, count, interval) => {
+			let intervalSetting = parseInt(window.GitHubNotify.settings.get('interval'), 10);
+			let period = 1;
+			let text;
 
 			if (typeof intervalSetting !== 'number') {
 				intervalSetting = 60;
@@ -34,7 +26,8 @@
 			chrome.alarms.create({when: Date.now() + 2000 + (period * 60 * 1000)});
 
 			if (err) {
-				var symbol = '?';
+				let symbol = '?';
+
 				switch (err.message) {
 					case 'missing token':
 						text = 'Missing access token, please create one and enter it in Options';
@@ -77,23 +70,23 @@
 	chrome.runtime.onMessage.addListener(update);
 
 	// launch options page on first run
-	chrome.runtime.onInstalled.addListener(function (details) {
+	chrome.runtime.onInstalled.addListener(details => {
 		if (details.reason === 'install') {
 			chrome.runtime.openOptionsPage();
 		}
 	});
 
-	chrome.browserAction.onClicked.addListener(function (tab) {
-		var url = window.GitHubNotify.settings.get('rootUrl');
+	chrome.browserAction.onClicked.addListener(tab => {
+		let url = window.GitHubNotify.settings.get('rootUrl');
+
 		if (/api.github.com\/$/.test(url)) {
 			url = 'https://github.com/';
 		}
 
-		var ghTab = {
-			url: url
-		};
+		const ghTab = {url};
+
 		if (window.GitHubNotify.settings.get('count') > 0) {
-			ghTab.url = url + 'notifications';
+			ghTab.url = `${url}notifications`;
 		}
 
 		if (window.GitHubNotify.settings.get('useParticipatingCount')) {

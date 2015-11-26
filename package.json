@@ -11,6 +11,7 @@
     "xo": "*"
   },
   "xo": {
+    "esnext": true,
     "envs": [
       "browser",
       "mocha"
@@ -18,6 +19,9 @@
     "globals": [
       "chrome",
       "GitHubNotify"
-    ]
+    ],
+    "rules": {
+      "prefer-reflect": 0
+    }
   }
 }

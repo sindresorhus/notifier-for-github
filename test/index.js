@@ -1,8 +1,8 @@
 'use strict';
-var assert = require('assert');
-var sinon = require('sinon');
-var chromeStub = require('chrome-stub');
-var LocalStorageMock = require('mock-localstorage');
+const assert = require('assert');
+const sinon = require('sinon');
+const chromeStub = require('chrome-stub');
+const LocalStorageMock = require('mock-localstorage');
 
 global.window = {
 	location: {
@@ -51,19 +51,19 @@ global.XMLHttpRequest = XMLHttpRequest;
 global.localStorage = new LocalStorageMock();
 global.chrome = chromeStub;
 
-describe('basic functionality', function () {
-	it('should register alarm callback', function () {
+describe('basic functionality', () => {
+	it('should register alarm callback', () => {
 		require('../extension/api');
 		require('../extension/main');
 		assert(chromeStub.alarms.create.called);
 	});
 
-	it('should call gitHubNotifCount on chrome alarm fired', function (done) {
-		var oldNotifCount = global.window.gitHubNotifCount;
+	it('should call gitHubNotifCount on chrome alarm fired', done => {
+		const oldNotifCount = global.window.gitHubNotifCount;
 
 		global.window.gitHubNotifCount = sinon.stub();
 
-		process.nextTick(function () {
+		process.nextTick(() => {
 			chromeStub.alarms.onAlarm.trigger();
 			assert(global.window.gitHubNotifCount.called);
 			global.window.gitHubNotifCount = oldNotifCount;

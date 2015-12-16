@@ -61,7 +61,7 @@
 				count = '∞';
 			}
 
-			render(String(count), [65, 131, 196, 255], 'GitHub Notifier');
+			render(String(count), [65, 131, 196, 255], 'Notifier for GitHub');
 		});
 	}
 

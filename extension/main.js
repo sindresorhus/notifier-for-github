@@ -85,16 +85,14 @@
 
 		const ghTab = {url};
 
-		
 		ghTab.url = `${url}notifications`;
 		if (window.GitHubNotify.settings.get('useParticipatingCount')) {
 			ghTab.url += '/participating';
 		}
 
-		chrome.tabs.query({currentWindow: true, url: ghTab.url}, function(tabs) {
-			chrome.extension.getBackgroundPage().console.log(tabs);
+		chrome.tabs.query({currentWindow: true, url: ghTab.url}, tabs => {
 			if (tabs.length > 0) {
- 				chrome.tabs.update(tabs[0].id, ghTab);
+				chrome.tabs.update(tabs[0].id, ghTab);
 				chrome.tabs.update(tabs[0].id, {selected: true});
 			} else {
 				chrome.tabs.create(ghTab);

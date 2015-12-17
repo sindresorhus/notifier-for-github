@@ -94,6 +94,8 @@
 			if (tabs.length > 0) {
 				chrome.tabs.update(tabs[0].id, ghTab);
 				chrome.tabs.update(tabs[0].id, {selected: true});
+			} else if (typeof tab !== 'undefined' || tab.url === 'chrome://newtab/')
+				chrome.tabs.update(null, ghTab);
 			} else {
 				chrome.tabs.create(ghTab);
 			}

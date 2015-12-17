@@ -85,18 +85,21 @@
 
 		const ghTab = {url};
 
-		if (window.GitHubNotify.settings.get('count') > 0) {
-			ghTab.url = `${url}notifications`;
-			if (window.GitHubNotify.settings.get('useParticipatingCount')) {
-				ghTab.url += '/participating';
-			}
+		
+		ghTab.url = `${url}notifications`;
+		if (window.GitHubNotify.settings.get('useParticipatingCount')) {
+			ghTab.url += '/participating';
 		}
 
-		if (typeof tab !== 'undefined' && (tab.url === '' || tab.url === 'chrome://newtab/' || tab.url === ghTab.url)) {
-			chrome.tabs.update(null, ghTab);
-		} else {
-			chrome.tabs.create(ghTab);
-		}
+		chrome.tabs.query({currentWindow: true, url: ghTab.url}, function(tabs) {
+			chrome.extension.getBackgroundPage().console.log(tabs);
+			if (tabs.length > 0) {
+ 				chrome.tabs.update(tabs[0].id, ghTab);
+				chrome.tabs.update(tabs[0].id, {selected: true});
+			} else {
+				chrome.tabs.create(ghTab);
+			}
+		});
 	});
 
 	update();

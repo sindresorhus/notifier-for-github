@@ -87,7 +87,7 @@
 
 		ghTab.url = `${url}notifications`;
 		if (window.GitHubNotify.settings.get('useParticipatingCount')) {
-			ghTab.url += '/participating';
+			ghTab.url = 'https://github.com/notifications/participating';
 		}
 
 		chrome.tabs.query({currentWindow: true, url: ghTab.url}, tabs => {

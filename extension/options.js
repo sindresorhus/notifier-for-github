@@ -5,12 +5,14 @@
 		const formRootUrl = document.getElementById('root_url');
 		const formOauthToken = document.getElementById('oauth_token');
 		const formUseParticipating = document.getElementById('use_participating');
+		const formOpenNewtab = document.getElementById('open_newtab');
 		const ghSettingsUrl = document.getElementById('gh_link');
 
 		function loadSettings() {
 			formRootUrl.value = GitHubNotify.settings.get('rootUrl');
 			formOauthToken.value = GitHubNotify.settings.get('oauthToken');
 			formUseParticipating.checked = GitHubNotify.settings.get('useParticipatingCount');
+			formOpenNewtab.checked = GitHubNotify.settings.get('openNewtab');
 		}
 
 		loadSettings();
@@ -56,6 +58,11 @@
 
 		formUseParticipating.addEventListener('change', () => {
 			GitHubNotify.settings.set('useParticipatingCount', formUseParticipating.checked);
+			updateBadge();
+		});
+
+		formOpenNewtab.addEventListener('change', () => {
+			GitHubNotify.settings.set('openNewtab', formOpenNewtab.checked);
 			updateBadge();
 		});
 	});

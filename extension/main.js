@@ -78,6 +78,7 @@
 
 	chrome.browserAction.onClicked.addListener(tab => {
 		let url = window.GitHubNotify.settings.get('rootUrl');
+		const openNewtab = window.GitHubNotify.settings.get('openNewtab');
 
 		if (/api.github.com\/$/.test(url)) {
 			url = 'https://github.com/';
@@ -90,16 +91,20 @@
 			ghTab.url += '/participating';
 		}
 
-		chrome.tabs.query({currentWindow: true, url: ghTab.url}, tabs => {
-			if (tabs.length > 0) {
-				ghTab.highlighted = true;
-				chrome.tabs.update(tabs[0].id, ghTab);
-			} else if (tab.url === 'chrome://newtab/') {
-				chrome.tabs.update(null, ghTab);
-			} else {
-				chrome.tabs.create(ghTab);
-			}
-		});
+		if (openNewtab) {
+			chrome.tabs.create(ghTab);
+		} else {
+			chrome.tabs.query({currentWindow: true, url: ghTab.url}, tabs => {
+				if (tabs.length > 0) {
+					ghTab.highlighted = true;
+					chrome.tabs.update(tabs[0].id, ghTab);
+				} else if (tab.url === 'chrome://newtab/') {
+					chrome.tabs.update(null, ghTab);
+				} else {
+					chrome.tabs.create(ghTab);
+				}
+			});
+		}
 	});
 
 	update();

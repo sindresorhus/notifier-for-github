@@ -65,6 +65,28 @@
 		});
 	}
 
+	function openTab(tab, ghTab) {
+		// checks optional permissions
+		chrome.permissions.contains({
+			permissions: ['tabs']
+		}, function(result) {
+			if (result) {
+				chrome.tabs.query({currentWindow: true, url: ghTab.url}, tabs => {
+					if (tabs.length > 0) {
+						ghTab.highlighted = true;
+						chrome.tabs.update(tabs[0].id, ghTab);
+					} else if (tab.url === 'chrome://newtab/') {
+						chrome.tabs.update(null, ghTab);
+					} else {
+						chrome.tabs.create(ghTab);
+					}
+				});
+			} else {
+				chrome.tabs.create(ghTab);
+			}
+		});
+	}
+
 	chrome.alarms.create({when: Date.now() + 2000});
 	chrome.alarms.onAlarm.addListener(update);
 	chrome.runtime.onMessage.addListener(update);
@@ -90,16 +112,17 @@
 			ghTab.url += '/participating';
 		}
 
-		chrome.tabs.query({currentWindow: true, url: ghTab.url}, tabs => {
-			if (tabs.length > 0) {
-				ghTab.highlighted = true;
-				chrome.tabs.update(tabs[0].id, ghTab);
-			} else if (tab.url === 'chrome://newtab/') {
-				chrome.tabs.update(null, ghTab);
-			} else {
-				chrome.tabs.create(ghTab);
-			}
-		});
+		// request optional permissions the 1rst time
+		if (!window.GitHubNotify.settings.get('optional_permissions')) {
+			chrome.permissions.request({
+				permissions: ['tabs'],
+			}, function(granted) {
+				window.GitHubNotify.settings.set('optional_permissions', true);
+				openTab(tab, ghTab);
+			});
+		} else {
+			openTab(tab, ghTab);
+		}
 	});
 
 	update();

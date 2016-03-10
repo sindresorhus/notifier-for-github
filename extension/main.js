@@ -113,7 +113,7 @@
 		}
 
 		// request optional permissions the 1rst time
-		if (window.GitHubNotify.settings.get('optional_permissions') == undefined) {
+		if (window.GitHubNotify.settings.get('optional_permissions') === undefined) {
 			chrome.permissions.request({
 				permissions: ['tabs']
 			}, granted => {

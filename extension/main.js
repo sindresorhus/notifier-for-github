@@ -69,7 +69,7 @@
 		// checks optional permissions
 		chrome.permissions.contains({
 			permissions: ['tabs']
-		}, function(result) {
+		}, result => {
 			if (result) {
 				chrome.tabs.query({currentWindow: true, url: ghTab.url}, tabs => {
 					if (tabs.length > 0) {
@@ -113,11 +113,11 @@
 		}
 
 		// request optional permissions the 1rst time
-		if (!window.GitHubNotify.settings.get('optional_permissions')) {
+		if (window.GitHubNotify.settings.get('optional_permissions') == undefined) {
 			chrome.permissions.request({
-				permissions: ['tabs'],
-			}, function(granted) {
-				window.GitHubNotify.settings.set('optional_permissions', true);
+				permissions: ['tabs']
+			}, granted => {
+				window.GitHubNotify.settings.set('optional_permissions', granted);
 				openTab(tab, ghTab);
 			});
 		} else {

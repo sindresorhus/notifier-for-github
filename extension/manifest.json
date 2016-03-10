@@ -10,7 +10,7 @@
 	},
 	"permissions": [
 		"alarms",
-		"activeTab"
+		"tabs"
 	],
 	"background": {
 		"persistent": false,

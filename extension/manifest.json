@@ -9,7 +9,9 @@
 		"128": "icon-128.png"
 	},
 	"permissions": [
-		"alarms",
+		"alarms"
+	],
+	"optional_permissions": [
 		"tabs"
 	],
 	"background": {

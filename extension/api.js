@@ -35,6 +35,7 @@
 			rootUrl: 'https://api.github.com/',
 			oauthToken: '',
 			useParticipatingCount: false,
+			openNewtab: false,
 			interval: 60
 		};
 

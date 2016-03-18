@@ -69,7 +69,12 @@
 		const opts = {
 			Authorization: `token ${token}`
 		};
-		const participating = window.GitHubNotify.settings.get('useParticipatingCount') ? 'participating=true' : '';
+		const query = [];
+		if (window.GitHubNotify.settings.get('useParticipatingCount')) {
+			query.push('participating=true');
+		};
+		query.push('per_page=1');
+
 		let url = window.GitHubNotify.settings.get('rootUrl');
 
 		if (!token) {
@@ -83,9 +88,7 @@
 			url += 'api/v3/notifications';
 		}
 
-		url += '?';
-		url += participating;
-		url += '&per_page=1';
+		url += '?' + query.join('&');
 
 		xhr('GET', url, opts, (data, status, response) => {
 			const interval = Number(response.getResponseHeader('X-Poll-Interval'));

@@ -30,6 +30,14 @@
 		};
 	})();
 
+	const getLinkPages = (linkheader) => {
+		for (let link of linkheader.split(', ')) {
+			if (link.endsWith('rel="last"')) {
+				return Number(link.slice(link.lastIndexOf('page=')+5, link.lastIndexOf('>')));
+			}
+		}
+	};
+
 	window.GitHubNotify = (() => {
 		const defaults = {
 			rootUrl: 'https://api.github.com/',
@@ -63,14 +71,6 @@
 
 		return api;
 	})();
-
-	getLinkPages = (linkheader) => {
-		for (let link of linkheader.split(', ')) {
-			if (link.endsWith('rel="last"')) {
-				return Number(link.slice(link.lastIndexOf('page=')+5, link.lastIndexOf('>')));
-			}
-		}
-	};
 
 	window.gitHubNotifCount = cb => {
 		const token = window.GitHubNotify.settings.get('oauthToken');

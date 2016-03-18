@@ -106,7 +106,22 @@
 			}
 
 			if (data && data.hasOwnProperty('length')) {
-				cb(null, data.length, interval);
+				function getpages(linksheader) {
+					for (var link of linksheader.split(', ')) {
+						if (link.endsWith('rel="last"')) {
+							return Number(link.slice(link.lastIndexOf('page=')+5, link.lastIndexOf('>')));
+						}
+					}
+				}
+				const pages = getpages(response.getResponseHeader('Link'));
+
+				if (pages == 1) {
+					cb(null, data.length, interval);
+				} else {
+					cb(null, (pages-1)*data.length, interval);
+					// need one more query to fetch the number
+					// of notifications on the last page
+				}
 				return;
 			}
 

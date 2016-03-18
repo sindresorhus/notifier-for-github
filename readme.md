@@ -24,6 +24,7 @@ Also available on [Firefox](https://github.com/sindresorhus/notifier-for-github-
 ## Maintainers
 
 - [@YuriSolovyov](https://github.com/YuriSolovyov) (Yury Solovyov)
+- [@gcochard](https://github.com/gcochard) (Greg Cochard)
 
 
 ## License

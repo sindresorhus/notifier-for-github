@@ -23,9 +23,9 @@ Also available on [Firefox](https://github.com/sindresorhus/notifier-for-github-
 
 ## Maintainers
 
-Yury Solovyov @YuriSolovyov
+- [@YuriSolovyov](https://github.com/YuriSolovyov) (Yury Solovyov)
 
 
 ## License
 
-MIT © [Sindre Sorhus](http://sindresorhus.com)
+MIT © [Sindre Sorhus](https://sindresorhus.com)

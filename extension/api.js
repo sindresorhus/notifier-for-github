@@ -30,10 +30,10 @@
 		};
 	})();
 
-	const getLinkPages = (linkheader) => {
-		for (let link of linkheader.split(', ')) {
+	const getLinkPages = linkheader => {
+		for (const link of linkheader.split(', ')) {
 			if (link.endsWith('rel="last"')) {
-				return Number(link.slice(link.lastIndexOf('page=')+5, link.lastIndexOf('>')));
+				return Number(link.slice(link.lastIndexOf('page=') + 5, link.lastIndexOf('>')));
 			}
 		}
 	};
@@ -115,10 +115,10 @@
 
 			if (data && data.hasOwnProperty('length')) {
 				const pages = getLinkPages(response.getResponseHeader('Link'));
-				if (pages == 1) {
+				if (pages === 1) {
 					cb(null, data.length, interval);
 				} else {
-					cb(null, (pages-1)*data.length, interval);
+					cb(null, (pages - 1) * data.length, interval);
 					// need one more query to fetch the number
 					// of notifications on the last page
 				}

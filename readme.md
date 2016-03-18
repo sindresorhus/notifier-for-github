@@ -21,6 +21,9 @@ It checks the GitHub Notifications API every minute. Supports GitHub Enterprise 
 Also available on [Firefox](https://github.com/sindresorhus/notifier-for-github-firefox) and [Safari](https://github.com/sindresorhus/notifier-for-github-safari).
 
 
+## Maintainers
+
+
 ## License
 
 MIT © [Sindre Sorhus](http://sindresorhus.com)

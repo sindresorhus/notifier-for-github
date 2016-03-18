@@ -69,7 +69,7 @@
 		const opts = {
 			Authorization: `token ${token}`
 		};
-		const participating = window.GitHubNotify.settings.get('useParticipatingCount') ? '?participating=true' : '';
+		const participating = window.GitHubNotify.settings.get('useParticipatingCount') ? 'participating=true' : '';
 		let url = window.GitHubNotify.settings.get('rootUrl');
 
 		if (!token) {
@@ -83,12 +83,14 @@
 			url += 'api/v3/notifications';
 		}
 
+		url += '?';
 		url += participating;
+		url += '&per_page=1';
 
 		xhr('GET', url, opts, (data, status, response) => {
 			const interval = Number(response.getResponseHeader('X-Poll-Interval'));
 			const linkheader = response.getResponseHeader('Link');
-			
+
 			const getLinkPages = linkheader => {
 				for (const link of linkheader.split(', ')) {
 					if (link.endsWith('rel="last"')) {
@@ -115,15 +117,8 @@
 				return;
 			}
 
-			if (data && data.hasOwnProperty('length')) {
-				const pages = getLinkPages(response.getResponseHeader('Link'));
-				if (pages === 1) {
-					cb(null, data.length, interval);
-				} else {
-					cb(null, (pages - 1) * data.length, interval);
-					// need one more query to fetch the number
-					// of notifications on the last page
-				}
+			if (data) {
+				cb(null, pages, interval);
 				return;
 			}
 

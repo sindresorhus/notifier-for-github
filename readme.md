@@ -23,6 +23,8 @@ Also available on [Firefox](https://github.com/sindresorhus/notifier-for-github-
 
 ## Maintainers
 
+Yury Solovyov @YuriSolovyov
+
 
 ## License
 

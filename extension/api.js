@@ -30,14 +30,6 @@
 		};
 	})();
 
-	const getLinkPages = linkheader => {
-		for (const link of linkheader.split(', ')) {
-			if (link.endsWith('rel="last"')) {
-				return Number(link.slice(link.lastIndexOf('page=') + 5, link.lastIndexOf('>')));
-			}
-		}
-	};
-
 	window.GitHubNotify = (() => {
 		const defaults = {
 			rootUrl: 'https://api.github.com/',
@@ -95,6 +87,16 @@
 
 		xhr('GET', url, opts, (data, status, response) => {
 			const interval = Number(response.getResponseHeader('X-Poll-Interval'));
+			const linkheader = response.getResponseHeader('Link');
+			
+			const getLinkPages = linkheader => {
+				for (const link of linkheader.split(', ')) {
+					if (link.endsWith('rel="last"')) {
+						return Number(link.slice(link.lastIndexOf('page=') + 5, link.lastIndexOf('>')));
+					}
+				}
+			};
+			const pages = getLinkPages(linkheader);
 
 			if (status >= 500) {
 				cb(new Error('server error'), null, interval);

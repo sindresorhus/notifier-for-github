@@ -25,6 +25,7 @@ Also available on [Firefox](https://github.com/sindresorhus/notifier-for-github-
 
 - [@YuriSolovyov](https://github.com/YuriSolovyov) (Yury Solovyov)
 - [@gcochard](https://github.com/gcochard) (Greg Cochard)
+- [@fstoerkle](https://github.com/fstoerkle) (Florian Störkle)
 
 
 ## License

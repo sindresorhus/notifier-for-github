@@ -69,7 +69,12 @@
 		const opts = {
 			Authorization: `token ${token}`
 		};
-		const participating = window.GitHubNotify.settings.get('useParticipatingCount') ? '?participating=true' : '';
+		const query = [];
+		if (window.GitHubNotify.settings.get('useParticipatingCount')) {
+			query.push('participating=true');
+		}
+		query.push('per_page=1');
+
 		let url = window.GitHubNotify.settings.get('rootUrl');
 
 		if (!token) {
@@ -83,10 +88,15 @@
 			url += 'api/v3/notifications';
 		}
 
-		url += participating;
+		url += `?${query.join('&')}`;
 
 		xhr('GET', url, opts, (data, status, response) => {
 			const interval = Number(response.getResponseHeader('X-Poll-Interval'));
+			const linkheader = response.getResponseHeader('Link');
+			const lastlink = linkheader.split(', ').find(link => {
+				return link.endsWith('rel="last"');
+			});
+			const pages = Number(lastlink.slice(lastlink.lastIndexOf('page=') + 5, lastlink.lastIndexOf('>')));
 
 			if (status >= 500) {
 				cb(new Error('server error'), null, interval);
@@ -105,8 +115,8 @@
 				return;
 			}
 
-			if (data && data.hasOwnProperty('length')) {
-				cb(null, data.length, interval);
+			if (data) {
+				cb(null, pages, interval);
 				return;
 			}
 

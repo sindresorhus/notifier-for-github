@@ -55,16 +55,19 @@ describe('basic functionality', () => {
 	it('should register alarm callback', () => {
 		require('../extension/api');
 		require('../extension/main');
-		assert(chromeStub.alarms.create.called);
+		assert(chrome.alarms.create.called);
 	});
 
 	it('should call gitHubNotifCount on chrome alarm fired', done => {
 		const oldNotifCount = global.window.gitHubNotifCount;
 
-		global.window.gitHubNotifCount = sinon.stub();
+		const promise = new Promise(resolve => {
+			process.nextTick(resolve);
+		});
+		global.window.gitHubNotifCount = sinon.stub().returns(promise);
 
 		process.nextTick(() => {
-			chromeStub.alarms.onAlarm.trigger();
+			chrome.alarms.onAlarm.trigger();
 			assert(global.window.gitHubNotifCount.called);
 			global.window.gitHubNotifCount = oldNotifCount;
 			done();

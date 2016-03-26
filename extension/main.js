@@ -7,82 +7,161 @@
 		chrome.browserAction.setTitle({title});
 	}
 
+	function getNotificationReasonText(reason) {
+		/* eslint-disable camelcase */
+		const reasons = {
+			subscribed: 'You are watching the repository',
+			manual: 'You are subscribed to this thread',
+			author: 'You created this thread',
+			comment: 'New comment',
+			mention: 'You were mentioned',
+			team_mention: 'Your team was mentioned',
+			state_change: 'Thread status changed',
+			assign: 'You were assigned to the issue',
+			default: ''
+		};
+		/* eslint-enable camelcase */
+		return reasons[reason] || reasons.default;
+	}
+
+	function showDesktopNotifications(notifications, lastModifed) {
+		const lastModifedTime = new Date(lastModifed).getTime();
+
+		notifications.filter(notification => {
+			return new Date(notification.updated_at).getTime() > lastModifedTime;
+		}).forEach(notification => {
+			const notificationId = `github-notifier-${notification.id}`;
+			chrome.notifications.create(notificationId, {
+				title: notification.subject.title,
+				iconUrl: 'icon-notif-128.png',
+				type: 'basic',
+				message: notification.repository.full_name,
+				contextMessage: getNotificationReasonText(notification.reason)
+			});
+
+			window.GitHubNotify.settings.set(notificationId, notification.subject.url);
+		});
+	}
+
+	function checkDesktopNotifications(lastModifed) {
+		const query = window.GitHubNotify.buildQuery({perPage: 100});
+		const url = `${window.GitHubNotify.getApiUrl()}?${query}`;
+
+		window.GitHubNotify.request(url).then(res => res.json()).then(notifications => {
+			showDesktopNotifications(notifications, lastModifed);
+		});
+	}
+
+	function handleNotificationClicked(notificationId) {
+		const url = window.GitHubNotify.settings.get(notificationId);
+		if (url) {
+			fetch(url).then(res => res.json()).then(json => {
+				openTab(json.html_url);
+			}).catch(() => {
+				openTab(window.GitHubNotify.getTabUrl());
+			});
+		}
+	}
+
+	function handleNotificationClosed(notificationId) {
+		window.GitHubNotify.settings.remove(notificationId);
+	}
+
+	function handleLastModified(date) {
+		let lastModifed = window.GitHubNotify.settings.get('lastModifed');
+		const emptyLastModified = String(lastModifed) === 'null' || String(lastModifed) === 'undefined';
+		lastModifed = emptyLastModified ? new Date(0) : lastModifed;
+
+		if (date !== lastModifed) {
+			window.GitHubNotify.settings.set('lastModifed', date);
+			if (GitHubNotify.settings.get('showDesktopNotif') === true) {
+				checkDesktopNotifications(lastModifed);
+			}
+		}
+	}
+
+	function handleInterval(interval) {
+		let period = 1;
+		let intervalSetting = parseInt(window.GitHubNotify.settings.get('interval'), 10);
+
+		if (typeof intervalSetting !== 'number') {
+			intervalSetting = 60;
+		}
+
+		if (interval !== null && interval !== intervalSetting) {
+			window.GitHubNotify.settings.set('interval', interval);
+			period = Math.ceil(interval / 60);
+		}
+
+		return period;
+	}
+
+	function handleError(error) {
+		let symbol = '?';
+		let text;
+
+		switch (error.message) {
+			case 'missing token':
+				text = 'Missing access token, please create one and enter it in Options';
+				symbol = 'X';
+				break;
+			case 'server error':
+				text = 'You have to be connected to the internet';
+				break;
+			case 'data format error':
+			case 'parse error':
+				text = 'Unable to find count';
+				break;
+			default:
+				text = 'Unknown error';
+				break;
+		}
+
+		render(symbol, [166, 41, 41, 255], text);
+	}
+
+	function handleCount(count) {
+		if (count === 0) {
+			return '';
+		} else if (count > 9999) {
+			return '∞';
+		}
+		return String(count);
+	}
+
 	function update() {
-		window.gitHubNotifCount((err, count, interval) => {
-			let intervalSetting = parseInt(window.GitHubNotify.settings.get('interval'), 10);
-			let period = 1;
-			let text;
-
-			if (typeof intervalSetting !== 'number') {
-				intervalSetting = 60;
-			}
-
-			if (interval !== null && interval !== intervalSetting) {
-				window.GitHubNotify.settings.set('interval', interval);
-				period = Math.ceil(interval / 60);
-			}
+		window.gitHubNotifCount().then(response => {
+			const count = response.count;
+			const interval = response.interval;
+			const lastModifed = response.lastModifed;
+			const period = handleInterval(interval);
 
 			// unconditionally schedule alarm
 			chrome.alarms.create({when: Date.now() + 2000 + (period * 60 * 1000)});
 
-			if (err) {
-				let symbol = '?';
+			handleLastModified(lastModifed);
 
-				switch (err.message) {
-					case 'missing token':
-						text = 'Missing access token, please create one and enter it in Options';
-						symbol = 'X';
-						break;
-					case 'server error':
-						text = 'You have to be connected to the internet';
-						break;
-					case 'data format error':
-					case 'parse error':
-						text = 'Unable to find count';
-						break;
-					default:
-						text = 'Unknown error';
-						break;
-				}
-
-				render(symbol, [166, 41, 41, 255], text);
-				return;
-			}
-
-			window.GitHubNotify.settings.set('count', count);
-
-			if (count === 'cached') {
-				return;
-			}
-
-			if (count === 0) {
-				count = '';
-			} else if (count > 9999) {
-				count = '∞';
-			}
-
-			render(String(count), [65, 131, 196, 255], 'Notifier for GitHub');
-		});
+			render(handleCount(count), [65, 131, 196, 255], 'Notifier for GitHub');
+		}).catch(handleError);
 	}
 
-	function openTab(tab, ghTab) {
+	function openTab(url, tab) {
 		// checks optional permissions
-		chrome.permissions.contains({
-			permissions: ['tabs']
-		}, result => {
-			if (result) {
-				chrome.tabs.query({currentWindow: true, url: ghTab.url}, tabs => {
+		window.GitHubNotify.queryPermission('tabs').then(granted => {
+			if (granted) {
+				const currentWindow = true;
+				chrome.tabs.query({currentWindow, url}, tabs => {
 					if (tabs.length > 0) {
-						ghTab.highlighted = true;
-						chrome.tabs.update(tabs[0].id, ghTab);
-					} else if (tab.url === 'chrome://newtab/') {
-						chrome.tabs.update(null, ghTab);
+						const highlighted = true;
+						chrome.tabs.update(tabs[0].id, {highlighted, url});
+					} else if (tab && tab.url === 'chrome://newtab/') {
+						chrome.tabs.update(null, {url});
 					} else {
-						chrome.tabs.create(ghTab);
+						chrome.tabs.create({url});
 					}
 				});
 			} else {
-				chrome.tabs.create(ghTab);
+				chrome.tabs.create({url});
 			}
 		});
 	}
@@ -90,6 +169,13 @@
 	chrome.alarms.create({when: Date.now() + 2000});
 	chrome.alarms.onAlarm.addListener(update);
 	chrome.runtime.onMessage.addListener(update);
+
+	window.GitHubNotify.queryPermission('notifications').then(granted => {
+		if (granted) {
+			chrome.notifications.onClicked.addListener(handleNotificationClicked);
+			chrome.notifications.onClosed.addListener(handleNotificationClosed);
+		}
+	});
 
 	// launch options page on first run
 	chrome.runtime.onInstalled.addListener(details => {
@@ -99,29 +185,16 @@
 	});
 
 	chrome.browserAction.onClicked.addListener(tab => {
-		let url = window.GitHubNotify.settings.get('rootUrl');
-
-		if (/api.github.com\/$/.test(url)) {
-			url = 'https://github.com/';
-		}
-
-		const ghTab = {url};
-
-		ghTab.url = `${url}notifications`;
-		if (window.GitHubNotify.settings.get('useParticipatingCount')) {
-			ghTab.url += '/participating';
-		}
+		const tabUrl = window.GitHubNotify.getTabUrl();
 
 		// request optional permissions the 1rst time
-		if (window.GitHubNotify.settings.get('optional_permissions') === undefined) {
-			chrome.permissions.request({
-				permissions: ['tabs']
-			}, granted => {
-				window.GitHubNotify.settings.set('optional_permissions', granted);
-				openTab(tab, ghTab);
+		if (window.GitHubNotify.settings.get('tabs_permission') === undefined) {
+			window.GitHubNotify.requestPermission('tabs').then(granted => {
+				window.GitHubNotify.settings.set('tabs_permission', granted);
+				openTab(tabUrl, tab);
 			});
 		} else {
-			openTab(tab, ghTab);
+			openTab(tabUrl, tab);
 		}
 	});
 

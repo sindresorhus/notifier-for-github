@@ -18,8 +18,13 @@ It checks the GitHub Notifications API every minute. Supports GitHub Enterprise 
 
 ## Permissions explanation
 
-The first time you click on the extension icon, it will ask you for access to browser tabs. We need this to know if there is already an opened GitHub notifications page and switch to it if so. This is an optional permission, so you can just decline if you don't want it.
+Both permissions are optional, so you can just decline if you don't want it.
 
+#### Tabs permission
+The first time you click on the extension icon, it will ask you for access to browser tabs. We need this to know if there is already an opened GitHub notifications page and switch to it if so.
+
+#### Notifications permission
+If you want to receive desktop notifications, you can enable them on extension options page, you will be asked about notifications permission.
 
 ## Related
 

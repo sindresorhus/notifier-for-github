@@ -93,10 +93,6 @@
 		xhr('GET', url, opts, (data, status, response) => {
 			const interval = Number(response.getResponseHeader('X-Poll-Interval'));
 			const linkheader = response.getResponseHeader('Link');
-			const lastlink = linkheader.split(', ').find(link => {
-				return link.endsWith('rel="last"');
-			});
-			const pages = Number(lastlink.slice(lastlink.lastIndexOf('page=') + 5, lastlink.lastIndexOf('>')));
 
 			if (status >= 500) {
 				cb(new Error('server error'), null, interval);
@@ -116,7 +112,14 @@
 			}
 
 			if (data) {
-				cb(null, pages, interval);
+				if (linkheader === null) {
+					// 0 or 1 pages
+					cb(null, data.length, interval);
+				} else {
+					const lastlink = linkheader.split(', ').find(link => link.endsWith('rel="last"'));
+					const pages = Number(lastlink.slice(lastlink.lastIndexOf('page=') + 5, lastlink.lastIndexOf('>')));
+					cb(null, pages, interval);
+				}
 				return;
 			}
 

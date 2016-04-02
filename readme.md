@@ -15,6 +15,11 @@ It checks the GitHub Notifications API every minute. Supports GitHub Enterprise 
 - [Chrome extension](https://chrome.google.com/webstore/detail/notifier-for-github/lmjdlojahmbbcodnpecnjnmlddbkjhnn)
 - [Opera add-on](https://addons.opera.com/en/extensions/details/github-notifier/)
 
+## Permissions explanation
+
+First time you click on extension icon, it will ask you for giving an access to
+browser tabs. We need this to ask browser if there is already opened GitHub
+notifications page and switch to it if so.
 
 ## Related
 

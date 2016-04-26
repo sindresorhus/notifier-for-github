@@ -1,35 +1,6 @@
 (() => {
 	'use strict';
 
-	const xhr = (() => {
-		const xhr = new XMLHttpRequest();
-
-		return (method, url, headers, cb) => {
-			if (!cb && typeof headers === 'function') {
-				cb = headers;
-				headers = null;
-			}
-
-			xhr.onreadystatechange = () => {
-				if (xhr.readyState === 4) {
-					cb(xhr.responseText, xhr.status, xhr);
-					return;
-				}
-			};
-
-			xhr.open(method, url);
-
-			if (headers) {
-				Object.keys(headers).forEach(x => {
-					xhr.setRequestHeader(x, headers[x]);
-				});
-			}
-
-			xhr.setRequestHeader('If-Modified-Since', '');
-			xhr.send();
-		};
-	})();
-
 	window.GitHubNotify = (() => {
 		const defaults = {
 			rootUrl: 'https://api.github.com/',
@@ -64,67 +35,104 @@
 		return api;
 	})();
 
-	window.gitHubNotifCount = cb => {
+	window.GitHubNotify.requestPermission = permission => {
+		return new Promise(resolve => {
+			chrome.permissions.request({
+				permissions: [permission]
+			}, granted => {
+				window.GitHubNotify.settings.set(`${permission}_permission`, granted);
+				resolve(granted);
+			});
+		});
+	};
+
+	window.GitHubNotify.queryPermission = permission => {
+		return new Promise(resolve => {
+			chrome.permissions.contains({
+				permissions: [permission]
+			}, resolve);
+		});
+	};
+
+	window.GitHubNotify.request = url => {
 		const token = window.GitHubNotify.settings.get('oauthToken');
-		const opts = {
-			Authorization: `token ${token}`
-		};
-		const query = [];
+		if (!token) {
+			return Promise.reject(new Error('missing token'));
+		}
+
+		/* eslint-disable quote-props */
+		const headers = Object.assign({
+			Authorization: `token ${token}`,
+			'If-Modified-Since': ''
+		});
+		/* eslint-enable quote-props */
+
+		return fetch(url, {headers});
+	};
+
+	window.GitHubNotify.getApiUrl = () => {
+		const rootUrl = window.GitHubNotify.settings.get('rootUrl');
+
+		if (/(^(https:\/\/)?(api\.)?github\.com)/.test(rootUrl)) {
+			return 'https://api.github.com/notifications';
+		}
+		return `${rootUrl}api/v3/notifications`;
+	};
+
+	window.GitHubNotify.getTabUrl = () => {
+		let rootUrl = window.GitHubNotify.settings.get('rootUrl');
+
+		if (/api.github.com\/$/.test(rootUrl)) {
+			rootUrl = 'https://github.com/';
+		}
+
+		const tabUrl = `${rootUrl}notifications`;
+		if (window.GitHubNotify.settings.get('useParticipatingCount')) {
+			return `${tabUrl}/participating`;
+		}
+		return tabUrl;
+	};
+
+	window.GitHubNotify.buildQuery = options => {
+		const perPage = options.perPage;
+		const query = [`per_page=${perPage}`];
 		if (window.GitHubNotify.settings.get('useParticipatingCount')) {
 			query.push('participating=true');
 		}
-		query.push('per_page=1');
+		return query;
+	};
 
-		let url = window.GitHubNotify.settings.get('rootUrl');
+	window.gitHubNotifCount = () => {
+		const query = window.GitHubNotify.buildQuery({perPage: 1});
+		const url = `${window.GitHubNotify.getApiUrl()}?${query.join('&')}`;
 
-		if (!token) {
-			cb(new Error('missing token'), null, window.GitHubNotify.defaults.interval);
-			return;
-		}
+		return window.GitHubNotify.request(url).then(response => {
+			const status = response.status;
+			const interval = Number(response.headers.get('X-Poll-Interval'));
+			const lastModifed = response.headers.get('Last-Modified');
 
-		if (/(^(https:\/\/)?(api\.)?github\.com)/.test(url)) {
-			url = 'https://api.github.com/notifications';
-		} else {
-			url += 'api/v3/notifications';
-		}
+			const linkheader = response.headers.get('Link');
 
-		url += `?${query.join('&')}`;
+			if (linkheader === null) {
+				return response.json().then(data => {
+					return {count: data.length, interval, lastModifed};
+				});
+			}
 
-		xhr('GET', url, opts, (data, status, response) => {
-			const interval = Number(response.getResponseHeader('X-Poll-Interval'));
-			const linkheader = response.getResponseHeader('Link');
+			const lastlink = linkheader.split(', ').find(link => {
+				return link.endsWith('rel="last"');
+			});
+			const count = Number(lastlink.slice(lastlink.lastIndexOf('page=') + 5, lastlink.lastIndexOf('>')));
 
 			if (status >= 500) {
-				cb(new Error('server error'), null, interval);
-				return;
+				return Promise.reject(new Error('server error'));
 			}
 
 			if (status >= 400) {
-				cb(new Error(`client error: ${data}`), null, interval);
-				return;
+				return Promise.reject(new Error(`client error: ${status} ${response.statusText}`));
 			}
 
-			try {
-				data = JSON.parse(data);
-			} catch (err) {
-				cb(new Error('parse error'), null, interval);
-				return;
-			}
-
-			if (data) {
-				if (linkheader === null) {
-					// 0 or 1 pages
-					cb(null, data.length, interval);
-				} else {
-					const lastlink = linkheader.split(', ').find(link => link.endsWith('rel="last"'));
-					const pages = Number(lastlink.slice(lastlink.lastIndexOf('page=') + 5, lastlink.lastIndexOf('>')));
-					cb(null, pages, interval);
-				}
-				return;
-			}
-
-			cb(new Error('data format error'), null, interval);
-			return;
+			return {count, interval, lastModifed};
 		});
 	};
 })();

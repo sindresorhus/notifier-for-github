@@ -12,7 +12,8 @@
 		"alarms"
 	],
 	"optional_permissions": [
-		"tabs"
+		"tabs",
+		"notifications"
 	],
 	"background": {
 		"persistent": false,

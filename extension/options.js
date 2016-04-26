@@ -6,11 +6,13 @@
 		const formOauthToken = document.getElementById('oauth_token');
 		const formUseParticipating = document.getElementById('use_participating');
 		const ghSettingsUrl = document.getElementById('gh_link');
+		const showDesktopNotif = document.getElementById('show_desktop_notif');
 
 		function loadSettings() {
 			formRootUrl.value = GitHubNotify.settings.get('rootUrl');
 			formOauthToken.value = GitHubNotify.settings.get('oauthToken');
 			formUseParticipating.checked = GitHubNotify.settings.get('useParticipatingCount');
+			showDesktopNotif.checked = GitHubNotify.settings.get('showDesktopNotif');
 		}
 
 		loadSettings();
@@ -57,6 +59,21 @@
 		formUseParticipating.addEventListener('change', () => {
 			GitHubNotify.settings.set('useParticipatingCount', formUseParticipating.checked);
 			updateBadge();
+		});
+
+		showDesktopNotif.addEventListener('change', () => {
+			if (showDesktopNotif.checked) {
+				window.GitHubNotify.requestPermission('notifications').then(granted => {
+					if (granted) {
+						updateBadge();
+					} else {
+						showDesktopNotif.checked = false;
+					}
+					GitHubNotify.settings.set('showDesktopNotif', granted);
+				});
+			} else {
+				GitHubNotify.settings.set('showDesktopNotif', showDesktopNotif.checked);
+			}
 		});
 	});
 })();

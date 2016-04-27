@@ -19,9 +19,6 @@
     "globals": [
       "chrome",
       "GitHubNotify"
-    ],
-    "rules": {
-      "prefer-reflect": 0
-    }
+    ]
   }
 }

@@ -4,10 +4,10 @@
 
 It checks the GitHub Notifications API every minute.
 
-#### Features
-* GitHub Enterprise support
+#### Highlights
 * Show unread count for issues you're participating in
 * Desktop notifications
+* GitHub Enterprise support
 
 Make sure to add a token in the Options page.
 

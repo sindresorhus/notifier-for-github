@@ -2,7 +2,14 @@
 
 > Chrome extension - Displays your GitHub notifications unread count
 
-It checks the GitHub Notifications API every minute. Supports GitHub Enterprise and an option to only show unread count for issues you're participating in. Make sure to add a token in the Options page.
+It checks the GitHub Notifications API every minute.
+
+#### Features:
+* GitHub Enterprise support
+* Show unread count for issues you're participating in
+* Desktop notifications
+
+Make sure to add a token in the Options page.
 
 ![](screenshot.png)
 ![](screenshot-webstore2.png)
@@ -26,6 +33,19 @@ The first time you click on the extension icon, it will ask you for access to br
 
 If you want to receive desktop notifications, you can enable them on extension options page. You will then be asked for the notifications permission.
 
+## Desktop notifications
+
+Notifications look like simple cards with optional image and some text content in them.
+You can opt-in to receive notifications to be better informed about things that
+are important to you.
+
+Notifier for GitHub checks for new notifications every minute, and if it will display notification that arrived after the last check if there are any.
+
+If there are more than 3 new notifications, Chrome will show first 3, and queue up the rest to
+show them when either first 3 disappear or closed.
+
+Clicking on notification opens GitHub URL of the notification subject.
+URL is fetched lazily on notification click, so there is no requests performed unless actually needed.
 
 ## Related
 

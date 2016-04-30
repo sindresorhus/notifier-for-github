@@ -4,7 +4,7 @@
 
 It checks the GitHub Notifications API every minute.
 
-#### Features:
+#### Features
 * GitHub Enterprise support
 * Show unread count for issues you're participating in
 * Desktop notifications
@@ -36,16 +36,15 @@ If you want to receive desktop notifications, you can enable them on extension o
 ## Desktop notifications
 
 Notifications look like simple cards with optional image and some text content in them.
+
+![](screenshot-notification.png)
+
 You can opt-in to receive notifications to be better informed about things that
 are important to you.
 
 Notifier for GitHub checks for new notifications every minute, and if it will display notification that arrived after the last check if there are any.
 
-If there are more than 3 new notifications, Chrome will show first 3, and queue up the rest to
-show them when either first 3 disappear or closed.
-
 Clicking on notification opens GitHub URL of the notification subject.
-URL is fetched lazily on notification click, so there is no requests performed unless actually needed.
 
 ## Related
 

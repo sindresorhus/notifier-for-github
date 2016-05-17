@@ -55,12 +55,13 @@
 	function handleNotificationClicked(notificationId) {
 		const url = window.GitHubNotify.settings.get(notificationId);
 		if (url) {
-			fetch(url).then(res => res.json()).then(json => {
+			window.GitHubNotify.request(url).then(res => res.json()).then(json => {
 				openTab(json.html_url);
 			}).catch(() => {
 				openTab(window.GitHubNotify.getTabUrl());
 			});
 		}
+		chrome.notifications.clear(notificationId);
 	}
 
 	function handleNotificationClosed(notificationId) {

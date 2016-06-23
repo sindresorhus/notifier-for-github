@@ -56,11 +56,8 @@
 		const url = window.GitHubNotify.settings.get(notificationId);
 		if (url) {
 			window.GitHubNotify.request(url).then(res => res.json()).then(json => {
-				if (json.message === 'Not Found') {
-					openTab(window.GitHubNotify.getTabUrl());
-				} else {
-					openTab(json.html_url);
-				}
+				const tabUrl = json.message === 'Not Found' ? window.GitHubNotify.getTabUrl() : json.html_url;
+				openTab(tabUrl);
 			}).catch(() => {
 				openTab(window.GitHubNotify.getTabUrl());
 			});

@@ -55,6 +55,7 @@ describe('basic functionality', () => {
 	it('should register alarm callback', () => {
 		require('../extension/api');
 		require('../extension/main');
+
 		assert(chrome.alarms.create.called);
 	});
 

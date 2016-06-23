@@ -9,10 +9,10 @@
 		const showDesktopNotif = document.getElementById('show_desktop_notif');
 
 		function loadSettings() {
-			formRootUrl.value = GitHubNotify.settings.get('rootUrl');
-			formOauthToken.value = GitHubNotify.settings.get('oauthToken');
-			formUseParticipating.checked = GitHubNotify.settings.get('useParticipatingCount');
-			showDesktopNotif.checked = GitHubNotify.settings.get('showDesktopNotif');
+			formRootUrl.value = PersistenceService.get('rootUrl');
+			formOauthToken.value = PersistenceService.get('oauthToken');
+			formUseParticipating.checked = PersistenceService.get('useParticipatingCount');
+			showDesktopNotif.checked = PersistenceService.get('showDesktopNotif');
 		}
 
 		loadSettings();
@@ -41,38 +41,38 @@
 
 			// case of url is empty: set to default
 			if (url === normalizeRoot('')) {
-				GitHubNotify.settings.remove('rootUrl');
-				url = GitHubNotify.settings.get('rootUrl');
+				PersistenceService.remove('rootUrl');
+				url = PersistenceService.get('rootUrl');
 			}
 
-			GitHubNotify.settings.set('rootUrl', url);
+			PersistenceService.set('rootUrl', url);
 			ghSettingsUrl.href = urlSettings;
 			updateBadge();
 			loadSettings();
 		});
 
 		formOauthToken.addEventListener('change', () => {
-			GitHubNotify.settings.set('oauthToken', formOauthToken.value);
+			PersistenceService.set('oauthToken', formOauthToken.value);
 			updateBadge();
 		});
 
 		formUseParticipating.addEventListener('change', () => {
-			GitHubNotify.settings.set('useParticipatingCount', formUseParticipating.checked);
+			PersistenceService.set('useParticipatingCount', formUseParticipating.checked);
 			updateBadge();
 		});
 
 		showDesktopNotif.addEventListener('change', () => {
 			if (showDesktopNotif.checked) {
-				window.GitHubNotify.requestPermission('notifications').then(granted => {
+				PermissionService.requestPermission('notifications').then(granted => {
 					if (granted) {
 						updateBadge();
 					} else {
 						showDesktopNotif.checked = false;
 					}
-					GitHubNotify.settings.set('showDesktopNotif', granted);
+					PersistenceService.set('showDesktopNotif', granted);
 				});
 			} else {
-				GitHubNotify.settings.set('showDesktopNotif', showDesktopNotif.checked);
+				PersistenceService.set('showDesktopNotif', showDesktopNotif.checked);
 			}
 		});
 	});

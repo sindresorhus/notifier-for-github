@@ -8,19 +8,7 @@
 	}
 
 	function getNotificationReasonText(reason) {
-		/* eslint-disable camelcase */
-		const reasons = {
-			subscribed: 'You are watching the repository',
-			manual: 'You are subscribed to this thread',
-			author: 'You created this thread',
-			comment: 'New comment',
-			mention: 'You were mentioned',
-			team_mention: 'Your team was mentioned',
-			state_change: 'Thread status changed',
-			assign: 'You were assigned to the issue',
-			default: ''
-		};
-		/* eslint-enable camelcase */
+		const reasons = window.Constants.notificationReasons;
 		return reasons[reason] || reasons.default;
 	}
 
@@ -39,44 +27,44 @@
 				contextMessage: getNotificationReasonText(notification.reason)
 			});
 
-			window.GitHubNotify.settings.set(notificationId, notification.subject.url);
+			window.PersistenceService.set(notificationId, notification.subject.url);
 		});
 	}
 
 	function checkDesktopNotifications(lastModifed) {
-		const query = window.GitHubNotify.buildQuery({perPage: 100});
-		const url = `${window.GitHubNotify.getApiUrl()}?${query.join('&')}`;
+		const query = window.API.buildQuery({perPage: 100});
+		const url = `${window.API.getApiUrl()}?${query}`;
 
-		window.GitHubNotify.request(url).then(res => res.json()).then(notifications => {
+		window.NetworkService.request(url).then(res => res.json()).then(notifications => {
 			showDesktopNotifications(notifications, lastModifed);
 		});
 	}
 
 	function handleNotificationClicked(notificationId) {
-		const url = window.GitHubNotify.settings.get(notificationId);
+		const url = window.PersistenceService.get(notificationId);
 		if (url) {
-			window.GitHubNotify.request(url).then(res => res.json()).then(json => {
-				const tabUrl = json.message === 'Not Found' ? window.GitHubNotify.getTabUrl() : json.html_url;
+			window.NetworkService.request(url).then(res => res.json()).then(json => {
+				const tabUrl = json.message === 'Not Found' ? window.API.getTabUrl() : json.html_url;
 				openTab(tabUrl);
 			}).catch(() => {
-				openTab(window.GitHubNotify.getTabUrl());
+				openTab(window.API.getTabUrl());
 			});
 		}
 		chrome.notifications.clear(notificationId);
 	}
 
 	function handleNotificationClosed(notificationId) {
-		window.GitHubNotify.settings.remove(notificationId);
+		window.PersistenceService.remove(notificationId);
 	}
 
 	function handleLastModified(date) {
-		let lastModifed = window.GitHubNotify.settings.get('lastModifed');
+		let lastModifed = window.PersistenceService.get('lastModifed');
 		const emptyLastModified = String(lastModifed) === 'null' || String(lastModifed) === 'undefined';
 		lastModifed = emptyLastModified ? new Date(0) : lastModifed;
 
 		if (date !== lastModifed) {
-			window.GitHubNotify.settings.set('lastModifed', date);
-			if (GitHubNotify.settings.get('showDesktopNotif') === true) {
+			window.PersistenceService.set('lastModifed', date);
+			if (PersistenceService.get('showDesktopNotif') === true) {
 				checkDesktopNotifications(lastModifed);
 			}
 		}
@@ -84,14 +72,14 @@
 
 	function handleInterval(interval) {
 		let period = 1;
-		let intervalSetting = parseInt(window.GitHubNotify.settings.get('interval'), 10);
+		let intervalSetting = parseInt(window.PersistenceService.get('interval'), 10);
 
 		if (typeof intervalSetting !== 'number') {
 			intervalSetting = 60;
 		}
 
 		if (interval !== null && interval !== intervalSetting) {
-			window.GitHubNotify.settings.set('interval', interval);
+			window.PersistenceService.set('interval', interval);
 			period = Math.ceil(interval / 60);
 		}
 
@@ -140,7 +128,7 @@
 	}
 
 	function update() {
-		window.gitHubNotifCount().then(response => {
+		window.API.getNotifications().then(response => {
 			const count = response.count;
 			const interval = response.interval;
 			const lastModifed = response.lastModifed;
@@ -155,7 +143,7 @@
 
 	function openTab(url, tab) {
 		// checks optional permissions
-		window.GitHubNotify.queryPermission('tabs').then(granted => {
+		window.PermissionService.queryPermission('tabs').then(granted => {
 			if (granted) {
 				const currentWindow = true;
 				chrome.tabs.query({currentWindow, url}, tabs => {
@@ -178,7 +166,7 @@
 	chrome.alarms.onAlarm.addListener(update);
 	chrome.runtime.onMessage.addListener(update);
 
-	window.GitHubNotify.queryPermission('notifications').then(granted => {
+	window.PermissionService.queryPermission('notifications').then(granted => {
 		if (granted) {
 			chrome.notifications.onClicked.addListener(handleNotificationClicked);
 			chrome.notifications.onClosed.addListener(handleNotificationClosed);
@@ -193,12 +181,12 @@
 	});
 
 	chrome.browserAction.onClicked.addListener(tab => {
-		const tabUrl = window.GitHubNotify.getTabUrl();
+		const tabUrl = window.API.getTabUrl();
 
 		// request optional permissions the 1rst time
-		if (window.GitHubNotify.settings.get('tabs_permission') === undefined) {
-			window.GitHubNotify.requestPermission('tabs').then(granted => {
-				window.GitHubNotify.settings.set('tabs_permission', granted);
+		if (window.PersistenceService.get('tabs_permission') === undefined) {
+			window.PermissionService.requestPermission('tabs').then(granted => {
+				window.PersistenceService.set('tabs_permission', granted);
 				openTab(tabUrl, tab);
 			});
 		} else {

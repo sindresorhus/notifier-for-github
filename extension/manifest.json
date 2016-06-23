@@ -18,7 +18,11 @@
 	"background": {
 		"persistent": false,
 		"scripts": [
-			"api.js",
+			"src/api.js",
+			"src/constants.js",
+			"src/network-service.js",
+			"src/permission-service.js",
+			"src/persistence-service.js",
 			"main.js"
 		]
 	},

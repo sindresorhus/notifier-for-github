@@ -18,36 +18,6 @@ global.window = {
 	}
 };
 
-function XMLHttpRequest() {
-	this.requestHeaders = {};
-	this.responseHeaders = {};
-}
-
-XMLHttpRequest.prototype.open = function (method, url) {
-	this.method = method;
-	this.url = url;
-};
-
-XMLHttpRequest.prototype.send = function () {
-	this.readyState = 4;
-	this.responseText = '[]';
-	this.status = 200;
-	this.responseHeaders['X-Poll-Interval'] = '60';
-
-	if (this.onreadystatechange) {
-		setTimeout(this.onreadystatechange, 50);
-	}
-};
-
-XMLHttpRequest.prototype.setRequestHeader = function (name, val) {
-	this.requestHeaders[name] = val;
-};
-
-XMLHttpRequest.prototype.getHeader = function (name) {
-	return this.responseHeaders[name];
-};
-
-global.XMLHttpRequest = XMLHttpRequest;
 global.localStorage = new LocalStorageMock();
 global.chrome = chromeStub;
 

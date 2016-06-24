@@ -120,6 +120,8 @@
 		}
 
 		render(symbol, [166, 41, 41, 255], text);
+		// check again in a minute
+		scheduleAlarm(1);
 	}
 
 	function handleCount(count) {
@@ -131,6 +133,12 @@
 		return String(count);
 	}
 
+	function scheduleAlarm(period) {
+		// unconditionally schedule alarm
+		// period is in minutes
+		chrome.alarms.create({when: Date.now() + 2000 + (period * 60 * 1000)});
+	}
+
 	function update() {
 		window.gitHubNotifCount().then(response => {
 			const count = response.count;
@@ -138,9 +146,7 @@
 			const lastModifed = response.lastModifed;
 			const period = handleInterval(interval);
 
-			// unconditionally schedule alarm
-			chrome.alarms.create({when: Date.now() + 2000 + (period * 60 * 1000)});
-
+			scheduleAlarm(period);
 			handleLastModified(lastModifed);
 
 			render(handleCount(count), [65, 131, 196, 255], 'Notifier for GitHub');

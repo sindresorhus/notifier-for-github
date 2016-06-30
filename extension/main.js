@@ -32,8 +32,7 @@
 	}
 
 	function checkDesktopNotifications(lastModifed) {
-		const query = window.API.buildQuery({perPage: 100});
-		const url = `${window.API.getApiUrl()}?${query}`;
+		const url = window.API.getApiUrl({perPage: 100});
 
 		window.NetworkService.request(url).then(res => res.json()).then(notifications => {
 			showDesktopNotifications(notifications, lastModifed);

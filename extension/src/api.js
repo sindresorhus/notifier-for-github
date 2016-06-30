@@ -1,12 +1,26 @@
 ((root) => {
   'use strict';
 
-  const getApiUrl = () => {
+  const buildQuery = options => {
+		const perPage = options.perPage;
+		const query = [`per_page=${perPage}`];
+		if (window.PersistenceService.get('useParticipatingCount')) {
+			query.push('participating=true');
+		}
+		return query.join('&');
+	};
+
+  const getApiUrl = query => {
 		const rootUrl = window.PersistenceService.get('rootUrl');
 
 		if (/(^(https:\/\/)?(api\.)?github\.com)/.test(rootUrl)) {
 			return 'https://api.github.com/notifications';
 		}
+
+    if (query) {
+      return `${rootUrl}api/v3/notifications?${buildQuery(query)}`;
+    }
+
 		return `${rootUrl}api/v3/notifications`;
 	};
 
@@ -22,15 +36,6 @@
 			return `${tabUrl}/participating`;
 		}
 		return tabUrl;
-	};
-
-  const buildQuery = options => {
-		const perPage = options.perPage;
-		const query = [`per_page=${perPage}`];
-		if (window.PersistenceService.get('useParticipatingCount')) {
-			query.push('participating=true');
-		}
-		return query;
 	};
 
   const parseApiResponse = response => {
@@ -63,17 +68,14 @@
   };
 
   const getNotifications = () => {
-		const query = buildQuery({perPage: 1});
-		const url = `${getApiUrl()}?${query.join('&')}`;
-
+		const url = getApiUrl({perPage: 1});
 		return window.NetworkService.request(url).then(parseApiResponse);
-	}
+	};
 
   root.API = {
     getApiUrl,
     getTabUrl,
-    getNotifications,
-    buildQuery,
+    getNotifications
   };
 
 })(window);

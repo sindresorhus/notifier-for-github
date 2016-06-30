@@ -23,7 +23,7 @@ test.before(() => {
 
 test('should register alarm callback', t => {
 
-	require('../extension/api');
+	require('../extension/src/api');
 	require('../extension/main');
 	t.true(chrome.alarms.create.called);
 

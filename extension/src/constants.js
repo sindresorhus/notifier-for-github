@@ -20,8 +20,13 @@
 			state_change: 'Thread status changed',
 			assign: 'You were assigned to the issue',
 			default: ''
-    }
+    },
     /* eslint-enable camelcase */
+
+    colors: {
+      badgeDefaultBackground: [65, 131, 196, 255],
+      badgeErrorBackground: [166, 41, 41, 255]
+    }
 
   };
 

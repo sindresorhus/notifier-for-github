@@ -63,7 +63,7 @@
 
 		showDesktopNotif.addEventListener('change', () => {
 			if (showDesktopNotif.checked) {
-				PermissionService.requestPermission('notifications').then(granted => {
+				PermissionsService.requestPermission('notifications').then(granted => {
 					if (granted) {
 						updateBadge();
 					} else {

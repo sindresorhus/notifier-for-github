@@ -7,68 +7,6 @@
 		chrome.browserAction.setTitle({title});
 	}
 
-	function getNotificationReasonText(reason) {
-		const reasons = window.Constants.notificationReasons;
-		return reasons[reason] || reasons.default;
-	}
-
-	function showDesktopNotifications(notifications, lastModifed) {
-		const lastModifedTime = new Date(lastModifed).getTime();
-
-		notifications.filter(notification => {
-			return new Date(notification.updated_at).getTime() > lastModifedTime;
-		}).forEach(notification => {
-			const notificationId = `github-notifier-${notification.id}`;
-			chrome.notifications.create(notificationId, {
-				title: notification.subject.title,
-				iconUrl: 'icon-notif-128.png',
-				type: 'basic',
-				message: notification.repository.full_name,
-				contextMessage: getNotificationReasonText(notification.reason)
-			});
-
-			window.PersistenceService.set(notificationId, notification.subject.url);
-		});
-	}
-
-	function checkDesktopNotifications(lastModifed) {
-		const url = window.API.getApiUrl({perPage: 100});
-
-		window.NetworkService.request(url).then(res => res.json()).then(notifications => {
-			showDesktopNotifications(notifications, lastModifed);
-		});
-	}
-
-	function handleNotificationClicked(notificationId) {
-		const url = window.PersistenceService.get(notificationId);
-		if (url) {
-			window.NetworkService.request(url).then(res => res.json()).then(json => {
-				const tabUrl = json.message === 'Not Found' ? window.API.getTabUrl() : json.html_url;
-				openTab(tabUrl);
-			}).catch(() => {
-				openTab(window.API.getTabUrl());
-			});
-		}
-		chrome.notifications.clear(notificationId);
-	}
-
-	function handleNotificationClosed(notificationId) {
-		window.PersistenceService.remove(notificationId);
-	}
-
-	function handleLastModified(date) {
-		let lastModifed = window.PersistenceService.get('lastModifed');
-		const emptyLastModified = String(lastModifed) === 'null' || String(lastModifed) === 'undefined';
-		lastModifed = emptyLastModified ? new Date(0) : lastModifed;
-
-		if (date !== lastModifed) {
-			window.PersistenceService.set('lastModifed', date);
-			if (PersistenceService.get('showDesktopNotif') === true) {
-				checkDesktopNotifications(lastModifed);
-			}
-		}
-	}
-
 	function handleInterval(interval) {
 		let period = 1;
 		let intervalSetting = parseInt(window.PersistenceService.get('interval'), 10);
@@ -83,6 +21,46 @@
 		}
 
 		return period;
+	}
+
+	function handleCount(count) {
+		if (count === 0) {
+			return '';
+		} else if (count > 9999) {
+			return '∞';
+		}
+		return String(count);
+	}
+
+	function handleLastModified(date) {
+		let lastModifed = window.PersistenceService.get('lastModifed');
+		const emptyLastModified = String(lastModifed) === 'null' || String(lastModifed) === 'undefined';
+		lastModifed = emptyLastModified ? new Date(0) : lastModifed;
+
+		if (date !== lastModifed) {
+			window.PersistenceService.set('lastModifed', date);
+			if (PersistenceService.get('showDesktopNotif') === true) {
+				window.NotificationsService.checkNotifications(lastModifed);
+			}
+		}
+	}
+
+	function handleNotificationsResponse(response) {
+		const count = response.count;
+		const interval = response.interval;
+		const lastModifed = response.lastModifed;
+		const period = handleInterval(interval);
+
+		// unconditionally schedule alarm
+		chrome.alarms.create({when: Date.now() + 2000 + (period * 60 * 1000)});
+
+		handleLastModified(lastModifed);
+
+		render(handleCount(count), window.Constants.colors.badgeDefaultBackground, 'Notifier for GitHub');
+	}
+
+	function update() {
+		window.API.getNotifications().then(handleNotificationsResponse).catch(handleError);
 	}
 
 	function handleError(error) {
@@ -106,43 +84,12 @@
 				break;
 		}
 
-		render(symbol, [166, 41, 41, 255], text);
-		// check again in a minute
-		scheduleAlarm(1);
-	}
-
-	function handleCount(count) {
-		if (count === 0) {
-			return '';
-		} else if (count > 9999) {
-			return '∞';
-		}
-		return String(count);
-	}
-
-	function scheduleAlarm(period) {
-		// unconditionally schedule alarm
-		// period is in minutes
-		chrome.alarms.create({when: Date.now() + 2000 + (period * 60 * 1000)});
-	}
-
-	function update() {
-		window.API.getNotifications().then(response => {
-			const count = response.count;
-			const interval = response.interval;
-			const lastModifed = response.lastModifed;
-			const period = handleInterval(interval);
-
-			scheduleAlarm(period);
-			handleLastModified(lastModifed);
-
-			render(handleCount(count), [65, 131, 196, 255], 'Notifier for GitHub');
-		}).catch(handleError);
+		render(symbol, window.Constants.colors.badgeErrorBackground, text);
 	}
 
 	function openTab(url, tab) {
 		// checks optional permissions
-		window.PermissionService.queryPermission('tabs').then(granted => {
+		window.PermissionsService.queryPermission('tabs').then(granted => {
 			if (granted) {
 				const currentWindow = true;
 				chrome.tabs.query({currentWindow, url}, tabs => {
@@ -161,37 +108,40 @@
 		});
 	}
 
-	chrome.alarms.create({when: Date.now() + 2000});
-	chrome.alarms.onAlarm.addListener(update);
-	chrome.runtime.onMessage.addListener(update);
-
-	window.PermissionService.queryPermission('notifications').then(granted => {
-		if (granted) {
-			chrome.notifications.onClicked.addListener(handleNotificationClicked);
-			chrome.notifications.onClosed.addListener(handleNotificationClosed);
-		}
-	});
-
-	// launch options page on first run
-	chrome.runtime.onInstalled.addListener(details => {
-		if (details.reason === 'install') {
-			chrome.runtime.openOptionsPage();
-		}
-	});
-
-	chrome.browserAction.onClicked.addListener(tab => {
+	function handleBrowserActionClick(tab) {
 		const tabUrl = window.API.getTabUrl();
 
 		// request optional permissions the 1rst time
 		if (window.PersistenceService.get('tabs_permission') === undefined) {
-			window.PermissionService.requestPermission('tabs').then(granted => {
+			window.PermissionsService.requestPermission('tabs').then(granted => {
 				window.PersistenceService.set('tabs_permission', granted);
 				openTab(tabUrl, tab);
 			});
 		} else {
 			openTab(tabUrl, tab);
 		}
+	}
+
+	function handleInstalled(details) {
+		if (details.reason === 'install') {
+			chrome.runtime.openOptionsPage();
+		}
+	}
+
+	chrome.alarms.create({when: Date.now() + 2000});
+	chrome.alarms.onAlarm.addListener(update);
+	chrome.runtime.onMessage.addListener(update);
+
+	window.PermissionsService.queryPermission('notifications').then(granted => {
+		if (granted) {
+			chrome.notifications.onClicked.addListener(window.NotificationsService.handleNotificationClick);
+			chrome.notifications.onClosed.addListener(window.NotificationsService.handleNotificationClose);
+		}
 	});
+
+	// launch options page on first run
+	chrome.runtime.onInstalled.addListener(handleInstalled);
+	chrome.browserAction.onClicked.addListener(handleBrowserActionClick);
 
 	update();
 })();

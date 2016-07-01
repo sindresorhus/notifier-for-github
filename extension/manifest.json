@@ -21,7 +21,8 @@
 			"src/api.js",
 			"src/constants.js",
 			"src/network-service.js",
-			"src/permission-service.js",
+			"src/permissions-service.js",
+			"src/notifications-service.js",
 			"src/persistence-service.js",
 			"main.js"
 		]

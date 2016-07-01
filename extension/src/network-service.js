@@ -1,4 +1,4 @@
-(function(root) {
+(root => {
   'use strict';
 
   const request = url => {

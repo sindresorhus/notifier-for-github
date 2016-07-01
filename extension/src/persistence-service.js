@@ -1,5 +1,7 @@
-((root, localStorage) => {
+(root => {
   'use strict';
+
+  const localStorage = root.localStorage;
   const defaults = root.Constants.defaults;
   const getItem = name => {
     const item = localStorage.getItem(name);
@@ -22,4 +24,4 @@
     reset: localStorage.clear.bind(localStorage)
   };
 
-})(window, window.localStorage);
+})(window);

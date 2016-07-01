@@ -21,7 +21,11 @@
     ],
     "globals": [
       "chrome",
-      "GitHubNotify"
+      "API",
+      "PersistenceService",
+      "PermissionsService",
+      "NotificationsService",
+      "NetworkService"
     ]
   }
 }

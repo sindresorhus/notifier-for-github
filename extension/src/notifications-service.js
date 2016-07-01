@@ -1,4 +1,5 @@
-((root) => {
+(root => {
+  'use strict';
 
   const getNotificationReasonText = reason => {
 		const reasons = root.Constants.notificationReasons;
@@ -28,7 +29,7 @@
 		const url = root.API.getApiUrl({perPage: 100});
 
 		root.NetworkService.request(url).then(res => res.json()).then(notifications => {
-			showDesktopNotifications(notifications, lastModifed);
+			showNotifications(notifications, lastModifed);
 		});
 	};
 

@@ -39,7 +39,7 @@
 
 		if (date !== lastModifed) {
 			window.PersistenceService.set('lastModifed', date);
-			if (PersistenceService.get('showDesktopNotif') === true) {
+			if (window.PersistenceService.get('showDesktopNotif') === true) {
 				window.NotificationsService.checkNotifications(lastModifed);
 			}
 		}

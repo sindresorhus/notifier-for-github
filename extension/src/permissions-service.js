@@ -1,4 +1,4 @@
-((root) => {
+(root => {
   'use strict';
 
   const requestPermission = permission => {

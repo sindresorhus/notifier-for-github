@@ -87,27 +87,6 @@
 		render(symbol, window.Constants.colors.badgeErrorBackground, text);
 	}
 
-	function openTab(url, tab) {
-		// checks optional permissions
-		window.PermissionsService.queryPermission('tabs').then(granted => {
-			if (granted) {
-				const currentWindow = true;
-				chrome.tabs.query({currentWindow, url}, tabs => {
-					if (tabs.length > 0) {
-						const highlighted = true;
-						chrome.tabs.update(tabs[0].id, {highlighted, url});
-					} else if (tab && tab.url === 'chrome://newtab/') {
-						chrome.tabs.update(null, {url});
-					} else {
-						chrome.tabs.create({url});
-					}
-				});
-			} else {
-				chrome.tabs.create({url});
-			}
-		});
-	}
-
 	function handleBrowserActionClick(tab) {
 		const tabUrl = window.API.getTabUrl();
 
@@ -115,10 +94,10 @@
 		if (window.PersistenceService.get('tabs_permission') === undefined) {
 			window.PermissionsService.requestPermission('tabs').then(granted => {
 				window.PersistenceService.set('tabs_permission', granted);
-				openTab(tabUrl, tab);
+				window.API.openTab(tabUrl, tab);
 			});
 		} else {
-			openTab(tabUrl, tab);
+			window.API.openTab(tabUrl, tab);
 		}
 	}
 

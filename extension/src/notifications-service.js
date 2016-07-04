@@ -38,9 +38,9 @@
 		if (url) {
 			root.NetworkService.request(url).then(res => res.json()).then(json => {
 				const tabUrl = json.message === 'Not Found' ? root.API.getTabUrl() : json.html_url;
-				openTab(tabUrl);
+				root.API.openTab(tabUrl);
 			}).catch(() => {
-				openTab(root.API.getTabUrl());
+				root.API.openTab(root.API.getTabUrl());
 			});
 		}
 		chrome.notifications.clear(notificationId);

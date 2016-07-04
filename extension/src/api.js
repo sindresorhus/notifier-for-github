@@ -72,10 +72,32 @@
 		return window.NetworkService.request(url).then(parseApiResponse);
 	};
 
+  const openTab = (url, tab) => {
+		// checks optional permissions
+		window.PermissionsService.queryPermission('tabs').then(granted => {
+			if (granted) {
+				const currentWindow = true;
+				chrome.tabs.query({currentWindow, url}, tabs => {
+					if (tabs.length > 0) {
+						const highlighted = true;
+						chrome.tabs.update(tabs[0].id, {highlighted, url});
+					} else if (tab && tab.url === 'chrome://newtab/') {
+						chrome.tabs.update(null, {url});
+					} else {
+						chrome.tabs.create({url});
+					}
+				});
+			} else {
+				chrome.tabs.create({url});
+			}
+		});
+	};
+
   root.API = {
     getApiUrl,
     getTabUrl,
-    getNotifications
+    getNotifications,
+    openTab
   };
 
 })(window);

@@ -45,7 +45,7 @@
 
 	function checkDesktopNotifications(lastModifed) {
 		const query = window.GitHubNotify.buildQuery({perPage: 100});
-		const url = `${window.GitHubNotify.getApiUrl()}?${query}`;
+		const url = `${window.GitHubNotify.getApiUrl()}?${query.join('&')}`;
 
 		window.GitHubNotify.request(url).then(res => res.json()).then(notifications => {
 			showDesktopNotifications(notifications, lastModifed);

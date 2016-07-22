@@ -10,12 +10,12 @@
 		}
 
 		buildQuery(options) {
-			const perPage = options.perPage;
-			const query = [`per_page=${perPage}`];
+			const params = new URLSearchParams();
+			params.append('per_page', options.perPage);
 			if (this.PersistenceService.get('useParticipatingCount')) {
-				query.push('participating=true');
+				params.append('participating', true);
 			}
-			return query.join('&');
+			return params.toString();
 		}
 
 		getApiUrl(query) {

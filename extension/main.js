@@ -120,12 +120,11 @@
 
 	permissions.queryPermission('notifications').then(granted => {
 		if (granted) {
-			chrome.notifications.onClicked.addListener(notifications.handleNotificationClick);
-			chrome.notifications.onClosed.addListener(notifications.handleNotificationClose);
+			chrome.notifications.onClicked.addListener(notifications.handleClick.bind(notifications));
+			chrome.notifications.onClosed.addListener(notifications.handleClose.bind(notifications));
 		}
 	});
 
-	// launch options page on first run
 	chrome.runtime.onInstalled.addListener(handleInstalled);
 	chrome.browserAction.onClicked.addListener(handleBrowserActionClick);
 

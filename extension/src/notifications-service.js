@@ -8,7 +8,7 @@
 			this.API = api;
 			this.DefaultsService = defaults;
 		}
-		handleNotificationClick(notificationId) {
+		handleClick(notificationId) {
 			const url = this.PersistenceService.get(notificationId);
 			if (url) {
 				this.NetworkService.request(url).then(res => res.json()).then(json => {
@@ -20,7 +20,7 @@
 			}
 			chrome.notifications.clear(notificationId);
 		}
-		handleNotificationClose(notificationId) {
+		handleClose(notificationId) {
 			this.PersistenceService.remove(notificationId);
 		}
 		checkNotifications(lastModifed) {

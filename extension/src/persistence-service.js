@@ -1,27 +1,26 @@
 (root => {
-  'use strict';
+	'use strict';
 
-  const localStorage = root.localStorage;
-  const defaults = root.Constants.defaults;
-  const getItem = name => {
-    const item = localStorage.getItem(name);
+	const localStorage = root.localStorage;
+	const defaults = root.Constants.defaults;
+	const getItem = name => {
+		const item = localStorage.getItem(name);
 
-    if (item === null) {
-      return {}.hasOwnProperty.call(defaults, name) ? defaults[name] : undefined;
-    }
+		if (item === null) {
+			return {}.hasOwnProperty.call(defaults, name) ? defaults[name] : undefined;
+		}
 
-    if (item === 'true' || item === 'false') {
-      return item === 'true';
-    }
+		if (item === 'true' || item === 'false') {
+			return item === 'true';
+		}
 
-    return item;
-  };
+		return item;
+	};
 
-  root.PersistenceService = {
-    get: getItem,
-    set: localStorage.setItem.bind(localStorage),
-    remove: localStorage.removeItem.bind(localStorage),
-    reset: localStorage.clear.bind(localStorage)
-  };
-
+	root.PersistenceService = {
+		get: getItem,
+		set: localStorage.setItem.bind(localStorage),
+		remove: localStorage.removeItem.bind(localStorage),
+		reset: localStorage.clear.bind(localStorage)
+	};
 })(window);

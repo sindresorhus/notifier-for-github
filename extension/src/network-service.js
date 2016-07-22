@@ -1,7 +1,7 @@
 (root => {
-  'use strict';
+	'use strict';
 
-  const request = url => {
+	const request = url => {
 		const token = root.PersistenceService.get('oauthToken');
 		if (!token) {
 			return Promise.reject(new Error('missing token'));
@@ -15,10 +15,9 @@
 		/* eslint-enable quote-props */
 
 		return fetch(url, {headers});
-	}
+	};
 
-  root.NetworkService = {
-    request
-  };
-
+	root.NetworkService = {
+		request
+	};
 })(window);

@@ -1,7 +1,8 @@
 {
   "scripts": {
     "test": "xo && mocha",
-    "release": "webstore upload --source=extension --auto-publish"
+    "release": "webstore upload --source=extension --auto-publish",
+    "test": "xo && ava -v test/test.js"
   },
   "devDependencies": {
     "chrome-stub": "^1.2.0",

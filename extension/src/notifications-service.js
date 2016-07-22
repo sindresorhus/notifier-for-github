@@ -1,12 +1,12 @@
 (root => {
-  'use strict';
+	'use strict';
 
-  const getNotificationReasonText = reason => {
+	const getNotificationReasonText = reason => {
 		const reasons = root.Constants.notificationReasons;
 		return reasons[reason] || reasons.default;
 	};
 
-  const showNotifications = (notifications, lastModifed) => {
+	const showNotifications = (notifications, lastModifed) => {
 		const lastModifedTime = new Date(lastModifed).getTime();
 
 		notifications.filter(notification => {
@@ -25,7 +25,7 @@
 		});
 	};
 
-  const checkNotifications = lastModifed => {
+	const checkNotifications = lastModifed => {
 		const url = root.API.getApiUrl({perPage: 100});
 
 		root.NetworkService.request(url).then(res => res.json()).then(notifications => {
@@ -33,7 +33,7 @@
 		});
 	};
 
-  const handleNotificationClick = notificationId => {
+	const handleNotificationClick = notificationId => {
 		const url = root.PersistenceService.get(notificationId);
 		if (url) {
 			root.NetworkService.request(url).then(res => res.json()).then(json => {
@@ -46,15 +46,14 @@
 		chrome.notifications.clear(notificationId);
 	};
 
-  const handleNotificationClose = notificationId => {
+	const handleNotificationClose = notificationId => {
 		root.PersistenceService.remove(notificationId);
 	};
 
-  root.NotificationsService = {
-    handleNotificationClick,
-    handleNotificationClose,
-    checkNotifications,
-    showNotifications
-  };
-
-})(window)
+	root.NotificationsService = {
+		handleNotificationClick,
+		handleNotificationClose,
+		checkNotifications,
+		showNotifications
+	};
+})(window);

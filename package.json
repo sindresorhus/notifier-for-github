@@ -23,6 +23,7 @@
     "globals": [
       "chrome",
       "API",
+      "DefaultsService",
       "PersistenceService",
       "PermissionsService",
       "NotificationsService",

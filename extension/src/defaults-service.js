@@ -1,7 +1,7 @@
 (root => {
 	'use strict';
 
-	root.Constants = {
+	const constants = {
 		defaults: {
 			rootUrl: 'https://api.github.com/',
 			oauthToken: '',
@@ -29,4 +29,24 @@
 		}
 
 	};
+
+	class DefaultsService {
+		getDefaults() {
+			return constants.defaults;
+		}
+
+		getBadgeDefaultColor() {
+			return constants.colors.badgeDefaultBackground;
+		}
+
+		getBadgeErrorColor() {
+			return constants.colors.badgeErrorBackground;
+		}
+		getNotificationReasonText(reason) {
+			const reasons = constants.notificationReasons;
+			return reasons[reason] || reasons.default;
+		}
+	}
+
+	root.DefaultsService = DefaultsService;
 })(window);

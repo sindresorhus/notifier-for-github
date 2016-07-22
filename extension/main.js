@@ -1,6 +1,13 @@
 (function () {
 	'use strict';
 
+	const defaults = new DefaultsService();
+	const persistence = new PersistenceService(defaults);
+	const networking = new NetworkService(persistence);
+	const permissions = new PermissionsService(persistence);
+	const api = new API(persistence, networking, permissions, defaults);
+	const notifications = new NotificationsService(persistence, networking, api, defaults);
+
 	function render(text, color, title) {
 		chrome.browserAction.setBadgeText({text});
 		chrome.browserAction.setBadgeBackgroundColor({color});
@@ -9,14 +16,14 @@
 
 	function handleInterval(interval) {
 		let period = 1;
-		let intervalSetting = parseInt(window.PersistenceService.get('interval'), 10);
+		let intervalSetting = parseInt(persistence.get('interval'), 10);
 
 		if (typeof intervalSetting !== 'number') {
 			intervalSetting = 60;
 		}
 
 		if (interval !== null && interval !== intervalSetting) {
-			window.PersistenceService.set('interval', interval);
+			persistence.set('interval', interval);
 			period = Math.ceil(interval / 60);
 		}
 
@@ -33,14 +40,14 @@
 	}
 
 	function handleLastModified(date) {
-		let lastModifed = window.PersistenceService.get('lastModifed');
+		let lastModifed = persistence.get('lastModifed');
 		const emptyLastModified = String(lastModifed) === 'null' || String(lastModifed) === 'undefined';
 		lastModifed = emptyLastModified ? new Date(0) : lastModifed;
 
 		if (date !== lastModifed) {
-			window.PersistenceService.set('lastModifed', date);
-			if (window.PersistenceService.get('showDesktopNotif') === true) {
-				window.NotificationsService.checkNotifications(lastModifed);
+			persistence.set('lastModifed', date);
+			if (persistence.get('showDesktopNotif') === true) {
+				notifications.checkNotifications(lastModifed);
 			}
 		}
 	}
@@ -56,11 +63,11 @@
 
 		handleLastModified(lastModifed);
 
-		render(handleCount(count), window.Constants.colors.badgeDefaultBackground, 'Notifier for GitHub');
+		render(handleCount(count), defaults.getBadgeDefaultColor(), 'Notifier for GitHub');
 	}
 
 	function update() {
-		window.API.getNotifications().then(handleNotificationsResponse).catch(handleError);
+		api.getNotifications().then(handleNotificationsResponse).catch(handleError);
 	}
 
 	function handleError(error) {
@@ -84,20 +91,20 @@
 				break;
 		}
 
-		render(symbol, window.Constants.colors.badgeErrorBackground, text);
+		render(symbol, defaults.getBadgeErrorColor(), text);
 	}
 
 	function handleBrowserActionClick(tab) {
-		const tabUrl = window.API.getTabUrl();
+		const tabUrl = api.getTabUrl();
 
 		// request optional permissions the 1rst time
-		if (window.PersistenceService.get('tabs_permission') === undefined) {
-			window.PermissionsService.requestPermission('tabs').then(granted => {
-				window.PersistenceService.set('tabs_permission', granted);
-				window.API.openTab(tabUrl, tab);
+		if (persistence.get('tabs_permission') === undefined) {
+			permissions.requestPermission('tabs').then(granted => {
+				persistence.set('tabs_permission', granted);
+				api.openTab(tabUrl, tab);
 			});
 		} else {
-			window.API.openTab(tabUrl, tab);
+			api.openTab(tabUrl, tab);
 		}
 	}
 
@@ -111,10 +118,10 @@
 	chrome.alarms.onAlarm.addListener(update);
 	chrome.runtime.onMessage.addListener(update);
 
-	window.PermissionsService.queryPermission('notifications').then(granted => {
+	permissions.queryPermission('notifications').then(granted => {
 		if (granted) {
-			chrome.notifications.onClicked.addListener(window.NotificationsService.handleNotificationClick);
-			chrome.notifications.onClosed.addListener(window.NotificationsService.handleNotificationClose);
+			chrome.notifications.onClicked.addListener(notifications.handleNotificationClick);
+			chrome.notifications.onClosed.addListener(notifications.handleNotificationClose);
 		}
 	});
 

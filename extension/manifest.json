@@ -19,7 +19,7 @@
 		"persistent": false,
 		"scripts": [
 			"src/api.js",
-			"src/constants.js",
+			"src/defaults-service.js",
 			"src/network-service.js",
 			"src/permissions-service.js",
 			"src/notifications-service.js",

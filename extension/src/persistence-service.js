@@ -2,25 +2,35 @@
 	'use strict';
 
 	const localStorage = root.localStorage;
-	const defaults = root.Constants.defaults;
-	const getItem = name => {
-		const item = localStorage.getItem(name);
 
-		if (item === null) {
-			return {}.hasOwnProperty.call(defaults, name) ? defaults[name] : undefined;
+	class PersistenceService {
+		constructor(defaults) {
+			this.DefaultsService = defaults;
 		}
+		get(name) {
+			const item = localStorage.getItem(name);
+			const defaults = this.DefaultsService.getDefaults();
 
-		if (item === 'true' || item === 'false') {
-			return item === 'true';
+			if (item === null) {
+				return {}.hasOwnProperty.call(defaults, name) ? defaults[name] : undefined;
+			}
+
+			if (item === 'true' || item === 'false') {
+				return item === 'true';
+			}
+
+			return item;
 		}
+		set(name, value) {
+			localStorage.setItem(name, value);
+		}
+		remove(name) {
+			localStorage.removeItem(name);
+		}
+		reset() {
+			localStorage.clear();
+		}
+	}
 
-		return item;
-	};
-
-	root.PersistenceService = {
-		get: getItem,
-		set: localStorage.setItem.bind(localStorage),
-		remove: localStorage.removeItem.bind(localStorage),
-		reset: localStorage.clear.bind(localStorage)
-	};
+	root.PersistenceService = PersistenceService;
 })(window);

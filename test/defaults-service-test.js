@@ -10,5 +10,61 @@ test('installs DefaultsService constructor', t => {
 test('#getDefaults method returns defaults objects', t => {
 	const service = new global.window.DefaultsService();
 
-	t.is(typeof service.getDefaults(), 'object');
+	const defaults = service.getDefaults();
+	t.is(typeof defaults, 'object');
+	t.is(defaults.rootUrl, 'https://api.github.com/');
+	t.is(defaults.oauthToken, '');
+	t.is(defaults.useParticipatingCount, false);
+	t.is(defaults.interval, 60);
+});
+
+test('#getBadgeDefaultColor return array of 4 numbers', t => {
+	const service = new global.window.DefaultsService();
+	const color = service.getBadgeDefaultColor();
+	t.is(color.length, 4);
+
+	color.forEach(n => {
+		t.is(typeof n, 'number');
+	});
+});
+
+test('#getBadgeErrorColor return array of 4 numbers not same as default', t => {
+	const service = new global.window.DefaultsService();
+	const color = service.getBadgeErrorColor();
+	t.is(color.length, 4);
+	t.notDeepEqual(color, service.getBadgeDefaultColor);
+
+	color.forEach(n => {
+		t.is(typeof n, 'number');
+	});
+});
+
+test('#getNotificationReasonText returns notification reasons', t => {
+	const service = new global.window.DefaultsService();
+
+	const reasons = [
+		'subscribed',
+		'manual',
+		'author',
+		'comment',
+		'mention',
+		'team_mention',
+		'state_change',
+		'assign'
+	];
+
+	const invalidReasons = [
+		'no such reason',
+		undefined,
+		NaN,
+		{foo: 42}
+	];
+
+	reasons.forEach(reason => {
+		t.truthy(service.getNotificationReasonText(reason));
+	});
+
+	invalidReasons.forEach(reason => {
+		t.is(service.getNotificationReasonText(reason), '');
+	});
 });

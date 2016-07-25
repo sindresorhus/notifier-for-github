@@ -1,6 +1,5 @@
 {
   "scripts": {
-    "test": "xo && mocha",
     "release": "webstore upload --source=extension --auto-publish",
     "test": "xo && ava -v test/test.js"
   },
@@ -23,6 +22,7 @@
     "globals": [
       "chrome",
       "API",
+      "URLSearchParams",
       "DefaultsService",
       "PersistenceService",
       "PermissionsService",

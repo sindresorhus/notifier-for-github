@@ -42,6 +42,7 @@
 		getBadgeErrorColor() {
 			return constants.colors.badgeErrorBackground;
 		}
+
 		getNotificationReasonText(reason) {
 			const reasons = constants.notificationReasons;
 			return reasons[reason] || reasons.default;

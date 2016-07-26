@@ -10,7 +10,7 @@
 				chrome.permissions.request({
 					permissions: [permission]
 				}, granted => {
-					root.PersistenceService.set(`${permission}_permission`, granted);
+					this.PersistenceService.set(`${permission}_permission`, granted);
 					resolve(granted);
 				});
 			});

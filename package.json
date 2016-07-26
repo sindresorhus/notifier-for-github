@@ -7,8 +7,6 @@
     "chrome-stub": "^1.2.0",
     "chrome-webstore-upload-cli": "^1.0.3",
     "istanbul": "^0.4.0",
-    "mocha": "^3.0.2",
-    "mock-localstorage": "^0.1.3",
     "sinon": "^1.15.4",
     "xo": "*",
     "ava": "latest"
@@ -16,8 +14,7 @@
   "xo": {
     "esnext": true,
     "envs": [
-      "browser",
-      "mocha"
+      "browser"
     ],
     "globals": [
       "chrome",

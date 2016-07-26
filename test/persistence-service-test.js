@@ -1,9 +1,8 @@
 import test from 'ava';
-import localStorageMock from 'mock-localstorage';
 import sinon from 'sinon';
 
 global.window = {
-	localStorage: localStorageMock
+	localStorage: {}
 };
 require('../extension/src/defaults-service.js');
 require('../extension/src/persistence-service.js');

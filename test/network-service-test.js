@@ -1,9 +1,8 @@
 import test from 'ava';
 import sinon from 'sinon';
+import utils from './utils';
 
-global.window = {
-	localStorage: {}
-};
+global.window = utils.setupWindow();
 
 require('../extension/src/persistence-service.js');
 require('../extension/src/network-service.js');
@@ -36,7 +35,7 @@ test('#request returns Promise', t => {
 	const service = new global.window.NetworkService(t.context.persistence);
 	global.window.fetch = sinon.stub().returns(Promise.resolve('{}'));
 	global.window.localStorage.getItem = sinon.stub().returns('oauthToken');
-	t.true(service.request(t.context.endpoint) instanceof Promise);
+	t.is(typeof service.request(t.context.endpoint).then, 'function');
 });
 
 test('#request method requests fetches given url with proper headers', t => {

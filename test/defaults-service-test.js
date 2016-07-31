@@ -1,6 +1,7 @@
 import test from 'ava';
+import utils from './utils';
 
-global.window = {};
+global.window = utils.setupWindow();
 require('../extension/src/defaults-service.js');
 
 test('installs DefaultsService constructor', t => {

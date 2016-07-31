@@ -1,9 +1,9 @@
 import test from 'ava';
 import sinon from 'sinon';
+import utils from './utils';
 
-global.window = {
-	localStorage: {}
-};
+global.window = utils.setupWindow();
+
 require('../extension/src/defaults-service.js');
 require('../extension/src/persistence-service.js');
 

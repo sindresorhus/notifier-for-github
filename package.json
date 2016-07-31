@@ -11,6 +11,10 @@
     "xo": "*",
     "ava": "latest"
   },
+  "ava": {
+    "verbose": true,
+    "files": "test/*-test.*"
+  },
   "xo": {
     "esnext": true,
     "envs": [

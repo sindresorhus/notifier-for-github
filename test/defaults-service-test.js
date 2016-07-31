@@ -18,13 +18,15 @@ test('#getDefaults method returns defaults objects', t => {
 	t.is(defaults.interval, 60);
 });
 
-test('#getBadgeDefaultColor return array of 4 numbers', t => {
+test('#getBadgeDefaultColor return array of 4 numbers between 0 and 255 inclusive', t => {
 	const service = new global.window.DefaultsService();
 	const color = service.getBadgeDefaultColor();
 	t.is(color.length, 4);
 
 	color.forEach(n => {
 		t.is(typeof n, 'number');
+		t.true(n >= 0);
+		t.true(n <= 255);
 	});
 });
 
@@ -36,6 +38,8 @@ test('#getBadgeErrorColor return array of 4 numbers not same as default', t => {
 
 	color.forEach(n => {
 		t.is(typeof n, 'number');
+		t.true(n >= 0);
+		t.true(n <= 255);
 	});
 });
 

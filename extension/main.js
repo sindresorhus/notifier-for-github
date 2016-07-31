@@ -15,20 +15,17 @@
 	}
 
 	function handleInterval(interval) {
-		let period = 1;
-		let intervalSetting = parseInt(persistence.get('interval'), 10);
+		const intervalSetting = parseInt(persistence.get('interval'), 10) || 60;
+		const intervalValue = interval || 60;
 
-		if (typeof intervalSetting !== 'number') {
-			intervalSetting = 60;
+		if (intervalSetting !== intervalValue) {
+			persistence.set('interval', intervalValue);
 		}
 
-		if (interval !== null && interval !== intervalSetting) {
-			persistence.set('interval', interval);
-			period = Math.ceil(interval / 60);
-		}
+		const delayInMinutes = Math.max(Math.ceil(intervalValue / 60), 1);
 
-		// period less than 1 minute will cause a warning
-		return period < 1 ? 1 : period;
+		// delay less than 1 minute will cause a warning
+		chrome.alarms.create({delayInMinutes});
 	}
 
 	function handleCount(count) {
@@ -57,11 +54,8 @@
 		const count = response.count;
 		const interval = response.interval;
 		const lastModifed = response.lastModifed;
-		const delayInMinutes = handleInterval(interval);
 
-		// unconditionally schedule alarm
-		chrome.alarms.create({delayInMinutes});
-
+		handleInterval(interval);
 		handleLastModified(lastModifed);
 
 		render(handleCount(count), defaults.getBadgeDefaultColor(), 'Notifier for GitHub');

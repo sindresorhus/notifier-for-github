@@ -27,7 +27,8 @@
 			period = Math.ceil(interval / 60);
 		}
 
-		return period;
+		// period less than 1 minute will cause a warning
+		return period < 1 ? 1 : period;
 	}
 
 	function handleCount(count) {
@@ -56,10 +57,10 @@
 		const count = response.count;
 		const interval = response.interval;
 		const lastModifed = response.lastModifed;
-		const period = handleInterval(interval);
+		const delayInMinutes = handleInterval(interval);
 
 		// unconditionally schedule alarm
-		chrome.alarms.create({when: Date.now() + 2000 + (period * 60 * 1000)});
+		chrome.alarms.create({delayInMinutes});
 
 		handleLastModified(lastModifed);
 

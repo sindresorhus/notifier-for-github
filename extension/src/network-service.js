@@ -5,20 +5,25 @@
 		constructor(persistence) {
 			this.PersistenceService = persistence;
 		}
+
+		getHeaders(token) {
+			/* eslint-disable quote-props */
+			return {
+				'Authorization': `token ${token}`,
+				'If-Modified-Since': ''
+			};
+			/* eslint-enable quote-props */
+		}
+
 		request(url) {
 			const token = this.PersistenceService.get('oauthToken');
 			if (!token) {
 				return Promise.reject(new Error('missing token'));
 			}
 
-			/* eslint-disable quote-props */
-			const headers = Object.assign({
-				'Authorization': `token ${token}`,
-				'If-Modified-Since': ''
-			});
-			/* eslint-enable quote-props */
+			const headers = this.getHeaders(token);
 
-			return fetch(url, {headers});
+			return root.fetch(url, {headers});
 		}
 	}
 

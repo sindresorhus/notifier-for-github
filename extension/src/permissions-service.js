@@ -6,20 +6,28 @@
 			this.PersistenceService = persistence;
 		}
 		requestPermission(permission) {
-			return new Promise(resolve => {
+			return new Promise((resolve, reject) => {
 				chrome.permissions.request({
 					permissions: [permission]
 				}, granted => {
+					if (root.chrome.runtime.lastError) {
+						return reject(root.chrome.runtime.lastError);
+					}
 					this.PersistenceService.set(`${permission}_permission`, granted);
 					resolve(granted);
 				});
 			});
 		}
 		queryPermission(permission) {
-			return new Promise(resolve => {
+			return new Promise((resolve, reject) => {
 				chrome.permissions.contains({
 					permissions: [permission]
-				}, resolve);
+				}, granted => {
+					if (root.chrome.runtime.lastError) {
+						return reject(root.chrome.runtime.lastError);
+					}
+					resolve(granted);
+				});
 			});
 		}
 	}

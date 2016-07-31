@@ -16,8 +16,6 @@
 			});
 		}
 		queryPermission(permission) {
-			// TODO (y.solovyov) use that exlusively to check permissions
-			// when switch to async storage API instead of saving it
 			return new Promise(resolve => {
 				chrome.permissions.contains({
 					permissions: [permission]

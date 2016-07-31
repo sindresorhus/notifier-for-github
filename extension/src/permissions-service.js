@@ -1,6 +1,8 @@
 (root => {
 	'use strict';
 
+	const chrome = root.chrome;
+
 	class PermissionsService {
 		constructor(persistence) {
 			this.PersistenceService = persistence;

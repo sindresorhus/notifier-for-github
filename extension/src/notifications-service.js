@@ -1,6 +1,8 @@
 (root => {
 	'use strict';
 
+	const chrome = root.chrome;
+
 	class NotificationsService {
 		constructor(persistence, networking, api, defaults) {
 			this.PersistenceService = persistence;

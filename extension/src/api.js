@@ -1,6 +1,8 @@
 (root => {
 	'use strict';
 
+	const chrome = root.chrome;
+
 	class API {
 		constructor(persistence, networking, permissions, defaults) {
 			this.DefaultsService = defaults;

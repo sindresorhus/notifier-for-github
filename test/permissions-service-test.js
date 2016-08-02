@@ -26,7 +26,7 @@ test('#requestPermission method returns Promise', t => {
 	t.is(typeof service.requestPermission('tabs').then, 'function');
 });
 
-test('#requestPermission method Promise resolves to chrome.permissions.request callback value', t => {
+test.serial('#requestPermission method Promise resolves to chrome.permissions.request callback value', t => {
 	const service = new global.window.PermissionsService(t.context.persistence);
 
 	global.window.chrome.permissions.request = sinon.stub().yieldsAsync(true);
@@ -43,12 +43,12 @@ test('#requestPermission method Promise resolves to chrome.permissions.request c
 	});
 });
 
-test.skip('#requestPermission method returns rejected Promise if chrome.runtime.lastError is set', t => {
+test('#requestPermission method returns rejected Promise if chrome.runtime.lastError is set', t => {
 	const service = new global.window.PermissionsService(t.context.persistence);
-	global.window.chrome.permissions.request = sinon.stub().yieldsAsync();
 	return utils.nextTickPromise().then(() => {
+		global.window.chrome.permissions.request = sinon.stub().yieldsAsync();
 		global.window.chrome.runtime.lastError = new Error('#requestPermission failed');
-		t.throws(service.requestPermission('tabs'), '#requestPermission failed');
+		return service.requestPermission('tabs').then(() => t.fail()).catch(() => t.pass());
 	});
 });
 
@@ -59,7 +59,7 @@ test('#queryPermission method returns Promise', t => {
 	t.is(typeof service.queryPermission('tabs').then, 'function');
 });
 
-test('#queryPermission method Promise resolves to chrome.permissions.request callback value', t => {
+test.serial('#queryPermission method Promise resolves to chrome.permissions.request callback value', t => {
 	const service = new global.window.PermissionsService(t.context.persistence);
 
 	global.window.chrome.permissions.contains = sinon.stub().yieldsAsync(true);
@@ -76,11 +76,11 @@ test('#queryPermission method Promise resolves to chrome.permissions.request cal
 	});
 });
 
-test.skip('#queryPermission method returns rejected Promise if chrome.runtime.lastError is set', t => {
+test('#queryPermission method returns rejected Promise if chrome.runtime.lastError is set', t => {
 	const service = new global.window.PermissionsService(t.context.persistence);
-	global.window.chrome.permissions.contains = sinon.stub().yieldsAsync();
 	return utils.nextTickPromise().then(() => {
+		global.window.chrome.permissions.contains = sinon.stub().yieldsAsync();
 		global.window.chrome.runtime.lastError = new Error('#queryPermission failed');
-		t.throws(service.queryPermission('tabs'), '#queryPermission failed');
+		return service.queryPermission('tabs').then(() => t.fail()).catch(() => t.pass());
 	});
 });

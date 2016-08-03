@@ -77,3 +77,53 @@ test('#renderError method uses error badge color', t => {
 
 	t.true(service.render.calledWith('?', color, 'Unknown error'));
 });
+
+test('#renderError uses proper messages for errors', t => {
+	const service = new global.window.BadgeService(t.context.defaults);
+	service.render = sinon.spy();
+	const messages = [
+		'missing token',
+		'server error',
+		'data format error',
+		'parse error',
+		'default'
+	];
+
+	t.plan(messages.length);
+
+	messages.forEach(message => {
+		service.renderError({message});
+		const title = service.render.lastCall.args[2]; // title arg is 3rd
+		t.is(title, t.context.defaults.getErrorTitle({message}));
+	});
+});
+
+test('#renderError uses proper symbols for errors', t => {
+	const service = new global.window.BadgeService(t.context.defaults);
+	service.render = sinon.spy();
+
+	const crossMarkSymbolMessages = [
+		'missing token'
+	];
+
+	const questionSymbolMessages = [
+		'server error',
+		'data format error',
+		'parse error',
+		'default'
+	];
+
+	t.plan(crossMarkSymbolMessages.length + questionSymbolMessages.length);
+
+	crossMarkSymbolMessages.forEach(message => {
+		service.renderError({message});
+		const symbol = service.render.lastCall.args[0];
+		t.is(symbol, 'X');
+	});
+
+	questionSymbolMessages.forEach(message => {
+		service.renderError({message});
+		const symbol = service.render.lastCall.args[0];
+		t.is(symbol, '?');
+	});
+});

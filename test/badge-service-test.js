@@ -43,7 +43,7 @@ test('#renderCount method uses default badge color', t => {
 	const color = t.context.defaults.getBadgeDefaultColor();
 	service.renderCount(count);
 
-	t.true(service.render.calledWith(String(count), color, 'Notifier for GitHub'));
+	t.true(service.render.calledWith(String(count), color, t.context.defaults.getDefaultTitle()));
 });
 
 test('#renderCount renders empty string when notifications count is 0', t => {
@@ -54,7 +54,7 @@ test('#renderCount renders empty string when notifications count is 0', t => {
 	const color = t.context.defaults.getBadgeDefaultColor();
 	service.renderCount(count);
 
-	t.true(service.render.calledWith('', color, 'Notifier for GitHub'));
+	t.true(service.render.calledWith('', color, t.context.defaults.getDefaultTitle()));
 });
 
 test('#renderCount renders infinity ("∞") string when notifications count > 9999', t => {
@@ -65,7 +65,7 @@ test('#renderCount renders infinity ("∞") string when notifications count > 99
 	const color = t.context.defaults.getBadgeDefaultColor();
 	service.renderCount(count);
 
-	t.true(service.render.calledWith('∞', color, 'Notifier for GitHub'));
+	t.true(service.render.calledWith('∞', color, t.context.defaults.getDefaultTitle()));
 });
 
 test('#renderError method uses error badge color', t => {

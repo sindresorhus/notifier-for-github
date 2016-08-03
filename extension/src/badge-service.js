@@ -14,7 +14,7 @@
 
 		renderCount(count) {
 			const color = this.DefaultsService.getBadgeDefaultColor();
-			const title = 'Notifier for GitHub';
+			const title = this.DefaultsService.getDefaultTitle();
 			this.render(this.getCountString(count), color, title);
 		}
 
@@ -34,25 +34,8 @@
 		}
 
 		getErrorData(error) {
-			let symbol = '?';
-			let title;
-
-			switch (error.message) {
-				case 'missing token':
-					title = 'Missing access token, please create one and enter it in Options';
-					symbol = 'X';
-					break;
-				case 'server error':
-					title = 'You have to be connected to the Internet';
-					break;
-				case 'data format error':
-				case 'parse error':
-					title = 'Unable to find count';
-					break;
-				default:
-					title = 'Unknown error';
-					break;
-			}
+			const title = this.DefaultsService.getErrorTitle(error);
+			const symbol = this.DefaultsService.getErrorSymbol(error);
 			return {symbol, title};
 		}
 	}

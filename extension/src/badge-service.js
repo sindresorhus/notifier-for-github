@@ -15,7 +15,7 @@
 		renderCount(count) {
 			const color = this.DefaultsService.getBadgeDefaultColor();
 			const title = 'Notifier for GitHub';
-			this.render(count, color, title);
+			this.render(this.getCountString(count), color, title);
 		}
 
 		renderError(error) {

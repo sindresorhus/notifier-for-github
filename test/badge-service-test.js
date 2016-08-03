@@ -34,3 +34,46 @@ test('#render method sets text, background and title', t => {
 	t.true(global.window.chrome.browserAction.setBadgeBackgroundColor.calledWith({color}));
 	t.true(global.window.chrome.browserAction.setTitle.calledWith({title}));
 });
+
+test('#renderCount method uses default badge color', t => {
+	const service = new global.window.BadgeService(t.context.defaults);
+	service.render = sinon.spy();
+
+	const count = 42;
+	const color = t.context.defaults.getBadgeDefaultColor();
+	service.renderCount(count);
+
+	t.true(service.render.calledWith(String(count), color, 'Notifier for GitHub'));
+});
+
+test('#renderCount renders empty string when notifications count is 0', t => {
+	const service = new global.window.BadgeService(t.context.defaults);
+	service.render = sinon.spy();
+
+	const count = 0;
+	const color = t.context.defaults.getBadgeDefaultColor();
+	service.renderCount(count);
+
+	t.true(service.render.calledWith('', color, 'Notifier for GitHub'));
+});
+
+test('#renderCount renders infinity ("∞") string when notifications count > 9999', t => {
+	const service = new global.window.BadgeService(t.context.defaults);
+	service.render = sinon.spy();
+
+	const count = 10000;
+	const color = t.context.defaults.getBadgeDefaultColor();
+	service.renderCount(count);
+
+	t.true(service.render.calledWith('∞', color, 'Notifier for GitHub'));
+});
+
+test('#renderError method uses error badge color', t => {
+	const service = new global.window.BadgeService(t.context.defaults);
+	service.render = sinon.spy();
+
+	const color = t.context.defaults.getBadgeErrorColor();
+	service.renderError({});
+
+	t.true(service.render.calledWith('?', color, 'Unknown error'));
+});

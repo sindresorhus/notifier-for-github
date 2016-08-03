@@ -7,9 +7,9 @@
 		}
 
 		render(count, color, title) {
-			chrome.browserAction.setBadgeText({count});
-			chrome.browserAction.setBadgeBackgroundColor({color});
-			chrome.browserAction.setTitle({title});
+			root.chrome.browserAction.setBadgeText({count});
+			root.chrome.browserAction.setBadgeBackgroundColor({color});
+			root.chrome.browserAction.setTitle({title});
 		}
 
 		renderCount(count) {

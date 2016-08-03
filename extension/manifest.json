@@ -19,6 +19,7 @@
 		"persistent": false,
 		"scripts": [
 			"src/api.js",
+			"src/badge-service.js",
 			"src/defaults-service.js",
 			"src/network-service.js",
 			"src/permissions-service.js",

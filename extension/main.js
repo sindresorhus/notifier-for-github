@@ -2,17 +2,12 @@
 	'use strict';
 
 	const defaults = new DefaultsService();
+	const badge = new BadgeService(defaults);
 	const persistence = new PersistenceService(defaults);
 	const networking = new NetworkService(persistence);
 	const permissions = new PermissionsService(persistence);
 	const api = new API(persistence, networking, permissions, defaults);
 	const notifications = new NotificationsService(persistence, networking, api, defaults);
-
-	function render(text, color, title) {
-		chrome.browserAction.setBadgeText({text});
-		chrome.browserAction.setBadgeBackgroundColor({color});
-		chrome.browserAction.setTitle({title});
-	}
 
 	function handleInterval(interval) {
 		const intervalSetting = parseInt(persistence.get('interval'), 10) || 60;
@@ -22,19 +17,10 @@
 			persistence.set('interval', intervalValue);
 		}
 
+		// delay less than 1 minute will cause a warning
 		const delayInMinutes = Math.max(Math.ceil(intervalValue / 60), 1);
 
-		// delay less than 1 minute will cause a warning
 		chrome.alarms.create({delayInMinutes});
-	}
-
-	function handleCount(count) {
-		if (count === 0) {
-			return '';
-		} else if (count > 9999) {
-			return '∞';
-		}
-		return String(count);
 	}
 
 	function handleLastModified(date) {
@@ -58,7 +44,7 @@
 		handleInterval(interval);
 		handleLastModified(lastModifed);
 
-		render(handleCount(count), defaults.getBadgeDefaultColor(), 'Notifier for GitHub');
+		badge.renderCount(count);
 	}
 
 	function update() {
@@ -66,27 +52,7 @@
 	}
 
 	function handleError(error) {
-		let symbol = '?';
-		let text;
-
-		switch (error.message) {
-			case 'missing token':
-				text = 'Missing access token, please create one and enter it in Options';
-				symbol = 'X';
-				break;
-			case 'server error':
-				text = 'You have to be connected to the internet';
-				break;
-			case 'data format error':
-			case 'parse error':
-				text = 'Unable to find count';
-				break;
-			default:
-				text = 'Unknown error';
-				break;
-		}
-
-		render(symbol, defaults.getBadgeErrorColor(), text);
+		badge.renderError(error);
 	}
 
 	function handleBrowserActionClick(tab) {

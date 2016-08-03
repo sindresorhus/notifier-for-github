@@ -37,9 +37,7 @@
 	}
 
 	function handleNotificationsResponse(response) {
-		const count = response.count;
-		const interval = response.interval;
-		const lastModifed = response.lastModifed;
+		const {count, interval, lastModifed} = response;
 
 		handleInterval(interval);
 		handleLastModified(lastModifed);

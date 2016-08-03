@@ -10,6 +10,7 @@
 			this.API = api;
 			this.DefaultsService = defaults;
 		}
+
 		handleClick(notificationId) {
 			const url = this.PersistenceService.get(notificationId);
 			if (url) {
@@ -22,9 +23,11 @@
 			}
 			chrome.notifications.clear(notificationId);
 		}
+
 		handleClose(notificationId) {
 			this.PersistenceService.remove(notificationId);
 		}
+
 		checkNotifications(lastModifed) {
 			const url = this.API.getApiUrl({perPage: 100});
 
@@ -32,6 +35,7 @@
 				this.showNotifications(notifications, lastModifed);
 			});
 		}
+
 		showNotifications(notifications, lastModifed) {
 			const lastModifedTime = new Date(lastModifed).getTime();
 
@@ -39,13 +43,14 @@
 				return new Date(notification.updated_at).getTime() > lastModifedTime;
 			}).forEach(notification => {
 				const notificationId = `github-notifier-${notification.id}`;
-				chrome.notifications.create(notificationId, {
+				const notificationObject = {
 					title: notification.subject.title,
 					iconUrl: 'icon-notif-128.png',
 					type: 'basic',
 					message: notification.repository.full_name,
 					contextMessage: this.DefaultsService.getNotificationReasonText(notification.reason)
-				});
+				};
+				chrome.notifications.create(notificationId, notificationObject);
 
 				this.PersistenceService.set(notificationId, notification.subject.url);
 			});

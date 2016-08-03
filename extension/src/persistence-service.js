@@ -7,6 +7,7 @@
 		constructor(defaults) {
 			this.DefaultsService = defaults;
 		}
+
 		get(name) {
 			const item = localStorage.getItem(name);
 			const defaults = this.DefaultsService.getDefaults();
@@ -21,12 +22,15 @@
 
 			return item;
 		}
+
 		set(name, value) {
 			localStorage.setItem(name, value);
 		}
+
 		remove(name) {
 			localStorage.removeItem(name);
 		}
+
 		reset() {
 			localStorage.clear();
 		}

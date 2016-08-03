@@ -6,8 +6,8 @@
 			this.DefaultsService = defaults;
 		}
 
-		render(count, color, title) {
-			root.chrome.browserAction.setBadgeText({count});
+		render(text, color, title) {
+			root.chrome.browserAction.setBadgeText({text});
 			root.chrome.browserAction.setBadgeBackgroundColor({color});
 			root.chrome.browserAction.setTitle({title});
 		}

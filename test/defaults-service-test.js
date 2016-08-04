@@ -73,3 +73,25 @@ test('#getNotificationReasonText returns notification reasons', t => {
 		t.is(service.getNotificationReasonText(reason), '');
 	});
 });
+
+test('#getDefaultTitle method returns string', t => {
+	const service = new global.window.DefaultsService();
+	t.is(typeof service.getDefaultTitle(), 'string');
+});
+
+test('#getErrorSymbol method returns either "X" or "?" strings', t => {
+	const service = new global.window.DefaultsService();
+
+	t.is(service.getErrorSymbol({message: 'missing token'}), 'X');
+
+	const invalidMessages = [
+		'no such thing',
+		undefined,
+		NaN,
+		{foo: 312}
+	];
+
+	invalidMessages.forEach(message => {
+		t.is(service.getErrorSymbol({message}), '?');
+	});
+});

@@ -89,8 +89,6 @@ test('#renderError uses proper messages for errors', t => {
 		'default'
 	];
 
-	t.plan(messages.length);
-
 	messages.forEach(message => {
 		service.renderError({message});
 		const title = service.render.lastCall.args[2]; // title arg is 3rd
@@ -112,8 +110,6 @@ test('#renderError uses proper symbols for errors', t => {
 		'parse error',
 		'default'
 	];
-
-	t.plan(crossMarkSymbolMessages.length + questionSymbolMessages.length);
 
 	crossMarkSymbolMessages.forEach(message => {
 		service.renderError({message});

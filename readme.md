@@ -54,7 +54,7 @@ Also available on [Firefox](https://github.com/sindresorhus/notifier-for-github-
 
 ## Maintainers
 
-- [@YuriSolovyov](https://github.com/YuriSolovyov) (Yury Solovyov)
+- [@YurySolovyov](https://github.com/YurySolovyov) (Yury Solovyov)
 - [@gcochard](https://github.com/gcochard) (Greg Cochard)
 - [@fstoerkle](https://github.com/fstoerkle) (Florian Störkle)
 

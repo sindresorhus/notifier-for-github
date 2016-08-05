@@ -40,3 +40,25 @@ test('#buildQuery method respects useParticipatingCount setting', t => {
 	t.context.persistence.get = sinon.stub().returns(true);
 	t.is(service.buildQuery({perPage: 1}), 'per_page=1&participating=true');
 });
+
+test('#getApiUrl method uses default endpoint if rootUrl matches GitHub', t => {
+	const service = new global.window.API(t.context.persistence, t.context.networking, t.context.permissions, t.context.defaults);
+	t.context.persistence.get = sinon.stub().returns('https://api.github.com/');
+	t.is(service.getApiUrl(), 'https://api.github.com/notifications');
+});
+
+test('#getApiUrl method uses custom endpoint if rootUrl is something other than GitHub', t => {
+	const service = new global.window.API(t.context.persistence, t.context.networking, t.context.permissions, t.context.defaults);
+	t.context.persistence.get = sinon.stub().returns('https://something.com/');
+	t.is(service.getApiUrl(), 'https://something.com/api/v3/notifications');
+});
+
+test('#getApiUrl method uses query if passed', t => {
+	const service = new global.window.API(t.context.persistence, t.context.networking, t.context.permissions, t.context.defaults);
+	t.context.persistence.get = sinon.stub();
+
+	t.context.persistence.get.withArgs('rootUrl').returns('https://api.github.com/');
+	t.context.persistence.get.withArgs('useParticipatingCount').returns(false);
+
+	t.is(service.getApiUrl({perPage: 123}), 'https://api.github.com/notifications?per_page=123');
+});

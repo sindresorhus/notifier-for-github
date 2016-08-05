@@ -21,17 +21,19 @@
 		}
 
 		getApiUrl(query) {
-			const rootUrl = this.PersistenceService.get('rootUrl');
+			let rootUrl = this.PersistenceService.get('rootUrl');
 
 			if (/(^(https:\/\/)?(api\.)?github\.com)/.test(rootUrl)) {
-				return 'https://api.github.com/notifications';
+				rootUrl = 'https://api.github.com/notifications';
+			} else {
+				rootUrl = `${rootUrl}api/v3/notifications`;
 			}
 
 			if (query) {
-				return `${rootUrl}api/v3/notifications?${this.buildQuery(query)}`;
+				return `${rootUrl}?${this.buildQuery(query)}`;
 			}
 
-			return `${rootUrl}api/v3/notifications`;
+			return rootUrl;
 		}
 
 		getTabUrl() {

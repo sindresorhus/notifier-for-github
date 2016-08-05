@@ -8,7 +8,7 @@
 	const permissions = new PermissionsService(persistence);
 	const tabs = new TabsService(permissions);
 	const api = new API(persistence, networking, defaults);
-	const notifications = new NotificationsService(persistence, networking, api, defaults);
+	const notifications = new NotificationsService(persistence, api, defaults, tabs);
 
 	function handleInterval(interval) {
 		const intervalSetting = parseInt(persistence.get('interval'), 10) || 60;

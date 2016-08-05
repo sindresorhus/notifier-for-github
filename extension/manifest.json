@@ -25,6 +25,7 @@
 			"src/permissions-service.js",
 			"src/notifications-service.js",
 			"src/persistence-service.js",
+			"src/tabs-service.js",
 			"main.js"
 		]
 	},

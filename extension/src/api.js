@@ -76,9 +76,13 @@
 			return Promise.resolve({count, interval, lastModifed});
 		}
 
+		makeApiRequest(options) {
+			const url = options.url || this.getApiUrl(options);
+			return this.NetworkService.request(url);
+		}
+
 		getNotifications() {
-			const url = this.getApiUrl({perPage: 1});
-			return this.NetworkService.request(url).then(this.parseApiResponse);
+			return this.makeApiRequest({perPage: 1}).then(this.parseApiResponse);
 		}
 	}
 

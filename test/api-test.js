@@ -147,6 +147,22 @@ test('#parseApiResponse returns rejected promise for 5xx status codes', t => {
 	t.throws(service.parseApiResponse(resp), 'server error');
 });
 
+test('#makeApiRequest makes NetworkService.request for provided url and returns', t => {
+	const service = new global.window.API(t.context.persistence, t.context.networking, t.context.defaults);
+	service.NetworkService.request = sinon.stub().returns(Promise.resolve('response'));
+	const url = 'https://api.github.com/resource';
+	service.makeApiRequest({url});
+	t.deepEqual(service.NetworkService.request.lastCall.args, [url]);
+});
+
+test('#makeApiRequest makes NetworkService.request to #getApiUrl if no url provided in options', t => {
+	const service = new global.window.API(t.context.persistence, t.context.networking, t.context.defaults);
+	service.NetworkService.request = sinon.stub().returns(Promise.resolve('response'));
+	const url = 'https://api.github.com/resource';
+	service.makeApiRequest({url});
+	t.deepEqual(service.NetworkService.request.lastCall.args, [url]);
+});
+
 test('#getNotifications method returns promise that resolves to parsed API response', t => {
 	const service = new global.window.API(t.context.persistence, t.context.networking, t.context.defaults);
 	service.getApiUrl = sinon.stub().returns('https://api.github.com/resource');
@@ -157,8 +173,7 @@ test('#getNotifications method returns promise that resolves to parsed API respo
 			interval: 60,
 			lastModifed: null
 		});
-		t.true(service.getApiUrl.calledOnce);
-		t.true(service.NetworkService.request.calledOnce);
+		t.true(service.makeApiRequest.calledOnce);
 		t.true(service.parseApiResponse.calledOnce);
 	});
 });

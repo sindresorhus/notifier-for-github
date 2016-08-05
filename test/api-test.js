@@ -55,10 +55,40 @@ test('#getApiUrl method uses custom endpoint if rootUrl is something other than 
 
 test('#getApiUrl method uses query if passed', t => {
 	const service = new global.window.API(t.context.persistence, t.context.networking, t.context.permissions, t.context.defaults);
-	t.context.persistence.get = sinon.stub();
 
+	t.context.persistence.get = sinon.stub();
 	t.context.persistence.get.withArgs('rootUrl').returns('https://api.github.com/');
 	t.context.persistence.get.withArgs('useParticipatingCount').returns(false);
 
 	t.is(service.getApiUrl({perPage: 123}), 'https://api.github.com/notifications?per_page=123');
+});
+
+test('#getTabUrl method uses default page if rootUrl matches GitHub', t => {
+	const service = new global.window.API(t.context.persistence, t.context.networking, t.context.permissions, t.context.defaults);
+
+	t.context.persistence.get = sinon.stub();
+	t.context.persistence.get.withArgs('rootUrl').returns('https://api.github.com/');
+	t.context.persistence.get.withArgs('useParticipatingCount').returns(false);
+
+	t.is(service.getTabUrl(), 'https://github.com/notifications');
+});
+
+test('#getTabUrl method uses uses custom page if rootUrl is something other than GitHub', t => {
+	const service = new global.window.API(t.context.persistence, t.context.networking, t.context.permissions, t.context.defaults);
+
+	t.context.persistence.get = sinon.stub();
+	t.context.persistence.get.withArgs('rootUrl').returns('https://something.com/');
+	t.context.persistence.get.withArgs('useParticipatingCount').returns(false);
+
+	t.is(service.getTabUrl(), 'https://something.com/notifications');
+});
+
+test('#getTabUrl method respects useParticipatingCount setting', t => {
+	const service = new global.window.API(t.context.persistence, t.context.networking, t.context.permissions, t.context.defaults);
+
+	t.context.persistence.get = sinon.stub();
+	t.context.persistence.get.withArgs('rootUrl').returns('https://api.github.com/');
+	t.context.persistence.get.withArgs('useParticipatingCount').returns(true);
+
+	t.is(service.getTabUrl(), 'https://github.com/notifications/participating');
 });

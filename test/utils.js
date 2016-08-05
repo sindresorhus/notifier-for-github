@@ -13,10 +13,6 @@ module.exports = {
 				getItem: () => {}
 			},
 			chrome: Object.assign({}, chromeStub, {
-				permissions: {
-					request: () => {},
-					contains: () => {}
-				},
 				runtime: {}
 			})
 		};

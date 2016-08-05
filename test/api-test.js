@@ -1,6 +1,8 @@
 import test from 'ava';
-// import sinon from 'sinon';
+import sinon from 'sinon';
 import utils from './utils';
+
+global.URLSearchParams = require('url-search-params');
 
 global.window = utils.setupWindow();
 require('../extension/src/defaults-service.js');
@@ -26,4 +28,15 @@ test('API constructor sets its deps', t => {
 	t.true(service.PersistenceService instanceof global.window.PersistenceService);
 	t.true(service.NetworkService instanceof global.window.NetworkService);
 	t.true(service.PermissionsService instanceof global.window.PermissionsService);
+});
+
+test('#buildQuery method respects per_page option', t => {
+	const service = new global.window.API(t.context.persistence, t.context.networking, t.context.permissions, t.context.defaults);
+	t.is(service.buildQuery({perPage: 1}), 'per_page=1');
+});
+
+test('#buildQuery method respects useParticipatingCount setting', t => {
+	const service = new global.window.API(t.context.persistence, t.context.networking, t.context.permissions, t.context.defaults);
+	t.context.persistence.get = sinon.stub().returns(true);
+	t.is(service.buildQuery({perPage: 1}), 'per_page=1&participating=true');
 });

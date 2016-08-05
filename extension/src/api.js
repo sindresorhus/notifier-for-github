@@ -5,10 +5,10 @@
 
 	class API {
 		constructor(persistence, networking, permissions, defaults) {
-			this.DefaultsService = defaults;
 			this.PersistenceService = persistence;
 			this.NetworkService = networking;
 			this.PermissionsService = permissions;
+			this.DefaultsService = defaults;
 		}
 
 		buildQuery(options) {

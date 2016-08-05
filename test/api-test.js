@@ -7,14 +7,12 @@ global.URLSearchParams = require('url-search-params');
 global.window = utils.setupWindow();
 require('../extension/src/defaults-service.js');
 require('../extension/src/persistence-service.js');
-require('../extension/src/permissions-service.js');
 require('../extension/src/network-service.js');
 require('../extension/src/api.js');
 
 test.beforeEach(t => {
 	t.context.defaults = new global.window.DefaultsService();
 	t.context.persistence = new global.window.PersistenceService(t.context.defaults);
-	t.context.permissions = new global.window.PermissionsService(t.context.persistence);
 	t.context.networking = new global.window.NetworkService(t.context.persistence);
 
 	t.context.getDefaultResponse = overrides => {
@@ -23,6 +21,7 @@ test.beforeEach(t => {
 		headersGet.withArgs('Last-Modified').returns(null);
 		headersGet.withArgs('Link').returns(null);
 		return Object.assign({
+			status: 200,
 			headers: {
 				get: headersGet
 			},
@@ -36,38 +35,37 @@ test('installs API constructor', t => {
 });
 
 test('API constructor sets its deps', t => {
-	const service = new global.window.API(t.context.persistence, t.context.networking, t.context.permissions, t.context.defaults);
+	const service = new global.window.API(t.context.persistence, t.context.networking, t.context.defaults);
 	t.true(service.DefaultsService instanceof global.window.DefaultsService);
 	t.true(service.PersistenceService instanceof global.window.PersistenceService);
 	t.true(service.NetworkService instanceof global.window.NetworkService);
-	t.true(service.PermissionsService instanceof global.window.PermissionsService);
 });
 
 test('#buildQuery method respects per_page option', t => {
-	const service = new global.window.API(t.context.persistence, t.context.networking, t.context.permissions, t.context.defaults);
+	const service = new global.window.API(t.context.persistence, t.context.networking, t.context.defaults);
 	t.is(service.buildQuery({perPage: 1}), 'per_page=1');
 });
 
 test('#buildQuery method respects useParticipatingCount setting', t => {
-	const service = new global.window.API(t.context.persistence, t.context.networking, t.context.permissions, t.context.defaults);
+	const service = new global.window.API(t.context.persistence, t.context.networking, t.context.defaults);
 	t.context.persistence.get = sinon.stub().returns(true);
 	t.is(service.buildQuery({perPage: 1}), 'per_page=1&participating=true');
 });
 
 test('#getApiUrl method uses default endpoint if rootUrl matches GitHub', t => {
-	const service = new global.window.API(t.context.persistence, t.context.networking, t.context.permissions, t.context.defaults);
+	const service = new global.window.API(t.context.persistence, t.context.networking, t.context.defaults);
 	t.context.persistence.get = sinon.stub().returns('https://api.github.com/');
 	t.is(service.getApiUrl(), 'https://api.github.com/notifications');
 });
 
 test('#getApiUrl method uses custom endpoint if rootUrl is something other than GitHub', t => {
-	const service = new global.window.API(t.context.persistence, t.context.networking, t.context.permissions, t.context.defaults);
+	const service = new global.window.API(t.context.persistence, t.context.networking, t.context.defaults);
 	t.context.persistence.get = sinon.stub().returns('https://something.com/');
 	t.is(service.getApiUrl(), 'https://something.com/api/v3/notifications');
 });
 
 test('#getApiUrl method uses query if passed', t => {
-	const service = new global.window.API(t.context.persistence, t.context.networking, t.context.permissions, t.context.defaults);
+	const service = new global.window.API(t.context.persistence, t.context.networking, t.context.defaults);
 
 	t.context.persistence.get = sinon.stub();
 	t.context.persistence.get.withArgs('rootUrl').returns('https://api.github.com/');
@@ -77,7 +75,7 @@ test('#getApiUrl method uses query if passed', t => {
 });
 
 test('#getTabUrl method uses default page if rootUrl matches GitHub', t => {
-	const service = new global.window.API(t.context.persistence, t.context.networking, t.context.permissions, t.context.defaults);
+	const service = new global.window.API(t.context.persistence, t.context.networking, t.context.defaults);
 
 	t.context.persistence.get = sinon.stub();
 	t.context.persistence.get.withArgs('rootUrl').returns('https://api.github.com/');
@@ -87,7 +85,7 @@ test('#getTabUrl method uses default page if rootUrl matches GitHub', t => {
 });
 
 test('#getTabUrl method uses uses custom page if rootUrl is something other than GitHub', t => {
-	const service = new global.window.API(t.context.persistence, t.context.networking, t.context.permissions, t.context.defaults);
+	const service = new global.window.API(t.context.persistence, t.context.networking, t.context.defaults);
 
 	t.context.persistence.get = sinon.stub();
 	t.context.persistence.get.withArgs('rootUrl').returns('https://something.com/');
@@ -97,7 +95,7 @@ test('#getTabUrl method uses uses custom page if rootUrl is something other than
 });
 
 test('#getTabUrl method respects useParticipatingCount setting', t => {
-	const service = new global.window.API(t.context.persistence, t.context.networking, t.context.permissions, t.context.defaults);
+	const service = new global.window.API(t.context.persistence, t.context.networking, t.context.defaults);
 
 	t.context.persistence.get = sinon.stub();
 	t.context.persistence.get.withArgs('rootUrl').returns('https://api.github.com/');
@@ -107,7 +105,7 @@ test('#getTabUrl method respects useParticipatingCount setting', t => {
 });
 
 test('#parseApiResponse method promise resolves response of 0 notifications if Link header is null', t => {
-	const service = new global.window.API(t.context.persistence, t.context.networking, t.context.permissions, t.context.defaults);
+	const service = new global.window.API(t.context.persistence, t.context.networking, t.context.defaults);
 
 	const resp = t.context.getDefaultResponse();
 	return service.parseApiResponse(resp).then(response => {
@@ -116,7 +114,7 @@ test('#parseApiResponse method promise resolves response of 0 notifications if L
 });
 
 test('#parseApiResponse method promise resolves response of N notifications according to Link header', t => {
-	const service = new global.window.API(t.context.persistence, t.context.networking, t.context.permissions, t.context.defaults);
+	const service = new global.window.API(t.context.persistence, t.context.networking, t.context.defaults);
 
 	const resp = t.context.getDefaultResponse();
 	resp.headers.get.withArgs('Link').returns(`<https://api.github.com/resource?page=1>; rel="next"
@@ -129,5 +127,38 @@ test('#parseApiResponse method promise resolves response of N notifications acco
 		return service.parseApiResponse(resp);
 	}).then(response => {
 		t.deepEqual(response, {count: 3, interval: 60, lastModifed: null});
+	});
+});
+
+test.serial('#parseApiResponse returns rejected promise for 4xx status codes', t => {
+	const service = new global.window.API(t.context.persistence, t.context.networking, t.context.defaults);
+	const resp = t.context.getDefaultResponse({
+		status: 404,
+		statusText: 'Not found'
+	});
+	t.throws(service.parseApiResponse(resp), 'client error: 404 Not found');
+});
+
+test('#parseApiResponse returns rejected promise for 5xx status codes', t => {
+	const service = new global.window.API(t.context.persistence, t.context.networking, t.context.defaults);
+	const resp = t.context.getDefaultResponse({
+		status: 500
+	});
+	t.throws(service.parseApiResponse(resp), 'server error');
+});
+
+test('#getNotifications method returns promise that resolves to parsed API response', t => {
+	const service = new global.window.API(t.context.persistence, t.context.networking, t.context.defaults);
+	service.getApiUrl = sinon.stub().returns('https://api.github.com/resource');
+	service.NetworkService.request = sinon.stub().returns(Promise.resolve(t.context.getDefaultResponse()));
+	service.getNotifications().then(res => {
+		t.deepEqual(res, {
+			count: 0,
+			interval: 60,
+			lastModifed: null
+		});
+		t.true(service.getApiUrl.calledOnce);
+		t.true(service.NetworkService.request.calledOnce);
+		t.true(service.parseApiResponse.calledOnce);
 	});
 });

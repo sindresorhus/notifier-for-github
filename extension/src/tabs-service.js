@@ -1,5 +1,6 @@
 (root => {
 	'use strict';
+
 	class TabsService {
 		constructor(permissions) {
 			this.PermissionsService = permissions;
@@ -29,24 +30,22 @@
 					return reject(root.chrome.runtime.lastError);
 				}
 				const currentWindow = true;
-				root.tabs.query({currentWindow, url}, resolve);
+				root.chrome.tabs.query({currentWindow, url}, resolve);
 			});
 		}
 
 		openTab(url, tab) {
-			// checks optional permissions
 			return this.PermissionsService.queryPermission('tabs').then(granted => {
 				if (granted) {
 					return this.queryTabs(url);
 				}
-				this.createTab({url});
 			}).then(tabs => {
-				if (tabs.length > 0) {
+				if (tabs && tabs.length > 0) {
 					return this.updateTab(tabs[0].id, {url, highlighted: true});
 				} else if (tab && tab.url === 'chrome://newtab/') {
 					return this.updateTab(null, {url, highlighted: false});
 				}
-				return root.chrome.tabs.create({url});
+				return this.createTab({url});
 			});
 		}
 	}

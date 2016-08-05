@@ -17,7 +17,7 @@
 					const tabUrl = json.message === 'Not Found' ? root.API.getTabUrl() : json.html_url;
 					this.TabsService.openTab(tabUrl);
 				}).catch(() => {
-					this.TabsService.openTab(this.TabsService.getTabUrl());
+					this.TabsService.openTab(this.API.getTabUrl());
 				});
 			}
 			root.chrome.notifications.clear(notificationId);

@@ -6,7 +6,8 @@
 	const persistence = new PersistenceService(defaults);
 	const networking = new NetworkService(persistence);
 	const permissions = new PermissionsService(persistence);
-	const api = new API(persistence, networking, permissions, defaults);
+	const tabs = new TabsService(permissions);
+	const api = new API(persistence, networking, defaults);
 	const notifications = new NotificationsService(persistence, networking, api, defaults);
 
 	function handleInterval(interval) {
@@ -60,10 +61,10 @@
 		if (persistence.get('tabs_permission') === undefined) {
 			permissions.requestPermission('tabs').then(granted => {
 				persistence.set('tabs_permission', granted);
-				api.openTab(tabUrl, tab);
+				tabs.openTab(tabUrl, tab);
 			});
 		} else {
-			api.openTab(tabUrl, tab);
+			tabs.openTab(tabUrl, tab);
 		}
 	}
 

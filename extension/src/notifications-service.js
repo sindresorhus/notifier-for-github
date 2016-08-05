@@ -1,14 +1,13 @@
 (root => {
 	'use strict';
 
-	const chrome = root.chrome;
-
 	class NotificationsService {
-		constructor(persistence, networking, api, defaults) {
+		constructor(persistence, networking, api, defaults, tabs) {
 			this.PersistenceService = persistence;
 			this.NetworkService = networking;
 			this.API = api;
 			this.DefaultsService = defaults;
+			this.TabsService = tabs;
 		}
 
 		handleClick(notificationId) {
@@ -16,12 +15,12 @@
 			if (url) {
 				this.NetworkService.request(url).then(res => res.json()).then(json => {
 					const tabUrl = json.message === 'Not Found' ? root.API.getTabUrl() : json.html_url;
-					this.API.openTab(tabUrl);
+					this.TabsService.openTab(tabUrl);
 				}).catch(() => {
-					this.API.openTab(this.API.getTabUrl());
+					this.TabsService.openTab(this.TabsService.getTabUrl());
 				});
 			}
-			chrome.notifications.clear(notificationId);
+			root.chrome.notifications.clear(notificationId);
 		}
 
 		handleClose(notificationId) {
@@ -50,7 +49,7 @@
 					message: notification.repository.full_name,
 					contextMessage: this.DefaultsService.getNotificationReasonText(notification.reason)
 				};
-				chrome.notifications.create(notificationId, notificationObject);
+				root.chrome.notifications.create(notificationId, notificationObject);
 
 				this.PersistenceService.set(notificationId, notification.subject.url);
 			});

@@ -34,7 +34,8 @@
       "PersistenceService",
       "PermissionsService",
       "NotificationsService",
-      "NetworkService"
+      "NetworkService",
+      "TabsService"
     ]
   },
   "license": "MIT"

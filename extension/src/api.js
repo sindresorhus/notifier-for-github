@@ -54,7 +54,6 @@
 			const status = response.status;
 			const interval = Number(response.headers.get('X-Poll-Interval'));
 			const lastModifed = response.headers.get('Last-Modified');
-
 			const linkheader = response.headers.get('Link');
 
 			if (linkheader === null) {
@@ -76,7 +75,7 @@
 				return Promise.reject(new Error(`client error: ${status} ${response.statusText}`));
 			}
 
-			return {count, interval, lastModifed};
+			return Promise.resolve({count, interval, lastModifed});
 		}
 
 		getNotifications() {

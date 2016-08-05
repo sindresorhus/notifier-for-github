@@ -16,6 +16,19 @@ test.beforeEach(t => {
 	t.context.persistence = new global.window.PersistenceService(t.context.defaults);
 	t.context.permissions = new global.window.PermissionsService(t.context.persistence);
 	t.context.networking = new global.window.NetworkService(t.context.persistence);
+
+	t.context.getDefaultResponse = overrides => {
+		const headersGet = sinon.stub();
+		headersGet.withArgs('X-Poll-Interval').returns('60');
+		headersGet.withArgs('Last-Modified').returns(null);
+		headersGet.withArgs('Link').returns(null);
+		return Object.assign({
+			headers: {
+				get: headersGet
+			},
+			json: () => Promise.resolve([])
+		}, overrides);
+	};
 });
 
 test('installs API constructor', t => {
@@ -91,4 +104,30 @@ test('#getTabUrl method respects useParticipatingCount setting', t => {
 	t.context.persistence.get.withArgs('useParticipatingCount').returns(true);
 
 	t.is(service.getTabUrl(), 'https://github.com/notifications/participating');
+});
+
+test('#parseApiResponse method promise resolves response of 0 notifications if Link header is null', t => {
+	const service = new global.window.API(t.context.persistence, t.context.networking, t.context.permissions, t.context.defaults);
+
+	const resp = t.context.getDefaultResponse();
+	return service.parseApiResponse(resp).then(response => {
+		t.deepEqual(response, {count: 0, interval: 60, lastModifed: null});
+	});
+});
+
+test('#parseApiResponse method promise resolves response of N notifications according to Link header', t => {
+	const service = new global.window.API(t.context.persistence, t.context.networking, t.context.permissions, t.context.defaults);
+
+	const resp = t.context.getDefaultResponse();
+	resp.headers.get.withArgs('Link').returns(`<https://api.github.com/resource?page=1>; rel="next"
+    																				 <https://api.github.com/resource?page=2>; rel="last"`);
+	return service.parseApiResponse(resp).then(response => {
+		t.deepEqual(response, {count: 2, interval: 60, lastModifed: null});
+		resp.headers.get.withArgs('Link').returns(`<https://api.github.com/resource?page=1>; rel="next"
+																							 <https://api.github.com/resource?page=2>; rel="next"
+	    																				 <https://api.github.com/resource?page=3>; rel="last"`);
+		return service.parseApiResponse(resp);
+	}).then(response => {
+		t.deepEqual(response, {count: 3, interval: 60, lastModifed: null});
+	});
 });

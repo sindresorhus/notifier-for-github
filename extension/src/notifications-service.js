@@ -9,25 +9,35 @@
 			this.TabsService = tabs;
 		}
 
-		handleClick(notificationId) {
+		openNotification(notificationId) {
 			const url = this.PersistenceService.get(notificationId);
 			if (url) {
-				this.API.makeApiRequest({url}).then(res => res.json()).then(json => {
-					const tabUrl = json.message === 'Not Found' ? root.API.getTabUrl() : json.html_url;
-					this.TabsService.openTab(tabUrl);
+				return this.API.makeApiRequest({url}).then(res => res.json()).then(json => {
+					const tabUrl = json.message === 'Not Found' ? this.API.getTabUrl() : json.html_url;
+					return this.TabsService.openTab(tabUrl);
+				}).then(() => {
+					return this.closeNotification(notificationId);
 				}).catch(() => {
-					this.TabsService.openTab(this.API.getTabUrl());
+					return this.TabsService.openTab(this.API.getTabUrl());
+				}).then(() => {
+					return this.closeNotification(notificationId);
 				});
 			}
-			root.chrome.notifications.clear(notificationId);
+			return this.closeNotification(notificationId);
 		}
 
-		handleClose(notificationId) {
+		closeNotification(notificationId) {
+			return new Promise(resolve => {
+				root.chrome.notifications.clear(notificationId, resolve);
+			});
+		}
+
+		removeNotification(notificationId) {
 			this.PersistenceService.remove(notificationId);
 		}
 
 		checkNotifications(lastModifed) {
-			this.API.makeApiRequest({perPage: 100}).then(res => res.json()).then(notifications => {
+			return this.API.makeApiRequest({perPage: 100}).then(res => res.json()).then(notifications => {
 				this.showNotifications(notifications, lastModifed);
 			});
 		}

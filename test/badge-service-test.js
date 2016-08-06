@@ -113,13 +113,11 @@ test('#renderError uses proper symbols for errors', t => {
 
 	crossMarkSymbolMessages.forEach(message => {
 		service.renderError({message});
-		const symbol = service.render.lastCall.args[0];
-		t.is(symbol, 'X');
+		t.true(service.render.calledWithMatch('X'));
 	});
 
 	questionSymbolMessages.forEach(message => {
 		service.renderError({message});
-		const symbol = service.render.lastCall.args[0];
-		t.is(symbol, '?');
+		t.true(service.render.calledWithMatch('?'));
 	});
 });

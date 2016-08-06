@@ -80,8 +80,8 @@
 
 	permissions.queryPermission('notifications').then(granted => {
 		if (granted) {
-			chrome.notifications.onClicked.addListener(notifications.handleClick.bind(notifications));
-			chrome.notifications.onClosed.addListener(notifications.handleClose.bind(notifications));
+			chrome.notifications.onClicked.addListener(notifications.openNotification.bind(notifications));
+			chrome.notifications.onClosed.addListener(notifications.removeNotification.bind(notifications));
 		}
 	});
 

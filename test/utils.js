@@ -10,10 +10,12 @@ module.exports = {
 		return {
 			localStorage: {
 				setItem: () => {},
-				getItem: () => {}
+				getItem: () => {},
+				removeItem: () => {}
 			},
 			chrome: Object.assign({}, chromeStub, {
-				runtime: {}
+				runtime: {},
+				notifications: {}
 			})
 		};
 	}

@@ -29,7 +29,7 @@ test('#createTab calls chrome.tabs.create and returns promise', t => {
 	const url = 'https://api.github.com/resource';
 	global.window.chrome.tabs.create.yieldsAsync({id: 1, url});
 	t.is(typeof service.createTab({url}).then, 'function');
-	service.createTab({url}).then(tab => {
+	service.createTab(url).then(tab => {
 		t.deepEqual(tab, {id: 1, url});
 	});
 });
@@ -72,7 +72,7 @@ test('#openTab creates new tab if querying tabs is not allowed', t => {
 	service.createTab = sinon.spy();
 	return service.openTab(url).then(() => {
 		t.true(service.createTab.calledOnce);
-		t.deepEqual(service.createTab.lastCall.args, [{url}]);
+		t.deepEqual(service.createTab.lastCall.args, [url]);
 	});
 });
 

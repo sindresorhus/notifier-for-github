@@ -23,7 +23,7 @@ test('NetworkService constructor sets PersistenceService', t => {
 	t.true(service.PersistenceService instanceof global.window.PersistenceService);
 });
 
-test('#getHeaders method returns Object with oauthToken and empty If-Modified-Since header', t => {
+test('#getHeaders returns Object with oauthToken and empty If-Modified-Since header', t => {
 	const service = new global.window.NetworkService(t.context.persistence);
 	t.deepEqual(service.getHeaders('oauthToken'), {
 		'Authorization': 'token oauthToken',
@@ -38,7 +38,7 @@ test('#request returns Promise', t => {
 	t.is(typeof service.request(t.context.endpoint).then, 'function');
 });
 
-test('#request method requests fetches given url with proper headers', t => {
+test('#request requests fetches given url with proper headers', t => {
 	const service = new global.window.NetworkService(t.context.persistence);
 	global.window.fetch = sinon.stub().returns(Promise.resolve('{}'));
 	global.window.localStorage.getItem = sinon.stub().returns('oauthToken');
@@ -51,7 +51,7 @@ test('#request method requests fetches given url with proper headers', t => {
 	}]);
 });
 
-test('#request method returns rejected Promise if oauthToken is empty', t => {
+test('#request returns rejected Promise if oauthToken is empty', t => {
 	const service = new global.window.NetworkService(t.context.persistence);
 	global.window.localStorage.getItem = sinon.stub().returns('');
 	t.throws(service.request(t.context.endpoint), 'missing token');

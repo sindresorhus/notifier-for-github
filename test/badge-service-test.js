@@ -19,7 +19,7 @@ test('BadgeService constructor sets DefaultsService', t => {
 	t.true(service.DefaultsService instanceof global.window.DefaultsService);
 });
 
-test('#render method sets text, background and title', t => {
+test('#render sets text, background and title', t => {
 	const service = new global.window.BadgeService(t.context.defaults);
 	global.window.chrome.browserAction.setBadgeText = sinon.spy();
 	global.window.chrome.browserAction.setBadgeBackgroundColor = sinon.spy();
@@ -35,7 +35,7 @@ test('#render method sets text, background and title', t => {
 	t.true(global.window.chrome.browserAction.setTitle.calledWith({title}));
 });
 
-test('#renderCount method uses default badge color', t => {
+test('#renderCount uses default badge color', t => {
 	const service = new global.window.BadgeService(t.context.defaults);
 	service.render = sinon.spy();
 
@@ -68,7 +68,7 @@ test('#renderCount renders infinity ("∞") string when notifications count > 99
 	t.true(service.render.calledWith('∞', color, t.context.defaults.getDefaultTitle()));
 });
 
-test('#renderError method uses error badge color', t => {
+test('#renderError uses error badge color', t => {
 	const service = new global.window.BadgeService(t.context.defaults);
 	service.render = sinon.spy();
 

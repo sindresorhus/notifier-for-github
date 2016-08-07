@@ -52,12 +52,15 @@
 			};
 		}
 
-		showNotifications(notifications, lastModifed) {
+		filterNotificationsByDate(notifications, lastModifed) {
 			const lastModifedTime = new Date(lastModifed).getTime();
-
-			notifications.filter(notification => {
+			return notifications.filter(notification => {
 				return new Date(notification.updated_at).getTime() > lastModifedTime;
-			}).forEach(notification => {
+			});
+		}
+
+		showNotifications(notifications, lastModifed) {
+			this.filterNotificationsByDate(notifications, lastModifed).forEach(notification => {
 				const notificationId = `github-notifier-${notification.id}`;
 				const notificationObject = this.getNotificationObject(notification);
 				root.chrome.notifications.create(notificationId, notificationObject);

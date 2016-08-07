@@ -8,7 +8,7 @@ test('installs DefaultsService constructor', t => {
 	t.is(typeof global.window.DefaultsService, 'function');
 });
 
-test('#getDefaults method returns defaults objects', t => {
+test('#getDefaults returns defaults objects', t => {
 	const service = new global.window.DefaultsService();
 
 	const defaults = service.getDefaults();
@@ -74,12 +74,12 @@ test('#getNotificationReasonText returns notification reasons', t => {
 	});
 });
 
-test('#getDefaultTitle method returns string', t => {
+test('#getDefaultTitle returns string', t => {
 	const service = new global.window.DefaultsService();
 	t.is(typeof service.getDefaultTitle(), 'string');
 });
 
-test('#getErrorSymbol method returns either "X" or "?" strings', t => {
+test('#getErrorSymbol returns either "X" or "?" strings', t => {
 	const service = new global.window.DefaultsService();
 
 	t.is(service.getErrorSymbol({message: 'missing token'}), 'X');

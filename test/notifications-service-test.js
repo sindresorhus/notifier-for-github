@@ -1,5 +1,6 @@
 import test from 'ava';
 import sinon from 'sinon';
+import moment from 'moment';
 import utils from './utils';
 
 global.window = utils.setupWindow();
@@ -24,6 +25,7 @@ test.beforeEach(t => {
 	t.context.notificationHtmlUrl = `https://github.com/user/repo/issues/${t.context.notificationId}`;
 	global.window.fetch = sinon.stub().returns(Promise.resolve(''));
 	global.window.chrome.notifications.clear = sinon.stub().yieldsAsync();
+	global.window.chrome.notifications.create = sinon.stub();
 
 	const defaultResponse = {
 		json() {
@@ -50,7 +52,7 @@ test('NotificationsService constructor sets its deps', t => {
 	t.true(service.TabsService instanceof global.window.TabsService);
 });
 
-test('#openNotification method gets notification url by notificationId from PersistenceService', t => {
+test('#openNotification gets notification url by notificationId from PersistenceService', t => {
 	const service = new global.window.NotificationsService(t.context.persistence, t.context.api, t.context.defaults, t.context.tabs);
 	service.PersistenceService.get = sinon.stub().withArgs(t.context.notificationId).returns(t.context.notificationUrl);
 
@@ -59,7 +61,7 @@ test('#openNotification method gets notification url by notificationId from Pers
 	});
 });
 
-test('#openNotification method clears notification notificationId', t => {
+test('#openNotification clears notification notificationId', t => {
 	const service = new global.window.NotificationsService(t.context.persistence, t.context.api, t.context.defaults, t.context.tabs);
 	service.PersistenceService.get = sinon.stub().withArgs(t.context.notificationId).returns(t.context.notificationUrl);
 
@@ -68,7 +70,7 @@ test('#openNotification method clears notification notificationId', t => {
 	});
 });
 
-test('#openNotification method skips network requests if no url returned by PersistenceService', t => {
+test('#openNotification skips network requests if no url returned by PersistenceService', t => {
 	const service = new global.window.NotificationsService(t.context.persistence, t.context.api, t.context.defaults, t.context.tabs);
 	service.PersistenceService.get = sinon.stub().returns(null);
 
@@ -77,7 +79,7 @@ test('#openNotification method skips network requests if no url returned by Pers
 	});
 });
 
-test('#openNotification method closes notification if no url returned by PersistenceService', t => {
+test('#openNotification closes notification if no url returned by PersistenceService', t => {
 	const service = new global.window.NotificationsService(t.context.persistence, t.context.api, t.context.defaults, t.context.tabs);
 	service.PersistenceService.get = sinon.stub().returns(null);
 	service.closeNotification = sinon.stub().returns(Promise.resolve());
@@ -119,7 +121,7 @@ test('#openNotification opens nofifications tab on error', t => {
 	});
 });
 
-test.serial('#closeNotification method returns promise and clears notifications by id', t => {
+test.serial('#closeNotification returns promise and clears notifications by id', t => {
 	const service = new global.window.NotificationsService(t.context.persistence, t.context.api, t.context.defaults, t.context.tabs);
 	const id = t.context.notificationId;
 
@@ -128,14 +130,14 @@ test.serial('#closeNotification method returns promise and clears notifications 
 	});
 });
 
-test('#removeNotification method removes notifications from storage', t => {
+test('#removeNotification removes notifications from storage', t => {
 	const service = new global.window.NotificationsService(t.context.persistence, t.context.api, t.context.defaults, t.context.tabs);
 	service.PersistenceService.remove = sinon.spy();
 	service.removeNotification(t.context.notificationId);
 	t.true(service.PersistenceService.remove.calledWith(t.context.notificationId));
 });
 
-test('#checkNotifications method makes API request and shows notifications', t => {
+test('#checkNotifications makes API request and shows notifications', t => {
 	const service = new global.window.NotificationsService(t.context.persistence, t.context.api, t.context.defaults, t.context.tabs);
 	const response = {
 		json() {
@@ -174,4 +176,56 @@ test('#getNotificationObject returns Notification object made via options and De
 	});
 });
 
-test.todo('#showNotifications method');
+test('#filterNotificationsByDate filters latest notifications', t => {
+	const service = new global.window.NotificationsService(t.context.persistence, t.context.api, t.context.defaults, t.context.tabs);
+	/* eslint-disable camelcase */
+	const notifications = [{
+		updated_at: moment().subtract(9, 'days').format()
+	}, {
+		updated_at: moment().subtract(8, 'days').format()
+	}, {
+		updated_at: moment().subtract(5, 'days').format()
+	}];
+	/* eslint-enable camelcase */
+
+	const latestNotifications = service.filterNotificationsByDate(notifications, moment().subtract(7, 'days').format());
+	t.is(latestNotifications.length, 1);
+	t.is(moment().subtract(5, 'days').format(), latestNotifications[0].updated_at);
+});
+
+test('#showNotifications shows notifications', t => {
+	const service = new global.window.NotificationsService(t.context.persistence, t.context.api, t.context.defaults, t.context.tabs);
+	/* eslint-disable camelcase */
+	const title = 'notification title';
+	const repositoryName = 'user/repo';
+	const reason = 'subscribed';
+	const notifications = [{
+		updated_at: moment().subtract(9, 'days').format(),
+		repository: {full_name: repositoryName},
+		title,
+		subject: {title},
+		iconUrl: 'icon-notif-128.png',
+		contextMessage: t.context.defaults.getNotificationReasonText(reason)
+	}, {
+		updated_at: moment().subtract(8, 'days').format(),
+		repository: {full_name: repositoryName},
+		title,
+		subject: {title},
+		iconUrl: 'icon-notif-128.png',
+		contextMessage: t.context.defaults.getNotificationReasonText(reason)
+	}, {
+		updated_at: moment().subtract(5, 'days').format(),
+		repository: {full_name: repositoryName},
+		title,
+		subject: {title},
+		iconUrl: 'icon-notif-128.png',
+		contextMessage: t.context.defaults.getNotificationReasonText(reason)
+	}];
+	/* eslint-enable camelcase */
+	sinon.spy(service, 'filterNotificationsByDate');
+
+	service.showNotifications(notifications, moment().subtract(7, 'days').format());
+	t.true(service.filterNotificationsByDate.called);
+	t.true(global.window.chrome.notifications.create.called);
+	t.is(global.window.chrome.notifications.create.callCount, 1);
+});

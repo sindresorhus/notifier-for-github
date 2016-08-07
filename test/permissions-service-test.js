@@ -21,12 +21,12 @@ test('PermissionsService constructor sets PersistenceService', t => {
 	t.true(service.PersistenceService instanceof global.window.PersistenceService);
 });
 
-test('#requestPermission method returns Promise', t => {
+test('#requestPermission returns Promise', t => {
 	const service = new global.window.PermissionsService(t.context.persistence);
 	t.is(typeof service.requestPermission('tabs').then, 'function');
 });
 
-test.serial('#requestPermission method Promise resolves to chrome.permissions.request callback value', t => {
+test.serial('#requestPermission Promise resolves to chrome.permissions.request callback value', t => {
 	const service = new global.window.PermissionsService(t.context.persistence);
 
 	global.window.chrome.permissions.request = sinon.stub().yieldsAsync(true);
@@ -43,7 +43,7 @@ test.serial('#requestPermission method Promise resolves to chrome.permissions.re
 	});
 });
 
-test('#requestPermission method returns rejected Promise if chrome.runtime.lastError is set', t => {
+test('#requestPermission returns rejected Promise if chrome.runtime.lastError is set', t => {
 	const service = new global.window.PermissionsService(t.context.persistence);
 	return utils.nextTickPromise().then(() => {
 		global.window.chrome.permissions.request = sinon.stub().yieldsAsync();
@@ -54,12 +54,12 @@ test('#requestPermission method returns rejected Promise if chrome.runtime.lastE
 
 // --- Mostly same as #requestPermission except for naming ---
 
-test('#queryPermission method returns Promise', t => {
+test('#queryPermission returns Promise', t => {
 	const service = new global.window.PermissionsService(t.context.persistence);
 	t.is(typeof service.queryPermission('tabs').then, 'function');
 });
 
-test.serial('#queryPermission method Promise resolves to chrome.permissions.request callback value', t => {
+test.serial('#queryPermission Promise resolves to chrome.permissions.request callback value', t => {
 	const service = new global.window.PermissionsService(t.context.persistence);
 
 	global.window.chrome.permissions.contains = sinon.stub().yieldsAsync(true);
@@ -76,7 +76,7 @@ test.serial('#queryPermission method Promise resolves to chrome.permissions.requ
 	});
 });
 
-test('#queryPermission method returns rejected Promise if chrome.runtime.lastError is set', t => {
+test('#queryPermission returns rejected Promise if chrome.runtime.lastError is set', t => {
 	const service = new global.window.PermissionsService(t.context.persistence);
 	return utils.nextTickPromise().then(() => {
 		global.window.chrome.permissions.contains = sinon.stub().yieldsAsync();

@@ -20,14 +20,14 @@ test('PersistenceService constructor sets DefaultsService', t => {
 	t.true(service.DefaultsService instanceof global.window.DefaultsService);
 });
 
-test('#get method calls localStorage#getItem', t => {
+test('#get calls localStorage#getItem', t => {
 	const service = new global.window.PersistenceService(t.context.defaults);
 	global.window.localStorage.getItem = sinon.spy();
 	service.get('name');
 	t.true(global.window.localStorage.getItem.calledWith('name'));
 });
 
-test('#get method converts "true" and "false" strings to booleans', t => {
+test('#get converts "true" and "false" strings to booleans', t => {
 	const service = new global.window.PersistenceService(t.context.defaults);
 	global.window.localStorage.getItem = sinon.stub().returns('true');
 	t.true(service.get('boolean'));
@@ -35,19 +35,19 @@ test('#get method converts "true" and "false" strings to booleans', t => {
 	t.false(service.get('boolean'));
 });
 
-test('#get method looks up in defaults if item is null', t => {
+test('#get looks up in defaults if item is null', t => {
 	const service = new global.window.PersistenceService(t.context.defaults);
 	global.window.localStorage.getItem = sinon.stub().returns(null);
 	t.is(service.get('rootUrl'), t.context.defaults.getDefaults().rootUrl);
 });
 
-test('#get method returns undefined if no item found in defaults', t => {
+test('#get returns undefined if no item found in defaults', t => {
 	const service = new global.window.PersistenceService(t.context.defaults);
 	global.window.localStorage.getItem = sinon.stub().returns(null);
 	t.is(service.get('no such thing'), undefined);
 });
 
-test('#set method calls localStorage#set', t => {
+test('#set calls localStorage#set', t => {
 	const service = new global.window.PersistenceService(t.context.defaults);
 	global.window.localStorage.setItem = sinon.spy();
 	const obj = {value: 42};
@@ -55,14 +55,14 @@ test('#set method calls localStorage#set', t => {
 	t.true(global.window.localStorage.setItem.calledWith('name', obj));
 });
 
-test('#reset method calls localStorage#clear', t => {
+test('#reset calls localStorage#clear', t => {
 	const service = new global.window.PersistenceService(t.context.defaults);
 	global.window.localStorage.clear = sinon.spy();
 	service.reset();
 	t.true(global.window.localStorage.clear.called);
 });
 
-test('#remove method calls localStorage#removeItem', t => {
+test('#remove calls localStorage#removeItem', t => {
 	const service = new global.window.PersistenceService(t.context.defaults);
 	global.window.localStorage.removeItem = sinon.spy();
 	service.remove('name');

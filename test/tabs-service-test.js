@@ -24,7 +24,7 @@ test('TabsService constructor sets PermissionsService', t => {
 	t.true(service.PermissionsService instanceof global.window.PermissionsService);
 });
 
-test('#createTab method calls chrome.tabs.create and returns promise', t => {
+test('#createTab calls chrome.tabs.create and returns promise', t => {
 	const service = new global.window.TabsService(t.context.permissions);
 	const url = 'https://api.github.com/resource';
 	global.window.chrome.tabs.create.yieldsAsync({id: 1, url});
@@ -34,7 +34,7 @@ test('#createTab method calls chrome.tabs.create and returns promise', t => {
 	});
 });
 
-test('#updateTab method calls chrome.tabs.update and returns promise', t => {
+test('#updateTab calls chrome.tabs.update and returns promise', t => {
 	const service = new global.window.TabsService(t.context.permissions);
 	const url = 'https://api.github.com/resource';
 	global.window.chrome.tabs.update.yieldsAsync({id: 1, url});
@@ -48,7 +48,7 @@ test('#updateTab method calls chrome.tabs.update and returns promise', t => {
 	});
 });
 
-test('#queryTabs method calls chrome.tabs.query and returns promise', t => {
+test('#queryTabs calls chrome.tabs.query and returns promise', t => {
 	const service = new global.window.TabsService(t.context.permissions);
 	const url = 'https://api.github.com/resource';
 	const tabs = [{id: 1, url}, {id: 2, url}];
@@ -59,7 +59,7 @@ test('#queryTabs method calls chrome.tabs.query and returns promise', t => {
 	});
 });
 
-test('#openTab method returns promise', t => {
+test('#openTab returns promise', t => {
 	const service = new global.window.TabsService(t.context.permissions);
 	const url = 'https://api.github.com/resource';
 	t.is(typeof service.openTab({url}).then, 'function');

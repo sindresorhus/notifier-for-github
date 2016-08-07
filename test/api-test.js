@@ -41,30 +41,30 @@ test('API constructor sets its deps', t => {
 	t.true(service.NetworkService instanceof global.window.NetworkService);
 });
 
-test('#buildQuery method respects per_page option', t => {
+test('#buildQuery respects per_page option', t => {
 	const service = new global.window.API(t.context.persistence, t.context.networking, t.context.defaults);
 	t.is(service.buildQuery({perPage: 1}), 'per_page=1');
 });
 
-test('#buildQuery method respects useParticipatingCount setting', t => {
+test('#buildQuery respects useParticipatingCount setting', t => {
 	const service = new global.window.API(t.context.persistence, t.context.networking, t.context.defaults);
 	t.context.persistence.get = sinon.stub().returns(true);
 	t.is(service.buildQuery({perPage: 1}), 'per_page=1&participating=true');
 });
 
-test('#getApiUrl method uses default endpoint if rootUrl matches GitHub', t => {
+test('#getApiUrl uses default endpoint if rootUrl matches GitHub', t => {
 	const service = new global.window.API(t.context.persistence, t.context.networking, t.context.defaults);
 	t.context.persistence.get = sinon.stub().returns('https://api.github.com/');
 	t.is(service.getApiUrl(), 'https://api.github.com/notifications');
 });
 
-test('#getApiUrl method uses custom endpoint if rootUrl is something other than GitHub', t => {
+test('#getApiUrl uses custom endpoint if rootUrl is something other than GitHub', t => {
 	const service = new global.window.API(t.context.persistence, t.context.networking, t.context.defaults);
 	t.context.persistence.get = sinon.stub().returns('https://something.com/');
 	t.is(service.getApiUrl(), 'https://something.com/api/v3/notifications');
 });
 
-test('#getApiUrl method uses query if passed', t => {
+test('#getApiUrl uses query if passed', t => {
 	const service = new global.window.API(t.context.persistence, t.context.networking, t.context.defaults);
 
 	t.context.persistence.get = sinon.stub();
@@ -74,7 +74,7 @@ test('#getApiUrl method uses query if passed', t => {
 	t.is(service.getApiUrl({perPage: 123}), 'https://api.github.com/notifications?per_page=123');
 });
 
-test('#getTabUrl method uses default page if rootUrl matches GitHub', t => {
+test('#getTabUrl uses default page if rootUrl matches GitHub', t => {
 	const service = new global.window.API(t.context.persistence, t.context.networking, t.context.defaults);
 
 	t.context.persistence.get = sinon.stub();
@@ -84,7 +84,7 @@ test('#getTabUrl method uses default page if rootUrl matches GitHub', t => {
 	t.is(service.getTabUrl(), 'https://github.com/notifications');
 });
 
-test('#getTabUrl method uses uses custom page if rootUrl is something other than GitHub', t => {
+test('#getTabUrl uses uses custom page if rootUrl is something other than GitHub', t => {
 	const service = new global.window.API(t.context.persistence, t.context.networking, t.context.defaults);
 
 	t.context.persistence.get = sinon.stub();
@@ -94,7 +94,7 @@ test('#getTabUrl method uses uses custom page if rootUrl is something other than
 	t.is(service.getTabUrl(), 'https://something.com/notifications');
 });
 
-test('#getTabUrl method respects useParticipatingCount setting', t => {
+test('#getTabUrl respects useParticipatingCount setting', t => {
 	const service = new global.window.API(t.context.persistence, t.context.networking, t.context.defaults);
 
 	t.context.persistence.get = sinon.stub();
@@ -104,7 +104,7 @@ test('#getTabUrl method respects useParticipatingCount setting', t => {
 	t.is(service.getTabUrl(), 'https://github.com/notifications/participating');
 });
 
-test('#parseApiResponse method promise resolves response of 0 notifications if Link header is null', t => {
+test('#parseApiResponse promise resolves response of 0 notifications if Link header is null', t => {
 	const service = new global.window.API(t.context.persistence, t.context.networking, t.context.defaults);
 
 	const resp = t.context.getDefaultResponse();
@@ -113,7 +113,7 @@ test('#parseApiResponse method promise resolves response of 0 notifications if L
 	});
 });
 
-test('#parseApiResponse method promise resolves response of N notifications according to Link header', t => {
+test('#parseApiResponse promise resolves response of N notifications according to Link header', t => {
 	const service = new global.window.API(t.context.persistence, t.context.networking, t.context.defaults);
 
 	const resp = t.context.getDefaultResponse();
@@ -163,7 +163,7 @@ test('#makeApiRequest makes NetworkService.request to #getApiUrl if no url provi
 	t.deepEqual(service.NetworkService.request.lastCall.args, [url]);
 });
 
-test('#getNotifications method returns promise that resolves to parsed API response', t => {
+test('#getNotifications returns promise that resolves to parsed API response', t => {
 	const service = new global.window.API(t.context.persistence, t.context.networking, t.context.defaults);
 	service.getApiUrl = sinon.stub().returns('https://api.github.com/resource');
 	service.NetworkService.request = sinon.stub().returns(Promise.resolve(t.context.getDefaultResponse()));

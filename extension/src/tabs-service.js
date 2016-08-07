@@ -11,7 +11,7 @@
 				if (root.chrome.runtime.lastError) {
 					return reject(root.chrome.runtime.lastError);
 				}
-				root.chrome.tabs.create(url, resolve);
+				root.chrome.tabs.create({url}, resolve);
 			});
 		}
 
@@ -45,7 +45,7 @@
 				} else if (tab && tab.url === 'chrome://newtab/') {
 					return this.updateTab(null, {url, highlighted: false});
 				}
-				return this.createTab(url);
+				return this.createTab({url});
 			});
 		}
 	}

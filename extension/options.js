@@ -34,7 +34,7 @@
 			id: 'oauth_token',
 			storageKey: 'oauthToken',
 			valueType: 'value',
-			onChange: () => {
+			onChange() {
 				this.writeValue();
 				updateBadge();
 			}
@@ -44,7 +44,7 @@
 			id: 'use_participating',
 			storageKey: 'useParticipatingCount',
 			valueType: 'checked',
-			onChange: () => {
+			onChange() {
 				this.writeValue();
 				updateBadge();
 			}
@@ -54,7 +54,7 @@
 			id: 'show_desktop_notif',
 			storageKey: 'showDesktopNotif',
 			valueType: 'checked',
-			onChange: () => {
+			onChange() {
 				if (showDesktopNotif.checked) {
 					permissions.requestPermission('notifications').then(granted => {
 						if (granted) {

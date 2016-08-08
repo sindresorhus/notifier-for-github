@@ -23,7 +23,7 @@ test.beforeEach(t => {
 		id: 'id',
 		storageKey: 'key',
 		valueType: 'value',
-		onChange: () => {}
+		onChange() {}
 	});
 });
 

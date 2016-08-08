@@ -1,3 +1,4 @@
+import EventEmitter from 'events';
 import test from 'ava';
 import sinon from 'sinon';
 import utils from './utils';
@@ -12,19 +13,22 @@ test.beforeEach(t => {
 	t.context.defaults = new global.window.DefaultsService();
 	t.context.persistence = new global.window.PersistenceService(t.context.defaults);
 	t.context.permissions = new global.window.PermissionsService(t.context.persistence);
-	t.context.element = {
-		addEventListener: sinon.spy()
-	};
+
+	const emitter = new EventEmitter();
+	emitter.addEventListener = emitter.on.bind(emitter);
+	t.context.element = emitter;
+
 	global.window.document = {
 		getElementById: sinon.stub().returns(t.context.element)
 	};
 
-	t.context.option = new global.window.Option(t.context.persistence, {
+	t.context.optionParams = {
 		id: 'id',
 		storageKey: 'key',
 		valueType: 'value',
 		onChange() {}
-	});
+	};
+	t.context.option = new global.window.Option(t.context.persistence, t.context.optionParams);
 });
 
 test('installs Option constructor', t => {
@@ -32,9 +36,14 @@ test('installs Option constructor', t => {
 });
 
 test('Option constructor initializes option object', t => {
-	t.is(t.context.option.element, t.context.element);
+	t.context.element.addEventListener = sinon.spy();
+	global.window.document.getElementById.reset();
+
+	const option = new global.window.Option(t.context.persistence, t.context.optionParams);
+
+	t.is(option.element, t.context.element);
 	t.true(global.window.document.getElementById.calledOnce);
-	t.true(t.context.element.addEventListener.calledWithMatch('change'));
+	t.true(t.context.element.addEventListener.calledWithMatch('change', sinon.match.func));
 });
 
 test('#readValue reads value from PersistenceService', t => {
@@ -60,4 +69,12 @@ test('#writeValue respects override', t => {
 
 	t.true(t.context.persistence.set.calledWith('key', 'newValue'));
 	t.is(t.context.option.element.value, 'newValue');
+});
+
+test('#onChange handler passes Option as an argument', t => {
+	const params = Object.assign({}, t.context.optionParams, {onChange: sinon.spy()});
+	const option = new global.window.Option(t.context.persistence, params);
+
+	t.context.element.emit('change');
+	t.deepEqual(params.onChange.lastCall.args, [option]);
 });

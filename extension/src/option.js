@@ -7,7 +7,9 @@
 			this.storageKey = storageKey;
 			this.valueType = valueType;
 			this.PersistenceService = persistence;
-			this.element.addEventListener('change', onChange.bind(this));
+			this.element.addEventListener('change', () => {
+				onChange(this);
+			});
 			this.readValue();
 		}
 

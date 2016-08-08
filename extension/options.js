@@ -12,10 +12,10 @@
 			id: 'root_url',
 			storageKey: 'rootUrl',
 			valueType: 'value',
-			onChange: () => {
-				let url = normalizeRoot(this.element.value);
+			onChange: option => {
+				let url = normalizeRoot(option.element.value);
 
-				const urlSettings = `${normalizeRoot(this.element.value)}settings/tokens/new?scopes=notifications`;
+				const urlSettings = `${normalizeRoot(option.element.value)}settings/tokens/new?scopes=notifications`;
 
 				// case of url is empty: set to default
 				if (url === normalizeRoot('')) {
@@ -23,7 +23,7 @@
 					url = persistence.get('rootUrl');
 				}
 
-				this.writeValue(url);
+				option.writeValue(url);
 				ghSettingsUrl.href = urlSettings;
 				updateBadge();
 				reloadSettings();
@@ -34,8 +34,8 @@
 			id: 'oauth_token',
 			storageKey: 'oauthToken',
 			valueType: 'value',
-			onChange() {
-				this.writeValue();
+			onChange(option) {
+				option.writeValue();
 				updateBadge();
 			}
 		});
@@ -44,8 +44,8 @@
 			id: 'use_participating',
 			storageKey: 'useParticipatingCount',
 			valueType: 'checked',
-			onChange() {
-				this.writeValue();
+			onChange(option) {
+				option.writeValue();
 				updateBadge();
 			}
 		});
@@ -54,16 +54,16 @@
 			id: 'show_desktop_notif',
 			storageKey: 'showDesktopNotif',
 			valueType: 'checked',
-			onChange() {
+			onChange(option) {
 				if (showDesktopNotif.checked) {
 					permissions.requestPermission('notifications').then(granted => {
 						if (granted) {
 							updateBadge();
 						}
-						this.writeValue(granted);
+						option.writeValue(granted);
 					});
 				} else {
-					this.writeValue();
+					option.writeValue();
 				}
 			}
 		});

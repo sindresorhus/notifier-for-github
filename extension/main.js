@@ -1,92 +1,93 @@
-(function () {
-	'use strict';
+'use strict';
 
-	const defaults = new DefaultsService();
-	const badge = new BadgeService(defaults);
-	const persistence = new PersistenceService(defaults);
-	const networking = new NetworkService(persistence);
-	const permissions = new PermissionsService(persistence);
-	const tabs = new TabsService(permissions);
-	const api = new API(persistence, networking, defaults);
-	const notifications = new NotificationsService(persistence, api, defaults, tabs);
+import API from './src/api';
+import BadgeService from './src/badge-service';
+import NotificationsService from './src/notifications-service';
+import PermissionsService from './src/permissions-service';
+import PersistenceService from './src/persistence-service';
+import TabsService from './src/tabs-service';
 
-	function handleInterval(interval) {
-		const intervalSetting = parseInt(persistence.get('interval'), 10) || 60;
-		const intervalValue = interval || 60;
+function handleInterval(interval) {
+	const intervalSetting = parseInt(PersistenceService.get('interval'), 10) || 60;
+	const intervalValue = interval || 60;
 
-		if (intervalSetting !== intervalValue) {
-			persistence.set('interval', intervalValue);
-		}
-
-		// delay less than 1 minute will cause a warning
-		const delayInMinutes = Math.max(Math.ceil(intervalValue / 60), 1);
-
-		chrome.alarms.create({delayInMinutes});
+	if (intervalSetting !== intervalValue) {
+		PersistenceService.set('interval', intervalValue);
 	}
 
-	function handleLastModified(date) {
-		let lastModifed = persistence.get('lastModifed');
-		const emptyLastModified = String(lastModifed) === 'null' || String(lastModifed) === 'undefined';
-		lastModifed = emptyLastModified ? new Date(0) : lastModifed;
+	// delay less than 1 minute will cause a warning
+	const delayInMinutes = Math.max(Math.ceil(intervalValue / 60), 1);
 
-		if (date !== lastModifed) {
-			persistence.set('lastModifed', date);
-			if (persistence.get('showDesktopNotif') === true) {
-				notifications.checkNotifications(lastModifed);
-			}
+	chrome.alarms.create({delayInMinutes});
+}
+
+function handleLastModified(date) {
+	let lastModifed = PersistenceService.get('lastModifed');
+	const emptyLastModified = String(lastModifed) === 'null' || String(lastModifed) === 'undefined';
+	lastModifed = emptyLastModified ? new Date(0) : lastModifed;
+
+	if (date !== lastModifed) {
+		PersistenceService.set('lastModifed', date);
+		if (PersistenceService.get('showDesktopNotif') === true) {
+			NotificationsService.checkNotifications(lastModifed);
 		}
 	}
+}
 
-	function handleNotificationsResponse(response) {
-		const {count, interval, lastModifed} = response;
+function handleNotificationsResponse(response) {
+	const {count, interval, lastModifed} = response;
 
-		handleInterval(interval);
-		handleLastModified(lastModifed);
+	handleInterval(interval);
+	handleLastModified(lastModifed);
 
-		badge.renderCount(count);
+	BadgeService.renderCount(count);
+}
+
+function update() {
+	API.getNotifications().then(handleNotificationsResponse).catch(handleError);
+}
+
+function handleError(error) {
+	BadgeService.renderError(error);
+}
+
+function handleBrowserActionClick(tab) {
+	const tabUrl = API.getTabUrl();
+
+	// request optional permissions the 1rst time
+	if (PersistenceService.get('tabs_permission') === undefined) {
+		PermissionsService.requestPermission('tabs').then(granted => {
+			PersistenceService.set('tabs_permission', granted);
+			TabsService.openTab(tabUrl, tab);
+		});
+	} else {
+		TabsService.openTab(tabUrl, tab);
 	}
+}
 
-	function update() {
-		api.getNotifications().then(handleNotificationsResponse).catch(handleError);
+function handleInstalled(details) {
+	if (details.reason === 'install') {
+		chrome.runtime.openOptionsPage();
 	}
+}
 
-	function handleError(error) {
-		badge.renderError(error);
+chrome.alarms.create({when: Date.now() + 2000});
+chrome.alarms.onAlarm.addListener(update);
+chrome.runtime.onMessage.addListener(update);
+
+PermissionsService.queryPermission('notifications').then(granted => {
+	if (granted) {
+		chrome.notifications.onClicked.addListener(id => {
+			NotificationsService.openNotification(id);
+		});
+
+		chrome.notifications.onClosed.addListener(id => {
+			NotificationsService.removeNotification(id);
+		});
 	}
+});
 
-	function handleBrowserActionClick(tab) {
-		const tabUrl = api.getTabUrl();
+chrome.runtime.onInstalled.addListener(handleInstalled);
+chrome.browserAction.onClicked.addListener(handleBrowserActionClick);
 
-		// request optional permissions the 1rst time
-		if (persistence.get('tabs_permission') === undefined) {
-			permissions.requestPermission('tabs').then(granted => {
-				persistence.set('tabs_permission', granted);
-				tabs.openTab(tabUrl, tab);
-			});
-		} else {
-			tabs.openTab(tabUrl, tab);
-		}
-	}
-
-	function handleInstalled(details) {
-		if (details.reason === 'install') {
-			chrome.runtime.openOptionsPage();
-		}
-	}
-
-	chrome.alarms.create({when: Date.now() + 2000});
-	chrome.alarms.onAlarm.addListener(update);
-	chrome.runtime.onMessage.addListener(update);
-
-	permissions.queryPermission('notifications').then(granted => {
-		if (granted) {
-			chrome.notifications.onClicked.addListener(notifications.openNotification.bind(notifications));
-			chrome.notifications.onClosed.addListener(notifications.removeNotification.bind(notifications));
-		}
-	});
-
-	chrome.runtime.onInstalled.addListener(handleInstalled);
-	chrome.browserAction.onClicked.addListener(handleBrowserActionClick);
-
-	update();
-})();
+update();

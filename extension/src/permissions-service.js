@@ -1,38 +1,34 @@
-(root => {
-	'use strict';
+'use strict';
 
-	class PermissionsService {
-		constructor(persistence) {
-			this.PersistenceService = persistence;
-		}
+import PersistenceService from './persistence-service';
 
-		requestPermission(permission) {
-			return new Promise((resolve, reject) => {
-				root.chrome.permissions.request({
-					permissions: [permission]
-				}, granted => {
-					if (root.chrome.runtime.lastError) {
-						return reject(root.chrome.runtime.lastError);
-					}
-					this.PersistenceService.set(`${permission}_permission`, granted);
-					resolve(granted);
-				});
+const PermissionsService = {
+	requestPermission(permission) {
+		return new Promise((resolve, reject) => {
+			chrome.permissions.request({
+				permissions: [permission]
+			}, granted => {
+				if (chrome.runtime.lastError) {
+					return reject(chrome.runtime.lastError);
+				}
+				PersistenceService.set(`${permission}_permission`, granted);
+				resolve(granted);
 			});
-		}
+		});
+	},
 
-		queryPermission(permission) {
-			return new Promise((resolve, reject) => {
-				root.chrome.permissions.contains({
-					permissions: [permission]
-				}, granted => {
-					if (root.chrome.runtime.lastError) {
-						return reject(root.chrome.runtime.lastError);
-					}
-					resolve(granted);
-				});
+	queryPermission(permission) {
+		return new Promise((resolve, reject) => {
+			chrome.permissions.contains({
+				permissions: [permission]
+			}, granted => {
+				if (chrome.runtime.lastError) {
+					return reject(chrome.runtime.lastError);
+				}
+				resolve(granted);
 			});
-		}
+		});
 	}
+};
 
-	root.PermissionsService = PermissionsService;
-})(window);
+export default PermissionsService;

@@ -1,28 +1,29 @@
-(root => {
-	'use strict';
-	class Option {
-		constructor(persistence, options) {
-			const {id, valueType, storageKey, onChange} = options;
-			this.element = root.document.getElementById(id);
-			this.storageKey = storageKey;
-			this.valueType = valueType;
-			this.PersistenceService = persistence;
-			this.element.addEventListener('change', () => {
-				onChange(this);
-			});
-			this.readValue();
-		}
+'use strict';
 
-		readValue() {
-			this.element[this.valueType] = this.PersistenceService.get(this.storageKey);
-		}
+import PersistenceService from './persistence-service';
 
-		writeValue(override) {
-			if (override) {
-				this.element[this.valueType] = override;
-			}
-			this.PersistenceService.set(this.storageKey, this.element[this.valueType]);
-		}
+class Option {
+	constructor(options) {
+		const {id, valueType, storageKey, onChange} = options;
+		this.element = document.getElementById(id);
+		this.storageKey = storageKey;
+		this.valueType = valueType;
+		this.element.addEventListener('change', () => {
+			onChange(this);
+		});
+		this.readValue();
 	}
-	root.Option = Option;
-})(window);
+
+	readValue() {
+		this.element[this.valueType] = PersistenceService.get(this.storageKey);
+	}
+
+	writeValue(override) {
+		if (override) {
+			this.element[this.valueType] = override;
+		}
+		PersistenceService.set(this.storageKey, this.element[this.valueType]);
+	}
+}
+
+export default Option;

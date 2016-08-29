@@ -18,15 +18,7 @@
 	"background": {
 		"persistent": false,
 		"scripts": [
-			"src/api.js",
-			"src/badge-service.js",
-			"src/defaults-service.js",
-			"src/network-service.js",
-			"src/permissions-service.js",
-			"src/notifications-service.js",
-			"src/persistence-service.js",
-			"src/tabs-service.js",
-			"main.js"
+			"out/main.js"
 		]
 	},
 	"browser_action": {

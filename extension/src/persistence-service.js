@@ -1,40 +1,34 @@
-(root => {
-	'use strict';
+'use strict';
 
-	const localStorage = root.localStorage;
+import DefaultsService from './defaults-service';
 
-	class PersistenceService {
-		constructor(defaults) {
-			this.DefaultsService = defaults;
+const PersistenceService = {
+	get(name) {
+		const item = localStorage.getItem(name);
+		const defaults = DefaultsService.getDefaults();
+
+		if (item === null) {
+			return {}.hasOwnProperty.call(defaults, name) ? defaults[name] : undefined;
 		}
 
-		get(name) {
-			const item = localStorage.getItem(name);
-			const defaults = this.DefaultsService.getDefaults();
-
-			if (item === null) {
-				return {}.hasOwnProperty.call(defaults, name) ? defaults[name] : undefined;
-			}
-
-			if (item === 'true' || item === 'false') {
-				return item === 'true';
-			}
-
-			return item;
+		if (item === 'true' || item === 'false') {
+			return item === 'true';
 		}
 
-		set(name, value) {
-			localStorage.setItem(name, value);
-		}
+		return item;
+	},
 
-		remove(name) {
-			localStorage.removeItem(name);
-		}
+	set(name, value) {
+		localStorage.setItem(name, value);
+	},
 
-		reset() {
-			localStorage.clear();
-		}
+	remove(name) {
+		localStorage.removeItem(name);
+	},
+
+	reset() {
+		localStorage.clear();
 	}
+};
 
-	root.PersistenceService = PersistenceService;
-})(window);
+export default PersistenceService;

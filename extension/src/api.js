@@ -1,9 +1,9 @@
-import PersistenceService from './persistence-service';
-import NetworkService from './network-service';
+const PersistenceService = require('./persistence-service.js');
+const NetworkService = require('./network-service.js');
 
 const API = {
 	buildQuery(options) {
-		const params = new URLSearchParams();
+		const params = new window.URLSearchParams();
 		params.append('per_page', options.perPage);
 		if (PersistenceService.get('useParticipatingCount')) {
 			params.append('participating', true);
@@ -80,4 +80,4 @@ const API = {
 	}
 };
 
-export default API;
+module.exports = API;

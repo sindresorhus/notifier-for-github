@@ -1,17 +1,10 @@
 import test from 'ava';
-import utils from './utils';
 
-global.window = utils.setupWindow();
-require('../extension/src/defaults-service.js');
-
-test('installs DefaultsService constructor', t => {
-	t.is(typeof global.window.DefaultsService, 'function');
-});
+const DefaultsService = require('../extension/src/defaults-service.js');
 
 test('#getDefaults returns defaults objects', t => {
-	const service = new global.window.DefaultsService();
+	const defaults = DefaultsService.getDefaults();
 
-	const defaults = service.getDefaults();
 	t.is(typeof defaults, 'object');
 	t.is(defaults.rootUrl, 'https://api.github.com/');
 	t.is(defaults.oauthToken, '');
@@ -20,8 +13,8 @@ test('#getDefaults returns defaults objects', t => {
 });
 
 test('#getBadgeDefaultColor return array of 4 numbers between 0 and 255 inclusive', t => {
-	const service = new global.window.DefaultsService();
-	const color = service.getBadgeDefaultColor();
+	const color = DefaultsService.getBadgeDefaultColor();
+
 	t.is(color.length, 4);
 
 	color.forEach(n => {
@@ -32,10 +25,9 @@ test('#getBadgeDefaultColor return array of 4 numbers between 0 and 255 inclusiv
 });
 
 test('#getBadgeErrorColor return array of 4 numbers not same as default', t => {
-	const service = new global.window.DefaultsService();
-	const color = service.getBadgeErrorColor();
+	const color = DefaultsService.getBadgeErrorColor();
 	t.is(color.length, 4);
-	t.notDeepEqual(color, service.getBadgeDefaultColor);
+	t.notDeepEqual(color, DefaultsService.getBadgeDefaultColor);
 
 	color.forEach(n => {
 		t.is(typeof n, 'number');
@@ -45,8 +37,6 @@ test('#getBadgeErrorColor return array of 4 numbers not same as default', t => {
 });
 
 test('#getNotificationReasonText returns notification reasons', t => {
-	const service = new global.window.DefaultsService();
-
 	const reasons = [
 		'subscribed',
 		'manual',
@@ -66,23 +56,20 @@ test('#getNotificationReasonText returns notification reasons', t => {
 	];
 
 	reasons.forEach(reason => {
-		t.truthy(service.getNotificationReasonText(reason));
+		t.truthy(DefaultsService.getNotificationReasonText(reason));
 	});
 
 	invalidReasons.forEach(reason => {
-		t.is(service.getNotificationReasonText(reason), '');
+		t.is(DefaultsService.getNotificationReasonText(reason), '');
 	});
 });
 
 test('#getDefaultTitle returns string', t => {
-	const service = new global.window.DefaultsService();
-	t.is(typeof service.getDefaultTitle(), 'string');
+	t.is(typeof DefaultsService.getDefaultTitle(), 'string');
 });
 
 test('#getErrorSymbol returns either "X" or "?" strings', t => {
-	const service = new global.window.DefaultsService();
-
-	t.is(service.getErrorSymbol({message: 'missing token'}), 'X');
+	t.is(DefaultsService.getErrorSymbol({message: 'missing token'}), 'X');
 
 	const invalidMessages = [
 		'no such thing',
@@ -92,6 +79,6 @@ test('#getErrorSymbol returns either "X" or "?" strings', t => {
 	];
 
 	invalidMessages.forEach(message => {
-		t.is(service.getErrorSymbol({message}), '?');
+		t.is(DefaultsService.getErrorSymbol({message}), '?');
 	});
 });

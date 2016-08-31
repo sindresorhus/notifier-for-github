@@ -1,6 +1,6 @@
-import Option from './src/option';
-import PermissionsService from './src/permissions-service';
-import PersistenceService from './src/persistence-service';
+const Option = require('./src/option');
+const PermissionsService = require('./src/permissions-service');
+const PersistenceService = require('./src/persistence-service');
 
 document.addEventListener('DOMContentLoaded', () => {
 	const ghSettingsUrl = document.getElementById('gh_link');

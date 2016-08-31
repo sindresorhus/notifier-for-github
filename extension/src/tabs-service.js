@@ -1,31 +1,31 @@
-import PermissionsService from './permissions-service';
+const PermissionsService = require('./permissions-service.js');
 
 const TabsService = {
 	createTab(url) {
 		return new Promise((resolve, reject) => {
-			if (chrome.runtime.lastError) {
-				return reject(chrome.runtime.lastError);
+			if (window.chrome.runtime.lastError) {
+				return reject(window.chrome.runtime.lastError);
 			}
-			chrome.tabs.create({url}, resolve);
+			window.chrome.tabs.create({url}, resolve);
 		});
 	},
 
 	updateTab(tabId, options) {
 		return new Promise((resolve, reject) => {
-			if (chrome.runtime.lastError) {
-				return reject(chrome.runtime.lastError);
+			if (window.chrome.runtime.lastError) {
+				return reject(window.chrome.runtime.lastError);
 			}
-			chrome.tabs.update(tabId, options, resolve);
+			window.chrome.tabs.update(tabId, options, resolve);
 		});
 	},
 
 	queryTabs(url) {
 		return new Promise((resolve, reject) => {
-			if (chrome.runtime.lastError) {
-				return reject(chrome.runtime.lastError);
+			if (window.chrome.runtime.lastError) {
+				return reject(window.chrome.runtime.lastError);
 			}
 			const currentWindow = true;
-			chrome.tabs.query({currentWindow, url}, resolve);
+			window.chrome.tabs.query({currentWindow, url}, resolve);
 		});
 	},
 
@@ -45,4 +45,4 @@ const TabsService = {
 	}
 };
 
-export default TabsService;
+module.exports = TabsService;

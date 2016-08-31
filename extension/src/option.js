@@ -1,9 +1,9 @@
-import PersistenceService from './persistence-service';
+const PersistenceService = require('./persistence-service.js');
 
 class Option {
 	constructor(options) {
 		const {id, valueType, storageKey, onChange} = options;
-		this.element = document.getElementById(id);
+		this.element = window.document.getElementById(id);
 		this.storageKey = storageKey;
 		this.valueType = valueType;
 		this.element.addEventListener('change', () => {
@@ -24,4 +24,4 @@ class Option {
 	}
 }
 
-export default Option;
+module.exports = Option;

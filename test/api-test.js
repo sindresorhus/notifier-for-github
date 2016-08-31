@@ -2,19 +2,12 @@ import test from 'ava';
 import sinon from 'sinon';
 import utils from './utils';
 
-global.URLSearchParams = require('url-search-params');
-
 global.window = utils.setupWindow();
-require('../extension/src/defaults-service.js');
-require('../extension/src/persistence-service.js');
-require('../extension/src/network-service.js');
-require('../extension/src/api.js');
+
+const API = require('../extension/src/api.js');
 
 test.beforeEach(t => {
-	t.context.defaults = new global.window.DefaultsService();
-	t.context.persistence = new global.window.PersistenceService(t.context.defaults);
-	t.context.networking = new global.window.NetworkService(t.context.persistence);
-
+	t.context.api = Object.assign({}, API);
 	t.context.getDefaultResponse = overrides => {
 		const headersGet = sinon.stub();
 		headersGet.withArgs('X-Poll-Interval').returns('60');
@@ -30,91 +23,87 @@ test.beforeEach(t => {
 	};
 });
 
-test('installs API constructor', t => {
-	t.is(typeof global.window.API, 'function');
-});
-
-test('API constructor sets its deps', t => {
-	const service = new global.window.API(t.context.persistence, t.context.networking, t.context.defaults);
-	t.true(service.DefaultsService instanceof global.window.DefaultsService);
-	t.true(service.PersistenceService instanceof global.window.PersistenceService);
-	t.true(service.NetworkService instanceof global.window.NetworkService);
-});
-
 test('#buildQuery respects per_page option', t => {
-	const service = new global.window.API(t.context.persistence, t.context.networking, t.context.defaults);
+	const service = t.context.api;
+
 	t.is(service.buildQuery({perPage: 1}), 'per_page=1');
 });
 
 test('#buildQuery respects useParticipatingCount setting', t => {
-	const service = new global.window.API(t.context.persistence, t.context.networking, t.context.defaults);
-	t.context.persistence.get = sinon.stub().returns(true);
+	const service = t.context.api;
+
+	window.localStorage.getItem = sinon.stub().returns(true);
+
 	t.is(service.buildQuery({perPage: 1}), 'per_page=1&participating=true');
 });
 
 test('#getApiUrl uses default endpoint if rootUrl matches GitHub', t => {
-	const service = new global.window.API(t.context.persistence, t.context.networking, t.context.defaults);
-	t.context.persistence.get = sinon.stub().returns('https://api.github.com/');
+	const service = t.context.api;
+
+	window.localStorage.getItem = sinon.stub().returns('https://api.github.com/');
+
 	t.is(service.getApiUrl(), 'https://api.github.com/notifications');
 });
 
 test('#getApiUrl uses custom endpoint if rootUrl is something other than GitHub', t => {
-	const service = new global.window.API(t.context.persistence, t.context.networking, t.context.defaults);
-	t.context.persistence.get = sinon.stub().returns('https://something.com/');
+	const service = t.context.api;
+
+	window.localStorage.getItem = sinon.stub().returns('https://something.com/');
+
 	t.is(service.getApiUrl(), 'https://something.com/api/v3/notifications');
 });
 
 test('#getApiUrl uses query if passed', t => {
-	const service = new global.window.API(t.context.persistence, t.context.networking, t.context.defaults);
+	const service = t.context.api;
 
-	t.context.persistence.get = sinon.stub();
-	t.context.persistence.get.withArgs('rootUrl').returns('https://api.github.com/');
-	t.context.persistence.get.withArgs('useParticipatingCount').returns(false);
+	window.localStorage.getItem = sinon.stub();
+	window.localStorage.getItem.withArgs('rootUrl').returns('https://api.github.com/');
+	window.localStorage.getItem.withArgs('useParticipatingCount').returns(false);
 
 	t.is(service.getApiUrl({perPage: 123}), 'https://api.github.com/notifications?per_page=123');
 });
 
 test('#getTabUrl uses default page if rootUrl matches GitHub', t => {
-	const service = new global.window.API(t.context.persistence, t.context.networking, t.context.defaults);
+	const service = t.context.api;
 
-	t.context.persistence.get = sinon.stub();
-	t.context.persistence.get.withArgs('rootUrl').returns('https://api.github.com/');
-	t.context.persistence.get.withArgs('useParticipatingCount').returns(false);
+	window.localStorage.getItem = sinon.stub();
+	window.localStorage.getItem.withArgs('rootUrl').returns('https://api.github.com/');
+	window.localStorage.getItem.withArgs('useParticipatingCount').returns(false);
 
 	t.is(service.getTabUrl(), 'https://github.com/notifications');
 });
 
 test('#getTabUrl uses uses custom page if rootUrl is something other than GitHub', t => {
-	const service = new global.window.API(t.context.persistence, t.context.networking, t.context.defaults);
+	const service = t.context.api;
 
-	t.context.persistence.get = sinon.stub();
-	t.context.persistence.get.withArgs('rootUrl').returns('https://something.com/');
-	t.context.persistence.get.withArgs('useParticipatingCount').returns(false);
+	window.localStorage.getItem = sinon.stub();
+	window.localStorage.getItem.withArgs('rootUrl').returns('https://something.com/');
+	window.localStorage.getItem.withArgs('useParticipatingCount').returns(false);
 
 	t.is(service.getTabUrl(), 'https://something.com/notifications');
 });
 
 test('#getTabUrl respects useParticipatingCount setting', t => {
-	const service = new global.window.API(t.context.persistence, t.context.networking, t.context.defaults);
+	const service = t.context.api;
 
-	t.context.persistence.get = sinon.stub();
-	t.context.persistence.get.withArgs('rootUrl').returns('https://api.github.com/');
-	t.context.persistence.get.withArgs('useParticipatingCount').returns(true);
+	window.localStorage.getItem = sinon.stub();
+	window.localStorage.getItem.withArgs('rootUrl').returns('https://api.github.com/');
+	window.localStorage.getItem.withArgs('useParticipatingCount').returns(true);
 
 	t.is(service.getTabUrl(), 'https://github.com/notifications/participating');
 });
 
 test('#parseApiResponse promise resolves response of 0 notifications if Link header is null', t => {
-	const service = new global.window.API(t.context.persistence, t.context.networking, t.context.defaults);
-
+	const service = t.context.api;
 	const resp = t.context.getDefaultResponse();
+
 	return service.parseApiResponse(resp).then(response => {
 		t.deepEqual(response, {count: 0, interval: 60, lastModifed: null});
 	});
 });
 
 test('#parseApiResponse promise resolves response of N notifications according to Link header', t => {
-	const service = new global.window.API(t.context.persistence, t.context.networking, t.context.defaults);
+	const service = t.context.api;
 
 	const resp = t.context.getDefaultResponse();
 	resp.headers.get.withArgs('Link').returns(`<https://api.github.com/resource?page=1>; rel="next"
@@ -131,43 +120,58 @@ test('#parseApiResponse promise resolves response of N notifications according t
 });
 
 test.serial('#parseApiResponse returns rejected promise for 4xx status codes', t => {
-	const service = new global.window.API(t.context.persistence, t.context.networking, t.context.defaults);
+	const service = t.context.api;
 	const resp = t.context.getDefaultResponse({
 		status: 404,
 		statusText: 'Not found'
 	});
+
 	t.throws(service.parseApiResponse(resp), 'client error: 404 Not found');
 });
 
 test('#parseApiResponse returns rejected promise for 5xx status codes', t => {
-	const service = new global.window.API(t.context.persistence, t.context.networking, t.context.defaults);
+	const service = t.context.api;
 	const resp = t.context.getDefaultResponse({
 		status: 500
 	});
+
 	t.throws(service.parseApiResponse(resp), 'server error');
 });
 
-test('#makeApiRequest makes NetworkService.request for provided url and returns', t => {
-	const service = new global.window.API(t.context.persistence, t.context.networking, t.context.defaults);
-	service.NetworkService.request = sinon.stub().returns(Promise.resolve('response'));
+test('#makeApiRequest makes NetworkService.request for provided url', t => {
+	const service = t.context.api;
 	const url = 'https://api.github.com/resource';
+
+	window.fetch = sinon.stub().returns(Promise.resolve('response'));
+	window.localStorage.getItem = sinon.stub().returns('token');
+
 	service.makeApiRequest({url});
-	t.deepEqual(service.NetworkService.request.lastCall.args, [url]);
+
+	t.true(window.fetch.calledWith(url));
 });
 
 test('#makeApiRequest makes NetworkService.request to #getApiUrl if no url provided in options', t => {
-	const service = new global.window.API(t.context.persistence, t.context.networking, t.context.defaults);
-	service.NetworkService.request = sinon.stub().returns(Promise.resolve('response'));
+	const service = t.context.api;
 	const url = 'https://api.github.com/resource';
+
+	window.fetch = sinon.stub().returns(Promise.resolve('response'));
+	window.localStorage.getItem = sinon.stub().returns('token');
+
 	service.makeApiRequest({url});
-	t.deepEqual(service.NetworkService.request.lastCall.args, [url]);
+
+	t.true(window.fetch.calledWith(url));
 });
 
 test('#getNotifications returns promise that resolves to parsed API response', t => {
-	const service = new global.window.API(t.context.persistence, t.context.networking, t.context.defaults);
+	const service = t.context.api;
 	service.getApiUrl = sinon.stub().returns('https://api.github.com/resource');
-	service.NetworkService.request = sinon.stub().returns(Promise.resolve(t.context.getDefaultResponse()));
-	service.getNotifications().then(res => {
+
+	window.fetch = sinon.stub().returns(Promise.resolve(t.context.getDefaultResponse()));
+
+	service.makeApiRequest = sinon.spy(service, 'makeApiRequest');
+	service.parseApiResponse = sinon.spy(service, 'parseApiResponse');
+
+	return service.getNotifications().then(res => {
 		t.deepEqual(res, {
 			count: 0,
 			interval: 60,

@@ -1,7 +1,7 @@
-import API from './api';
-import DefaultsService from './defaults-service';
-import PersistenceService from './persistence-service';
-import TabsService from './tabs-service';
+const API = require('./api.js');
+const DefaultsService = require('./defaults-service.js');
+const PersistenceService = require('./persistence-service.js');
+const TabsService = require('./tabs-service.js');
 
 const NotificationsService = {
 	openNotification(notificationId) {
@@ -23,7 +23,7 @@ const NotificationsService = {
 
 	closeNotification(notificationId) {
 		return new Promise(resolve => {
-			chrome.notifications.clear(notificationId, resolve);
+			window.chrome.notifications.clear(notificationId, resolve);
 		});
 	},
 
@@ -58,10 +58,10 @@ const NotificationsService = {
 		this.filterNotificationsByDate(notifications, lastModifed).forEach(notification => {
 			const notificationId = `github-notifier-${notification.id}`;
 			const notificationObject = this.getNotificationObject(notification);
-			chrome.notifications.create(notificationId, notificationObject);
+			window.chrome.notifications.create(notificationId, notificationObject);
 			PersistenceService.set(notificationId, notification.subject.url);
 		});
 	}
 };
 
-export default NotificationsService;
+module.exports = NotificationsService;

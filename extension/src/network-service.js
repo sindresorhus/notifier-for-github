@@ -1,4 +1,4 @@
-import PersistenceService from './persistence-service';
+const PersistenceService = require('./persistence-service.js');
 
 const NetworkService = {
 	getHeaders(token) {
@@ -18,8 +18,8 @@ const NetworkService = {
 
 		const headers = this.getHeaders(token);
 
-		return fetch(url, {headers});
+		return window.fetch(url, {headers});
 	}
 };
 
-export default NetworkService;
+module.exports = NetworkService;

@@ -1,4 +1,5 @@
 const chromeStub = require('chrome-stub');
+const URLSearchParams = require('url-search-params');
 
 module.exports = {
 	nextTickPromise: () => {
@@ -8,15 +9,16 @@ module.exports = {
 	},
 	setupWindow: () => {
 		return {
+			URLSearchParams,
 			localStorage: {
 				setItem: () => {},
 				getItem: () => {},
 				removeItem: () => {}
 			},
-			chrome: Object.assign({}, chromeStub, {
+			chrome: Object.assign({}, {
 				runtime: {},
 				notifications: {}
-			})
+			}, chromeStub)
 		};
 	}
 };

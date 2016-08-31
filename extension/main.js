@@ -1,9 +1,9 @@
-import API from './src/api';
-import BadgeService from './src/badge-service';
-import NotificationsService from './src/notifications-service';
-import PermissionsService from './src/permissions-service';
-import PersistenceService from './src/persistence-service';
-import TabsService from './src/tabs-service';
+const API = require('./src/api');
+const BadgeService = require('./src/badge-service');
+const NotificationsService = require('./src/notifications-service');
+const PermissionsService = require('./src/permissions-service');
+const PersistenceService = require('./src/persistence-service');
+const TabsService = require('./src/tabs-service');
 
 function handleInterval(interval) {
 	const intervalSetting = parseInt(PersistenceService.get('interval'), 10) || 60;

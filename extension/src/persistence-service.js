@@ -1,8 +1,8 @@
-import DefaultsService from './defaults-service';
+const DefaultsService = require('./defaults-service.js');
 
 const PersistenceService = {
 	get(name) {
-		const item = localStorage.getItem(name);
+		const item = window.localStorage.getItem(name);
 		const defaults = DefaultsService.getDefaults();
 
 		if (item === null) {
@@ -17,16 +17,16 @@ const PersistenceService = {
 	},
 
 	set(name, value) {
-		localStorage.setItem(name, value);
+		window.localStorage.setItem(name, value);
 	},
 
 	remove(name) {
-		localStorage.removeItem(name);
+		window.localStorage.removeItem(name);
 	},
 
 	reset() {
-		localStorage.clear();
+		window.localStorage.clear();
 	}
 };
 
-export default PersistenceService;
+module.exports = PersistenceService;

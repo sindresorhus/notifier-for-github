@@ -1,10 +1,10 @@
-import DefaultsService from './defaults-service';
+const DefaultsService = require('./defaults-service.js');
 
 const BadgeService = {
 	render(text, color, title) {
-		chrome.browserAction.setBadgeText({text});
-		chrome.browserAction.setBadgeBackgroundColor({color});
-		chrome.browserAction.setTitle({title});
+		window.chrome.browserAction.setBadgeText({text});
+		window.chrome.browserAction.setBadgeBackgroundColor({color});
+		window.chrome.browserAction.setTitle({title});
 	},
 
 	renderCount(count) {
@@ -35,4 +35,4 @@ const BadgeService = {
 	}
 };
 
-export default BadgeService;
+module.exports = BadgeService;

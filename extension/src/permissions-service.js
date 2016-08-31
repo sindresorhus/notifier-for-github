@@ -1,13 +1,13 @@
-import PersistenceService from './persistence-service';
+const PersistenceService = require('./persistence-service.js');
 
 const PermissionsService = {
 	requestPermission(permission) {
 		return new Promise((resolve, reject) => {
-			chrome.permissions.request({
+			window.chrome.permissions.request({
 				permissions: [permission]
 			}, granted => {
-				if (chrome.runtime.lastError) {
-					return reject(chrome.runtime.lastError);
+				if (window.chrome.runtime.lastError) {
+					return reject(window.chrome.runtime.lastError);
 				}
 				PersistenceService.set(`${permission}_permission`, granted);
 				resolve(granted);
@@ -17,11 +17,11 @@ const PermissionsService = {
 
 	queryPermission(permission) {
 		return new Promise((resolve, reject) => {
-			chrome.permissions.contains({
+			window.chrome.permissions.contains({
 				permissions: [permission]
 			}, granted => {
-				if (chrome.runtime.lastError) {
-					return reject(chrome.runtime.lastError);
+				if (window.chrome.runtime.lastError) {
+					return reject(window.chrome.runtime.lastError);
 				}
 				resolve(granted);
 			});
@@ -29,4 +29,4 @@ const PermissionsService = {
 	}
 };
 
-export default PermissionsService;
+module.exports = PermissionsService;

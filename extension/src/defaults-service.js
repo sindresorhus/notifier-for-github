@@ -69,4 +69,4 @@ const DefaultsService = {
 	}
 };
 
-export default DefaultsService;
+module.exports = DefaultsService;

@@ -1,5 +1,3 @@
-'use strict';
-
 const defaults = new Map([
 	['rootUrl', 'https://api.github.com/'],
 	['oauthToken', ''],

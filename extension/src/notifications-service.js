@@ -1,5 +1,3 @@
-'use strict';
-
 import API from './api';
 import DefaultsService from './defaults-service';
 import PersistenceService from './persistence-service';

@@ -1,5 +1,3 @@
-'use strict';
-
 import Option from './src/option';
 import PermissionsService from './src/permissions-service';
 import PersistenceService from './src/persistence-service';

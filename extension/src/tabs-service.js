@@ -1,5 +1,3 @@
-'use strict';
-
 import PermissionsService from './permissions-service';
 
 const TabsService = {

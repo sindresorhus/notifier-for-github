@@ -7,8 +7,8 @@
     "release": "webstore upload --source=extension --auto-publish",
     "test": "xo && ava",
     "build": "npm run build-main && npm run build-options",
-    "build-main": "rollup -i extension/main.js -o extension/out/main.js -f umd -n main",
-    "build-options": "rollup -i extension/options.js -o extension/out/options.js -f umd -n options"
+    "build-main": "rollup --input extension/main.js --output extension/out/main.js --format umd --name main",
+    "build-options": "rollup --input extension/options.js --output extension/out/options.js --format umd --name options"
   },
   "devDependencies": {
     "chrome-webstore-upload-cli": "^1.0.3",

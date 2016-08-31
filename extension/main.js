@@ -1,5 +1,3 @@
-'use strict';
-
 import API from './src/api';
 import BadgeService from './src/badge-service';
 import NotificationsService from './src/notifications-service';

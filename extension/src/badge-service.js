@@ -1,5 +1,3 @@
-'use strict';
-
 import DefaultsService from './defaults-service';
 
 const BadgeService = {

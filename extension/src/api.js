@@ -1,5 +1,3 @@
-'use strict';
-
 import PersistenceService from './persistence-service';
 import NetworkService from './network-service';
 

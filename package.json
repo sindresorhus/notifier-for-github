@@ -1,9 +1,11 @@
 {
   "scripts": {
-    "test": "xo && mocha"
+    "test": "xo && mocha",
+    "release": "webstore upload --source=extension --auto-publish"
   },
   "devDependencies": {
     "chrome-stub": "^1.2.0",
+    "chrome-webstore-upload-cli": "*",
     "istanbul": "^0.4.0",
     "mocha": "*",
     "mock-localstorage": "^0.1.3",

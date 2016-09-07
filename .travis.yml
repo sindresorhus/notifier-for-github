@@ -2,3 +2,11 @@ sudo: false
 language: node_js
 node_js:
   - 'node'
+env:
+  - EXTENSION_ID=lmjdlojahmbbcodnpecnjnmlddbkjhnn
+deploy:
+  provider: script
+  script: npm run release
+  on:
+    branch: master
+    tags: true

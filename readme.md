@@ -57,6 +57,7 @@ Also available on [Firefox](https://github.com/sindresorhus/notifier-for-github-
 - [@YurySolovyov](https://github.com/YurySolovyov) (Yury Solovyov)
 - [@gcochard](https://github.com/gcochard) (Greg Cochard)
 - [@fstoerkle](https://github.com/fstoerkle) (Florian Störkle)
+- [@jacobbearden](https://github.com/jacobbearden) (Jacob Bearden)
 
 
 ## License

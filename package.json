@@ -25,19 +25,10 @@
       "browser"
     ],
     "ignores": [
-      "extension/out/*"
+      "extension/dist/*"
     ],
     "globals": [
-      "chrome",
-      "API",
-      "URLSearchParams",
-      "BadgeService",
-      "DefaultsService",
-      "PersistenceService",
-      "PermissionsService",
-      "NotificationsService",
-      "NetworkService",
-      "TabsService"
+      "chrome"
     ]
   },
   "license": "MIT"

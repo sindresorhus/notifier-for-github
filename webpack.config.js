@@ -4,7 +4,7 @@ module.exports = {
 		options: './extension/options.js'
 	},
 	output: {
-		path: './extension/out',
+		path: './extension/dist',
 		filename: '[name].js',
 		publicPath: ''
 	}

@@ -1,9 +1,9 @@
 import EventEmitter from 'events';
 import test from 'ava';
 import sinon from 'sinon';
-import utils from './utils';
+import util from './util';
 
-global.window = utils.setupWindow();
+global.window = util.setupWindow();
 
 const PersistenceService = require('../extension/src/persistence-service.js');
 const Option = require('../extension/src/option.js');

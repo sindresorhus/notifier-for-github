@@ -55,13 +55,13 @@ test('#getNotificationReasonText returns notification reasons', t => {
 		{foo: 42}
 	];
 
-	reasons.forEach(reason => {
+	for (const reason of reasons) {
 		t.truthy(DefaultsService.getNotificationReasonText(reason));
-	});
+	}
 
-	invalidReasons.forEach(reason => {
+	for (const reason of invalidReasons) {
 		t.is(DefaultsService.getNotificationReasonText(reason), '');
-	});
+	}
 });
 
 test('#getDefaultTitle returns string', t => {
@@ -78,7 +78,7 @@ test('#getErrorSymbol returns either "X" or "?" strings', t => {
 		{foo: 312}
 	];
 
-	invalidMessages.forEach(message => {
+	for (const message of invalidMessages) {
 		t.is(DefaultsService.getErrorSymbol({message}), '?');
-	});
+	}
 });

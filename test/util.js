@@ -3,9 +3,7 @@ const URLSearchParams = require('url-search-params');
 
 module.exports = {
 	nextTickPromise: () => {
-		return new Promise(resolve => {
-			process.nextTick(resolve);
-		});
+		return new Promise(process.nextTick);
 	},
 	setupWindow: () => {
 		return {

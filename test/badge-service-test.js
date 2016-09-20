@@ -1,8 +1,8 @@
 import test from 'ava';
 import sinon from 'sinon';
-import utils from './utils';
+import util from './util';
 
-global.window = utils.setupWindow();
+global.window = util.setupWindow();
 
 const DefaultsService = require('../extension/src/defaults-service.js');
 const BadgeService = require('../extension/src/badge-service.js');

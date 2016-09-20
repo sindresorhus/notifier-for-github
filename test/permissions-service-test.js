@@ -1,13 +1,12 @@
 import test from 'ava';
 import sinon from 'sinon';
-import utils from './utils';
+import util from './util';
 
-global.window = utils.setupWindow();
+global.window = util.setupWindow();
 
 const PermissionsService = require('../extension/src/permissions-service.js');
 
 test.beforeEach(t => {
-	global.window = Object.assign(global.window, utils.setupWindow());
 	t.context.service = Object.assign({}, PermissionsService);
 });
 
@@ -39,7 +38,7 @@ test.serial('#requestPermission Promise resolves to chrome.permissions.request c
 test('#requestPermission returns rejected Promise if chrome.runtime.lastError is set', t => {
 	const service = t.context.service;
 
-	return utils.nextTickPromise().then(() => {
+	return util.nextTickPromise().then(() => {
 		window.chrome.permissions.request = sinon.stub().yieldsAsync();
 		window.chrome.runtime.lastError = new Error('#requestPermission failed');
 		return service.requestPermission('tabs').then(() => t.fail()).catch(() => t.pass());
@@ -76,7 +75,7 @@ test.serial('#queryPermission Promise resolves to chrome.permissions.request cal
 test('#queryPermission returns rejected Promise if chrome.runtime.lastError is set', t => {
 	const service = t.context.service;
 
-	return utils.nextTickPromise().then(() => {
+	return util.nextTickPromise().then(() => {
 		window.chrome.permissions.contains = sinon.stub().yieldsAsync();
 		window.chrome.runtime.lastError = new Error('#queryPermission failed');
 		return service.queryPermission('tabs').then(() => t.fail()).catch(() => t.pass());

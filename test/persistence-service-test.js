@@ -1,8 +1,8 @@
 import test from 'ava';
 import sinon from 'sinon';
-import utils from './utils';
+import util from './util';
 
-global.window = utils.setupWindow();
+global.window = util.setupWindow();
 
 const PersistenceService = require('../extension/src/persistence-service.js');
 const DefaultsService = require('../extension/src/defaults-service.js');

@@ -1,9 +1,9 @@
 import test from 'ava';
 import sinon from 'sinon';
 import moment from 'moment';
-import utils from './utils';
+import util from './util';
 
-global.window = utils.setupWindow();
+global.window = util.setupWindow();
 
 const NotificationsService = require('../extension/src/notifications-service.js');
 const DefaultsService = require('../extension/src/defaults-service.js');

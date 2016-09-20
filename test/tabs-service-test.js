@@ -1,14 +1,13 @@
 import test from 'ava';
 import sinon from 'sinon';
-import utils from './utils';
+import util from './util';
 
-global.window = utils.setupWindow();
+global.window = util.setupWindow();
 
 const TabsService = require('../extension/src/tabs-service.js');
 
 test.beforeEach(t => {
 	t.context.service = Object.assign({}, TabsService);
-	global.window = Object.assign({}, utils.setupWindow());
 });
 
 test('#createTab calls chrome.tabs.create and returns promise', t => {

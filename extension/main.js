@@ -16,7 +16,7 @@ function handleInterval(interval) {
 	// delay less than 1 minute will cause a warning
 	const delayInMinutes = Math.max(Math.ceil(intervalValue / 60), 1);
 
-	chrome.alarms.create({delayInMinutes});
+	window.chrome.alarms.create({delayInMinutes});
 }
 
 function handleLastModified(date) {
@@ -65,27 +65,27 @@ function handleBrowserActionClick(tab) {
 
 function handleInstalled(details) {
 	if (details.reason === 'install') {
-		chrome.runtime.openOptionsPage();
+		window.chrome.runtime.openOptionsPage();
 	}
 }
 
-chrome.alarms.create({when: Date.now() + 2000});
-chrome.alarms.onAlarm.addListener(update);
-chrome.runtime.onMessage.addListener(update);
+window.chrome.alarms.create({when: Date.now() + 2000});
+window.chrome.alarms.onAlarm.addListener(update);
+window.chrome.runtime.onMessage.addListener(update);
 
 PermissionsService.queryPermission('notifications').then(granted => {
 	if (granted) {
-		chrome.notifications.onClicked.addListener(id => {
+		window.chrome.notifications.onClicked.addListener(id => {
 			NotificationsService.openNotification(id);
 		});
 
-		chrome.notifications.onClosed.addListener(id => {
+		window.chrome.notifications.onClosed.addListener(id => {
 			NotificationsService.removeNotification(id);
 		});
 	}
 });
 
-chrome.runtime.onInstalled.addListener(handleInstalled);
-chrome.browserAction.onClicked.addListener(handleBrowserActionClick);
+window.chrome.runtime.onInstalled.addListener(handleInstalled);
+window.chrome.browserAction.onClicked.addListener(handleBrowserActionClick);
 
 update();

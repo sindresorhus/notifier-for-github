@@ -1,8 +1,5 @@
 {
-  "repository": {
-    "type": "git",
-    "url": "sindresorhus/notifier-for-github-chrome"
-  },
+  "repository": "sindresorhus/notifier-for-github-chrome",
   "scripts": {
     "release": "webstore upload --source=extension --auto-publish",
     "test": "xo && ava",

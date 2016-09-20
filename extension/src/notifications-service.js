@@ -10,13 +10,9 @@ const NotificationsService = {
 			return API.makeApiRequest({url}).then(res => res.json()).then(json => {
 				const tabUrl = json.message === 'Not Found' ? API.getTabUrl() : json.html_url;
 				return TabsService.openTab(tabUrl);
-			}).then(() => {
-				return this.closeNotification(notificationId);
-			}).catch(() => {
-				return TabsService.openTab(API.getTabUrl());
-			}).then(() => {
-				return this.closeNotification(notificationId);
-			});
+			}).then(() => this.closeNotification(notificationId))
+				.catch(() => TabsService.openTab(API.getTabUrl()))
+				.then(() => this.closeNotification(notificationId));
 		}
 		return this.closeNotification(notificationId);
 	},
@@ -49,18 +45,16 @@ const NotificationsService = {
 
 	filterNotificationsByDate(notifications, lastModified) {
 		const lastModifedTime = new Date(lastModified).getTime();
-		return notifications.filter(notification => {
-			return new Date(notification.updated_at).getTime() > lastModifedTime;
-		});
+		return notifications.filter(n => new Date(n.updated_at).getTime() > lastModifedTime);
 	},
 
 	showNotifications(notifications, lastModified) {
-		this.filterNotificationsByDate(notifications, lastModified).forEach(notification => {
+		for (const notification of this.filterNotificationsByDate(notifications, lastModified)) {
 			const notificationId = `github-notifier-${notification.id}`;
 			const notificationObject = this.getNotificationObject(notification);
 			window.chrome.notifications.create(notificationId, notificationObject);
 			PersistenceService.set(notificationId, notification.subject.url);
-		});
+		}
 	}
 };
 

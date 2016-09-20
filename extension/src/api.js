@@ -1,5 +1,5 @@
 const PersistenceService = require('./persistence-service.js');
-const NetworkService = require('./network-service.js');
+const networkRequest = require('./network-request.js');
 
 const API = {
 	buildQuery(options) {
@@ -72,7 +72,7 @@ const API = {
 
 	makeApiRequest(options) {
 		const url = options.url || this.getApiUrl(options);
-		return NetworkService.request(url);
+		return networkRequest(url);
 	},
 
 	getNotifications() {

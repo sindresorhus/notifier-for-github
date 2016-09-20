@@ -138,7 +138,7 @@ test('#parseApiResponse returns rejected promise for 5xx status codes', t => {
 	t.throws(service.parseApiResponse(resp), 'server error');
 });
 
-test('#makeApiRequest makes NetworkService.request for provided url', t => {
+test('#makeApiRequest makes networkRequest for provided url', t => {
 	const service = t.context.api;
 	const url = 'https://api.github.com/resource';
 
@@ -150,7 +150,7 @@ test('#makeApiRequest makes NetworkService.request for provided url', t => {
 	t.true(window.fetch.calledWith(url));
 });
 
-test('#makeApiRequest makes NetworkService.request to #getApiUrl if no url provided in options', t => {
+test('#makeApiRequest makes networkRequest to #getApiUrl if no url provided in options', t => {
 	const service = t.context.api;
 	const url = 'https://api.github.com/resource';
 

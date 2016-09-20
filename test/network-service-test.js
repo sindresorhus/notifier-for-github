@@ -10,13 +10,6 @@ test.beforeEach(t => {
 	t.context.endpoint = 'http://endpoint.net/foo';
 });
 
-test('#getHeaders returns Object with oauthToken and empty If-Modified-Since header', t => {
-	t.deepEqual(NetworkService.getHeaders('oauthToken'), {
-		'Authorization': 'token oauthToken',
-		'If-Modified-Since': ''
-	});
-});
-
 test('#request returns Promise', t => {
 	window.fetch = sinon.stub().returns(Promise.resolve('{}'));
 	window.localStorage.getItem = sinon.stub().returns('oauthToken');

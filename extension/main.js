@@ -20,23 +20,23 @@ function handleInterval(interval) {
 }
 
 function handleLastModified(date) {
-	let lastModifed = PersistenceService.get('lastModifed');
-	const emptyLastModified = String(lastModifed) === 'null' || String(lastModifed) === 'undefined';
-	lastModifed = emptyLastModified ? new Date(0) : lastModifed;
+	let lastModified = PersistenceService.get('lastModified');
+	const emptyLastModified = String(lastModified) === 'null' || String(lastModified) === 'undefined';
+	lastModified = emptyLastModified ? new Date(0) : lastModified;
 
-	if (date !== lastModifed) {
-		PersistenceService.set('lastModifed', date);
+	if (date !== lastModified) {
+		PersistenceService.set('lastModified', date);
 		if (PersistenceService.get('showDesktopNotif') === true) {
-			NotificationsService.checkNotifications(lastModifed);
+			NotificationsService.checkNotifications(lastModified);
 		}
 	}
 }
 
 function handleNotificationsResponse(response) {
-	const {count, interval, lastModifed} = response;
+	const {count, interval, lastModified} = response;
 
 	handleInterval(interval);
-	handleLastModified(lastModifed);
+	handleLastModified(lastModified);
 
 	BadgeService.renderCount(count);
 }

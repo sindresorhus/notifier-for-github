@@ -31,9 +31,9 @@ const NotificationsService = {
 		PersistenceService.remove(notificationId);
 	},
 
-	checkNotifications(lastModifed) {
+	checkNotifications(lastModified) {
 		return API.makeApiRequest({perPage: 100}).then(res => res.json()).then(notifications => {
-			this.showNotifications(notifications, lastModifed);
+			this.showNotifications(notifications, lastModified);
 		});
 	},
 
@@ -47,15 +47,15 @@ const NotificationsService = {
 		};
 	},
 
-	filterNotificationsByDate(notifications, lastModifed) {
-		const lastModifedTime = new Date(lastModifed).getTime();
+	filterNotificationsByDate(notifications, lastModified) {
+		const lastModifedTime = new Date(lastModified).getTime();
 		return notifications.filter(notification => {
 			return new Date(notification.updated_at).getTime() > lastModifedTime;
 		});
 	},
 
-	showNotifications(notifications, lastModifed) {
-		this.filterNotificationsByDate(notifications, lastModifed).forEach(notification => {
+	showNotifications(notifications, lastModified) {
+		this.filterNotificationsByDate(notifications, lastModified).forEach(notification => {
 			const notificationId = `github-notifier-${notification.id}`;
 			const notificationObject = this.getNotificationObject(notification);
 			window.chrome.notifications.create(notificationId, notificationObject);

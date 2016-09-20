@@ -98,7 +98,7 @@ test('#parseApiResponse promise resolves response of 0 notifications if Link hea
 	const resp = t.context.getDefaultResponse();
 
 	return service.parseApiResponse(resp).then(response => {
-		t.deepEqual(response, {count: 0, interval: 60, lastModifed: null});
+		t.deepEqual(response, {count: 0, interval: 60, lastModified: null});
 	});
 });
 
@@ -109,13 +109,13 @@ test('#parseApiResponse promise resolves response of N notifications according t
 	resp.headers.get.withArgs('Link').returns(`<https://api.github.com/resource?page=1>; rel="next"
     																				 <https://api.github.com/resource?page=2>; rel="last"`);
 	return service.parseApiResponse(resp).then(response => {
-		t.deepEqual(response, {count: 2, interval: 60, lastModifed: null});
+		t.deepEqual(response, {count: 2, interval: 60, lastModified: null});
 		resp.headers.get.withArgs('Link').returns(`<https://api.github.com/resource?page=1>; rel="next"
 																							 <https://api.github.com/resource?page=2>; rel="next"
 	    																				 <https://api.github.com/resource?page=3>; rel="last"`);
 		return service.parseApiResponse(resp);
 	}).then(response => {
-		t.deepEqual(response, {count: 3, interval: 60, lastModifed: null});
+		t.deepEqual(response, {count: 3, interval: 60, lastModified: null});
 	});
 });
 
@@ -175,7 +175,7 @@ test('#getNotifications returns promise that resolves to parsed API response', t
 		t.deepEqual(res, {
 			count: 0,
 			interval: 60,
-			lastModifed: null
+			lastModified: null
 		});
 		t.true(service.makeApiRequest.calledOnce);
 		t.true(service.parseApiResponse.calledOnce);

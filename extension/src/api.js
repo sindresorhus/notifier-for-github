@@ -53,12 +53,12 @@ const API = {
 		}
 
 		const interval = Number(response.headers.get('X-Poll-Interval'));
-		const lastModifed = response.headers.get('Last-Modified');
+		const lastModified = response.headers.get('Last-Modified');
 		const linkheader = response.headers.get('Link');
 
 		if (linkheader === null) {
 			return response.json().then(data => {
-				return {count: data.length, interval, lastModifed};
+				return {count: data.length, interval, lastModified};
 			});
 		}
 
@@ -67,7 +67,7 @@ const API = {
 		});
 
 		const count = Number(lastlink.slice(lastlink.lastIndexOf('page=') + 5, lastlink.lastIndexOf('>')));
-		return Promise.resolve({count, interval, lastModifed});
+		return Promise.resolve({count, interval, lastModified});
 	},
 
 	makeApiRequest(options) {

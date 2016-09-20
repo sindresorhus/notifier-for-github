@@ -1,12 +1,11 @@
-const DefaultsService = require('./defaults-service.js');
+const Defaults = require('./defaults.js');
 
 const PersistenceService = {
 	get(name) {
 		const item = window.localStorage.getItem(name);
-		const defaults = DefaultsService.getDefaults();
 
 		if (item === null) {
-			return {}.hasOwnProperty.call(defaults, name) ? defaults[name] : undefined;
+			return Defaults.get(name);
 		}
 
 		if (item === 'true' || item === 'false') {

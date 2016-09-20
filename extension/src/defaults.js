@@ -35,38 +35,26 @@ const colors = new Map([
 	['error', [166, 41, 41, 255]]
 ]);
 
-const DefaultsService = {
-	getDefaults() {
-		const obj = {};
-		defaults.forEach((value, key) => {
-			obj[key] = value;
-		});
-		return obj;
-	},
+module.exports = exports = defaults;
 
-	getBadgeDefaultColor() {
-		return colors.get('default');
-	},
-
-	getBadgeErrorColor() {
-		return colors.get('error');
-	},
-
-	getNotificationReasonText(reason) {
-		return notificationReasons.get(reason) || '';
-	},
-
-	getDefaultTitle() {
-		return defaults.get('title');
-	},
-
-	getErrorTitle(error) {
-		return errorTitles.get(error.message) || errorTitles.get('default');
-	},
-
-	getErrorSymbol(error) {
-		return errorSymbols.get(error.message) || errorSymbols.get('default');
-	}
+exports.getBadgeDefaultColor = () => {
+	return colors.get('default');
 };
 
-module.exports = DefaultsService;
+exports.getBadgeErrorColor = () => {
+	return colors.get('error');
+};
+
+exports.getErrorTitle = error => {
+	return errorTitles.get(error.message) || errorTitles.get('default');
+};
+
+exports.getErrorSymbol = error => {
+	return errorSymbols.get(error.message) || errorSymbols.get('default');
+};
+
+exports.getNotificationReasonText = reason => {
+	return notificationReasons.get(reason) || '';
+};
+
+exports.defaultTitle = defaults.get('title');

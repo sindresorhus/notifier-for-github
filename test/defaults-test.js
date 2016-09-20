@@ -1,19 +1,9 @@
 import test from 'ava';
 
-const DefaultsService = require('../extension/src/defaults-service.js');
-
-test('#getDefaults returns defaults objects', t => {
-	const defaults = DefaultsService.getDefaults();
-
-	t.is(typeof defaults, 'object');
-	t.is(defaults.rootUrl, 'https://api.github.com/');
-	t.is(defaults.oauthToken, '');
-	t.is(defaults.useParticipatingCount, false);
-	t.is(defaults.interval, 60);
-});
+const Defaults = require('../extension/src/defaults.js');
 
 test('#getBadgeDefaultColor return array of 4 numbers between 0 and 255 inclusive', t => {
-	const color = DefaultsService.getBadgeDefaultColor();
+	const color = Defaults.getBadgeDefaultColor();
 
 	t.is(color.length, 4);
 
@@ -25,9 +15,9 @@ test('#getBadgeDefaultColor return array of 4 numbers between 0 and 255 inclusiv
 });
 
 test('#getBadgeErrorColor return array of 4 numbers not same as default', t => {
-	const color = DefaultsService.getBadgeErrorColor();
+	const color = Defaults.getBadgeErrorColor();
 	t.is(color.length, 4);
-	t.notDeepEqual(color, DefaultsService.getBadgeDefaultColor);
+	t.notDeepEqual(color, Defaults.getBadgeDefaultColor);
 
 	color.forEach(n => {
 		t.is(typeof n, 'number');
@@ -56,20 +46,16 @@ test('#getNotificationReasonText returns notification reasons', t => {
 	];
 
 	for (const reason of reasons) {
-		t.truthy(DefaultsService.getNotificationReasonText(reason));
+		t.truthy(Defaults.getNotificationReasonText(reason));
 	}
 
 	for (const reason of invalidReasons) {
-		t.is(DefaultsService.getNotificationReasonText(reason), '');
+		t.is(Defaults.getNotificationReasonText(reason), '');
 	}
 });
 
-test('#getDefaultTitle returns string', t => {
-	t.is(typeof DefaultsService.getDefaultTitle(), 'string');
-});
-
 test('#getErrorSymbol returns either "X" or "?" strings', t => {
-	t.is(DefaultsService.getErrorSymbol({message: 'missing token'}), 'X');
+	t.is(Defaults.getErrorSymbol({message: 'missing token'}), 'X');
 
 	const invalidMessages = [
 		'no such thing',
@@ -79,6 +65,6 @@ test('#getErrorSymbol returns either "X" or "?" strings', t => {
 	];
 
 	for (const message of invalidMessages) {
-		t.is(DefaultsService.getErrorSymbol({message}), '?');
+		t.is(Defaults.getErrorSymbol({message}), '?');
 	}
 });

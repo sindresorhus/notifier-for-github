@@ -6,7 +6,7 @@ import util from './util';
 global.window = util.setupWindow();
 
 const NotificationsService = require('../extension/src/notifications-service.js');
-const DefaultsService = require('../extension/src/defaults-service.js');
+const Defaults = require('../extension/src/defaults.js');
 
 test.beforeEach(t => {
 	t.context.service = Object.assign({}, NotificationsService);
@@ -157,7 +157,7 @@ test('#checkNotifications makes API request and shows notifications', t => {
 	});
 });
 
-test('#getNotificationObject returns Notification object made via options and DefaultsService call', t => {
+test('#getNotificationObject returns Notification object made via options and Defaults method call', t => {
 	const service = t.context.service;
 	const title = 'notification title';
 	const repositoryName = 'user/repo';
@@ -175,7 +175,7 @@ test('#getNotificationObject returns Notification object made via options and De
 		message: repositoryName,
 		type: 'basic',
 		iconUrl: 'icon-notif-128.png',
-		contextMessage: DefaultsService.getNotificationReasonText(reason)
+		contextMessage: Defaults.getNotificationReasonText(reason)
 	});
 });
 
@@ -210,14 +210,14 @@ test('#showNotifications shows notifications', t => {
 		title,
 		subject: {title},
 		iconUrl: 'icon-notif-128.png',
-		contextMessage: DefaultsService.getNotificationReasonText(reason)
+		contextMessage: Defaults.getNotificationReasonText(reason)
 	}, {
 		updated_at: moment().subtract(8, 'days').format(),
 		repository: {full_name: repositoryName},
 		title,
 		subject: {title},
 		iconUrl: 'icon-notif-128.png',
-		contextMessage: DefaultsService.getNotificationReasonText(reason)
+		contextMessage: Defaults.getNotificationReasonText(reason)
 	}];
 
 	const newNotification = [{
@@ -226,7 +226,7 @@ test('#showNotifications shows notifications', t => {
 		title,
 		subject: {title},
 		iconUrl: 'icon-notif-128.png',
-		contextMessage: DefaultsService.getNotificationReasonText(reason)
+		contextMessage: Defaults.getNotificationReasonText(reason)
 	}];
 	/* eslint-enable camelcase */
 

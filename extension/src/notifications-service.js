@@ -1,5 +1,5 @@
 const API = require('./api.js');
-const DefaultsService = require('./defaults-service.js');
+const Defaults = require('./defaults.js');
 const PersistenceService = require('./persistence-service.js');
 const TabsService = require('./tabs-service.js');
 
@@ -39,7 +39,7 @@ const NotificationsService = {
 			iconUrl: 'icon-notif-128.png',
 			type: 'basic',
 			message: notificationInfo.repository.full_name,
-			contextMessage: DefaultsService.getNotificationReasonText(notificationInfo.reason)
+			contextMessage: Defaults.getNotificationReasonText(notificationInfo.reason)
 		};
 	},
 

@@ -5,7 +5,7 @@ import util from './util';
 global.window = util.setupWindow();
 
 const PersistenceService = require('../extension/src/persistence-service.js');
-const DefaultsService = require('../extension/src/defaults-service.js');
+const Defaults = require('../extension/src/defaults.js');
 
 test.beforeEach(t => {
 	t.context.persistence = Object.assign({}, PersistenceService);
@@ -35,7 +35,7 @@ test('#get looks up in defaults if item is null', t => {
 
 	window.localStorage.getItem = sinon.stub().returns(null);
 
-	t.is(service.get('rootUrl'), DefaultsService.getDefaults().rootUrl);
+	t.is(service.get('rootUrl'), Defaults.get('rootUrl'));
 });
 
 test('#get returns undefined if no item found in defaults', t => {

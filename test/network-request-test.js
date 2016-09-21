@@ -10,28 +10,30 @@ test.beforeEach(t => {
 	t.context.endpoint = 'http://endpoint.net/foo';
 });
 
-test('#request returns Promise', t => {
+test('#request returns Promise', async t => {
 	window.fetch = sinon.stub().returns(Promise.resolve('{}'));
 	window.localStorage.getItem = sinon.stub().returns('oauthToken');
 
-	return networkRequest(t.context.endpoint).then(() => {
-		t.pass();
-	});
+	const response = await networkRequest(t.context.endpoint);
+
+	t.is(response, '{}');
+	t.pass();
 });
 
-test('#request requests fetches given url with proper headers', t => {
+test('#request requests fetches given url with proper headers', async t => {
 	window.fetch = sinon.stub().returns(Promise.resolve('{}'));
 	window.localStorage.getItem = sinon.stub().returns('oauthToken');
 
-	return networkRequest(t.context.endpoint).then(() => {
-		const args = [t.context.endpoint, {
-			headers: {
-				'Authorization': 'token oauthToken',
-				'If-Modified-Since': ''
-			}
-		}];
-		t.deepEqual(window.fetch.lastCall.args, args);
-	});
+	const response = await networkRequest(t.context.endpoint);
+	const args = [t.context.endpoint, {
+		headers: {
+			'Authorization': 'token oauthToken',
+			'If-Modified-Since': ''
+		}
+	}];
+
+	t.deepEqual(window.fetch.lastCall.args, args);
+	t.is(response, '{}');
 });
 
 test('#request returns rejected Promise if oauthToken is empty', t => {

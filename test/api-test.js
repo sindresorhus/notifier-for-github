@@ -93,30 +93,32 @@ test('#getTabUrl respects useParticipatingCount setting', t => {
 	t.is(service.getTabUrl(), 'https://github.com/notifications/participating');
 });
 
-test('#parseApiResponse promise resolves response of 0 notifications if Link header is null', t => {
+test('#parseApiResponse promise resolves response of 0 notifications if Link header is null', async t => {
 	const service = t.context.api;
 	const resp = t.context.getDefaultResponse();
 
-	return service.parseApiResponse(resp).then(response => {
-		t.deepEqual(response, {count: 0, interval: 60, lastModified: null});
-	});
+	const response = await service.parseApiResponse(resp);
+	t.deepEqual(response, {count: 0, interval: 60, lastModified: null});
 });
 
-test('#parseApiResponse promise resolves response of N notifications according to Link header', t => {
+test('#parseApiResponse promise resolves response of N notifications according to Link header', async t => {
 	const service = t.context.api;
 
-	const resp = t.context.getDefaultResponse();
-	resp.headers.get.withArgs('Link').returns(`<https://api.github.com/resource?page=1>; rel="next"
-    																				 <https://api.github.com/resource?page=2>; rel="last"`);
-	return service.parseApiResponse(resp).then(response => {
-		t.deepEqual(response, {count: 2, interval: 60, lastModified: null});
-		resp.headers.get.withArgs('Link').returns(`<https://api.github.com/resource?page=1>; rel="next"
-																							 <https://api.github.com/resource?page=2>; rel="next"
-	    																				 <https://api.github.com/resource?page=3>; rel="last"`);
-		return service.parseApiResponse(resp);
-	}).then(response => {
-		t.deepEqual(response, {count: 3, interval: 60, lastModified: null});
-	});
+	const rawResponse = t.context.getDefaultResponse();
+	const twoLinkHeader = `<https://api.github.com/resource?page=1>; rel="next"
+												 <https://api.github.com/resource?page=2>; rel="last"`;
+	rawResponse.headers.get.withArgs('Link').returns(twoLinkHeader);
+
+	const parsed = await service.parseApiResponse(rawResponse);
+	t.deepEqual(parsed, {count: 2, interval: 60, lastModified: null});
+
+	const threeLinkHeader = `<https://api.github.com/resource?page=1>; rel="next"
+													 <https://api.github.com/resource?page=2>; rel="next"
+													 <https://api.github.com/resource?page=3>; rel="last"`;
+	rawResponse.headers.get.withArgs('Link').returns(threeLinkHeader);
+
+	const nextParsedResponse = await service.parseApiResponse(rawResponse);
+	t.deepEqual(nextParsedResponse, {count: 3, interval: 60, lastModified: null});
 });
 
 test.serial('#parseApiResponse returns rejected promise for 4xx status codes', t => {
@@ -162,7 +164,7 @@ test('#makeApiRequest makes networkRequest to #getApiUrl if no url provided in o
 	t.true(window.fetch.calledWith(url));
 });
 
-test('#getNotifications returns promise that resolves to parsed API response', t => {
+test('#getNotifications returns promise that resolves to parsed API response', async t => {
 	const service = t.context.api;
 	service.getApiUrl = sinon.stub().returns('https://api.github.com/resource');
 
@@ -171,13 +173,9 @@ test('#getNotifications returns promise that resolves to parsed API response', t
 	service.makeApiRequest = sinon.spy(service, 'makeApiRequest');
 	service.parseApiResponse = sinon.spy(service, 'parseApiResponse');
 
-	return service.getNotifications().then(res => {
-		t.deepEqual(res, {
-			count: 0,
-			interval: 60,
-			lastModified: null
-		});
-		t.true(service.makeApiRequest.calledOnce);
-		t.true(service.parseApiResponse.calledOnce);
-	});
+	const response = await service.getNotifications();
+
+	t.deepEqual(response, {count: 0, interval: 60, lastModified: null});
+	t.true(service.makeApiRequest.calledOnce);
+	t.true(service.parseApiResponse.calledOnce);
 });

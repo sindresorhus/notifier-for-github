@@ -42,7 +42,7 @@ test('#requestPermission returns rejected Promise if chrome.runtime.lastError is
 	try {
 		await service.requestPermission('tabs');
 		t.fail();
-	} catch (e) {
+	} catch (err) {
 		t.pass();
 	}
 });
@@ -82,7 +82,7 @@ test('#queryPermission returns rejected Promise if chrome.runtime.lastError is s
 	try {
 		await service.queryPermission('tabs');
 		t.fail();
-	} catch (e) {
+	} catch (err) {
 		t.pass();
 	}
 });

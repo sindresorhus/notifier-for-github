@@ -21,6 +21,9 @@
     "globals": [
       "chrome",
       "GitHubNotify"
-    ]
+    ],
+    "rules": {
+      "import/no-unassigned-import": 0
+    }
   }
 }

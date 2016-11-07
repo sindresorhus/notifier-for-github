@@ -160,8 +160,8 @@
 				const currentWindow = true;
 				chrome.tabs.query({currentWindow, url}, tabs => {
 					if (tabs.length > 0) {
-						const highlighted = true;
-						chrome.tabs.update(tabs[0].id, {highlighted, url});
+						const active = true;
+						chrome.tabs.update(tabs[0].id, {active, url});
 					} else if (tab && tab.url === 'chrome://newtab/') {
 						chrome.tabs.update(null, {url});
 					} else {

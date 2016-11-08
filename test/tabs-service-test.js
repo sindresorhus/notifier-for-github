@@ -83,7 +83,7 @@ test('#openTab updates with first matched tab', async t => {
 
 	t.deepEqual(service.updateTab.lastCall.args, [firstTab.id, {
 		url,
-		highlighted: true
+		active: true
 	}]);
 });
 
@@ -100,6 +100,6 @@ test('#openTab updates empty tab if provided', async t => {
 
 	t.deepEqual(service.updateTab.lastCall.args, [null, {
 		url,
-		highlighted: false
+		active: false
 	}]);
 });

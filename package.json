@@ -29,7 +29,10 @@
     ],
     "globals": [
       "chrome"
-    ]
+    ],
+    "rules": {
+      "import/no-unassigned-import": 0
+    }
   },
   "license": "MIT"
 }

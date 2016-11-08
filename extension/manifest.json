@@ -18,7 +18,7 @@
 	"background": {
 		"persistent": false,
 		"scripts": [
-			"out/main.js"
+			"dist/main.js"
 		]
 	},
 	"browser_action": {

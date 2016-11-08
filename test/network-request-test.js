@@ -27,7 +27,9 @@ test('#request requests fetches given url with proper headers', async t => {
 	const response = await networkRequest(t.context.endpoint);
 	const args = [t.context.endpoint, {
 		headers: {
+			/* eslint-disable quote-props */
 			'Authorization': 'token oauthToken',
+			/* eslint-enable quote-props */
 			'If-Modified-Since': ''
 		}
 	}];

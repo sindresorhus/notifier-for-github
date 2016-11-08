@@ -1,5 +1,5 @@
 const API = require('./src/api');
-const BadgeService = require('./src/badge-service');
+const BadgeService = require('./src/badge');
 const NotificationsService = require('./src/notifications-service');
 const PermissionsService = require('./src/permissions-service');
 const PersistenceService = require('./src/persistence-service');

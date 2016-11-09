@@ -1,79 +1,92 @@
-(() => {
-	'use strict';
+const Option = require('./src/option');
+const PermissionsService = require('./src/permissions-service');
+const PersistenceService = require('./src/persistence-service');
 
-	document.addEventListener('DOMContentLoaded', () => {
-		const formRootUrl = document.getElementById('root_url');
-		const formOauthToken = document.getElementById('oauth_token');
-		const formUseParticipating = document.getElementById('use_participating');
-		const ghSettingsUrl = document.getElementById('gh_link');
-		const showDesktopNotif = document.getElementById('show_desktop_notif');
+document.addEventListener('DOMContentLoaded', () => {
+	const ghSettingsUrl = document.getElementById('gh_link');
+	const showDesktopNotif = document.getElementById('show_desktop_notif');
 
-		function loadSettings() {
-			formRootUrl.value = GitHubNotify.settings.get('rootUrl');
-			formOauthToken.value = GitHubNotify.settings.get('oauthToken');
-			formUseParticipating.checked = GitHubNotify.settings.get('useParticipatingCount');
-			showDesktopNotif.checked = GitHubNotify.settings.get('showDesktopNotif');
-		}
+	const RootUrlOption = new Option({
+		id: 'root_url',
+		storageKey: 'rootUrl',
+		valueType: 'value',
+		onChange: option => {
+			let url = normalizeRoot(option.element.value);
 
-		loadSettings();
-
-		function updateBadge() {
-			chrome.runtime.sendMessage('update');
-		}
-
-		function normalizeRoot(url) {
-			if (!/^https?:\/\//.test(url)) {
-				// assume it is https
-				url = `https://${url}`;
-			}
-
-			if (!/\/$/.test(url)) {
-				url += '/';
-			}
-
-			return url;
-		}
-
-		formRootUrl.addEventListener('change', () => {
-			let url = normalizeRoot(formRootUrl.value);
-
-			const urlSettings = `${normalizeRoot(formRootUrl.value)}settings/tokens/new?scopes=notifications`;
+			const urlSettings = `${normalizeRoot(option.element.value)}settings/tokens/new?scopes=notifications`;
 
 			// case of url is empty: set to default
 			if (url === normalizeRoot('')) {
-				GitHubNotify.settings.remove('rootUrl');
-				url = GitHubNotify.settings.get('rootUrl');
+				PersistenceService.remove('rootUrl');
+				url = PersistenceService.get('rootUrl');
 			}
 
-			GitHubNotify.settings.set('rootUrl', url);
+			option.writeValue(url);
 			ghSettingsUrl.href = urlSettings;
 			updateBadge();
-			loadSettings();
-		});
+			reloadSettings();
+		}
+	});
 
-		formOauthToken.addEventListener('change', () => {
-			GitHubNotify.settings.set('oauthToken', formOauthToken.value);
+	const OauthTokenOption = new Option({
+		id: 'oauth_token',
+		storageKey: 'oauthToken',
+		valueType: 'value',
+		onChange(option) {
+			option.writeValue();
 			updateBadge();
-		});
+		}
+	});
 
-		formUseParticipating.addEventListener('change', () => {
-			GitHubNotify.settings.set('useParticipatingCount', formUseParticipating.checked);
+	const UseParticipatingCountOption = new Option({
+		id: 'use_participating',
+		storageKey: 'useParticipatingCount',
+		valueType: 'checked',
+		onChange(option) {
+			option.writeValue();
 			updateBadge();
-		});
+		}
+	});
 
-		showDesktopNotif.addEventListener('change', () => {
+	const ShowDesktopNotificationsOption = new Option({
+		id: 'show_desktop_notif',
+		storageKey: 'showDesktopNotif',
+		valueType: 'checked',
+		onChange(option) {
 			if (showDesktopNotif.checked) {
-				window.GitHubNotify.requestPermission('notifications').then(granted => {
+				PermissionsService.requestPermission('notifications').then(granted => {
 					if (granted) {
 						updateBadge();
-					} else {
-						showDesktopNotif.checked = false;
 					}
-					GitHubNotify.settings.set('showDesktopNotif', granted);
+					option.writeValue(granted);
 				});
 			} else {
-				GitHubNotify.settings.set('showDesktopNotif', showDesktopNotif.checked);
+				option.writeValue();
 			}
-		});
+		}
 	});
-})();
+
+	function normalizeRoot(url) {
+		if (!/^https?:\/\//.test(url)) {
+			// assume it is https
+			url = `https://${url}`;
+		}
+
+		if (!/\/$/.test(url)) {
+			url += '/';
+		}
+
+		return url;
+	}
+
+	function updateBadge() {
+		chrome.runtime.sendMessage('update');
+	}
+
+	function reloadSettings() {
+		RootUrlOption.readValue();
+		OauthTokenOption.readValue();
+		UseParticipatingCountOption.readValue();
+		ShowDesktopNotificationsOption.readValue();
+	}
+});

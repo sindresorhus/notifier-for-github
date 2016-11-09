@@ -1,4 +1,5 @@
 {
+  "license": "MIT",
   "repository": "sindresorhus/notifier-for-github-chrome",
   "scripts": {
     "release": "webstore upload --source=extension --auto-publish",
@@ -6,13 +7,14 @@
     "build": "webpack --config"
   },
   "devDependencies": {
-    "chrome-webstore-upload-cli": "^1.0.3",
-    "ava": "latest",
+    "ava": "*",
     "chrome-stub": "^1.3.2",
+    "chrome-webstore-upload-cli": "^1.0.3",
     "istanbul": "^0.4.0",
     "moment": "^2.14.1",
+    "p-immediate": "^2.1.0",
     "sinon": "^1.15.4",
-    "url-search-params": "^0.5.0",
+    "url-search-params": "^0.6.1",
     "webpack": "^1.13.2",
     "xo": "*"
   },
@@ -29,10 +31,6 @@
     ],
     "globals": [
       "chrome"
-    ],
-    "rules": {
-      "import/no-unassigned-import": 0
-    }
-  },
-  "license": "MIT"
+    ]
+  }
 }

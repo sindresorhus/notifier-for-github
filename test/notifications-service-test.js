@@ -163,11 +163,9 @@ test('#getNotificationObject returns Notification object made via options and De
 	const repositoryName = 'user/repo';
 	const reason = 'subscribed';
 	const notification = service.getNotificationObject({
-		/* eslint-disable camelcase */
 		subject: {title},
-		repository: {full_name: repositoryName},
+		repository: {full_name: repositoryName}, // eslint-disable-line camelcase
 		reason
-		/* eslint-enable camelcase */
 	});
 
 	t.deepEqual(notification, {

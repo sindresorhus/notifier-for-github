@@ -1,5 +1,6 @@
 import test from 'ava';
 import sinon from 'sinon';
+import pImmediate from 'p-immediate';
 import util from './util';
 
 global.window = util.setupWindow();
@@ -12,9 +13,7 @@ test.beforeEach(t => {
 
 test('#requestPermission returns Promise', async t => {
 	const service = t.context.service;
-
 	await service.requestPermission('tabs');
-	t.pass();
 });
 
 test.serial('#requestPermission Promise resolves to chrome.permissions.request callback value', async t => {
@@ -34,27 +33,19 @@ test.serial('#requestPermission Promise resolves to chrome.permissions.request c
 test('#requestPermission returns rejected Promise if chrome.runtime.lastError is set', async t => {
 	const service = t.context.service;
 
-	await util.nextTickPromise();
+	await pImmediate();
 
 	window.chrome.permissions.request = sinon.stub().yieldsAsync();
 	window.chrome.runtime.lastError = new Error('#requestPermission failed');
 
-	try {
-		await service.requestPermission('tabs');
-		t.fail();
-	} catch (err) {
-		t.pass();
-	}
+	t.throws(service.requestPermission('tabs'));
 });
 
 // --- Mostly same as #requestPermission except for naming ---
 
 test('#queryPermission returns Promise', async t => {
 	const service = t.context.service;
-
 	await service.queryPermission('tabs');
-
-	t.pass();
 });
 
 test.serial('#queryPermission Promise resolves to chrome.permissions.request callback value', async t => {
@@ -74,15 +65,10 @@ test.serial('#queryPermission Promise resolves to chrome.permissions.request cal
 test('#queryPermission returns rejected Promise if chrome.runtime.lastError is set', async t => {
 	const service = t.context.service;
 
-	await util.nextTickPromise();
+	await pImmediate();
 
 	window.chrome.permissions.contains = sinon.stub().yieldsAsync();
 	window.chrome.runtime.lastError = new Error('#queryPermission failed');
 
-	try {
-		await service.queryPermission('tabs');
-		t.fail();
-	} catch (err) {
-		t.pass();
-	}
+	t.throws(service.queryPermission('tabs'));
 });

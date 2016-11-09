@@ -58,6 +58,7 @@ document.addEventListener('DOMContentLoaded', () => {
 					if (granted) {
 						updateBadge();
 					}
+
 					option.writeValue(granted);
 				});
 			} else {

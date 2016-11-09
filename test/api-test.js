@@ -8,6 +8,7 @@ const API = require('../extension/src/api.js');
 
 test.beforeEach(t => {
 	t.context.api = Object.assign({}, API);
+
 	t.context.getDefaultResponse = overrides => {
 		const headersGet = sinon.stub();
 		headersGet.withArgs('X-Poll-Interval').returns('60');

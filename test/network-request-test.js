@@ -17,7 +17,6 @@ test('#request returns Promise', async t => {
 	const response = await networkRequest(t.context.endpoint);
 
 	t.is(response, '{}');
-	t.pass();
 });
 
 test('#request requests fetches given url with proper headers', async t => {

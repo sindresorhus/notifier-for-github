@@ -2,7 +2,7 @@
   "license": "MIT",
   "repository": "sindresorhus/notifier-for-github-chrome",
   "scripts": {
-    "release": "webstore upload --source=extension --auto-publish",
+    "release": "npm run build && webstore upload --source=extension --auto-publish",
     "test": "xo && ava",
     "build": "webpack --config"
   },

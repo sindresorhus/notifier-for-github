@@ -1,30 +1,58 @@
 const Defaults = require('./defaults.js');
 
 const PersistenceService = {
-	get(name) {
-		const item = window.localStorage.getItem(name);
+	getItemAsync(name) {
+		return new Promise((resolve, reject) => {
+			chrome.storage.sync.get(name, (value) => {
+				if (chrome.runtime.lastError) {
+					return reject(chrome.runtime.lastError);
+				}
+				resolve(value);
+			});
+		});
+	},
 
-		if (item === null) {
+	async get(name) {
+		const item = await this.getItemAsync(name);
+
+		if (item === null || item === undefined) {
 			return Defaults.get(name);
 		}
 
-		if (item === 'true' || item === 'false') {
-			return item === 'true';
-		}
-
-		return item;
+		return item[name];
 	},
 
 	set(name, value) {
-		window.localStorage.setItem(name, value);
+		return new Promise((resolve, reject) => {
+			chrome.storage.sync.set({[name]:value}, () => {
+				if (chrome.runtime.lastError) {
+					return reject(chrome.runtime.lastError);
+				}
+				resolve();
+			});
+		});
 	},
 
 	remove(name) {
-		window.localStorage.removeItem(name);
+		return new Promise((resolve, reject) => {
+			chrome.storage.sync.remove(name, () => {
+				if (chrome.runtime.lastError) {
+					return reject(chrome.runtime.lastError);
+				}
+				resolve();
+			});
+		});
 	},
 
 	reset() {
-		window.localStorage.clear();
+		return new Promise((resolve, reject) => {
+			chrome.storage.sync.reset(name, () => {
+				if (chrome.runtime.lastError) {
+					return reject(chrome.runtime.lastError);
+				}
+				resolve();
+			});
+		});
 	}
 };
 

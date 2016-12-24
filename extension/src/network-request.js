@@ -9,10 +9,10 @@ const getHeaders = token => {
 	/* eslint-enable quote-props */
 };
 
-const request = url => {
-	const token = PersistenceService.get('oauthToken');
+const request = async url => {
+	const token = await PersistenceService.get('oauthToken');
 	if (!token) {
-		return Promise.reject(new Error('missing token'));
+		throw new Error('missing token');
 	}
 
 	const headers = getHeaders(token);

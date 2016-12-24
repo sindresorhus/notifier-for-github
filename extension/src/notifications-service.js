@@ -4,8 +4,8 @@ const PersistenceService = require('./persistence-service.js');
 const TabsService = require('./tabs-service.js');
 
 const NotificationsService = {
-	openNotification(notificationId) {
-		const url = PersistenceService.get(notificationId);
+	async openNotification(notificationId) {
+		const url = await PersistenceService.get(notificationId);
 		if (url) {
 			return API.makeApiRequest({url}).then(res => res.json()).then(json => {
 				const tabUrl = json.message === 'Not Found' ? API.getTabUrl() : json.html_url;
@@ -27,10 +27,10 @@ const NotificationsService = {
 		PersistenceService.remove(notificationId);
 	},
 
-	checkNotifications(lastModified) {
-		return API.makeApiRequest({perPage: 100}).then(res => res.json()).then(notifications => {
-			this.showNotifications(notifications, lastModified);
-		});
+	async checkNotifications(lastModified) {
+		const response = await API.makeApiRequest({perPage: 100});
+		const notifications = await response.json();
+		this.showNotifications(notifications, lastModified);
 	},
 
 	getNotificationObject(notificationInfo) {

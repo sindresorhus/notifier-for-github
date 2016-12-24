@@ -7,5 +7,16 @@ module.exports = {
 		path: './extension/dist',
 		filename: '[name].js',
 		publicPath: ''
+	},
+	module: {
+		loaders: [
+			{
+				test: /\.js$/,
+				loader: 'babel-loader',
+				query: {
+					"plugins": ["syntax-async-functions"]
+				}
+			}
+		]
 	}
 };

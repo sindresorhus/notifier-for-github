@@ -48,7 +48,7 @@ const API = {
 		const status = response.status;
 
 		if (status >= 500) {
-			throw new Error('server error')
+			throw new Error('server error');
 		}
 
 		if (status >= 400) {

@@ -3,7 +3,7 @@ const Defaults = require('./defaults.js');
 const PersistenceService = {
 	getItemAsync(name) {
 		return new Promise((resolve, reject) => {
-			chrome.storage.sync.get(name, (value) => {
+			chrome.storage.sync.get(name, value => {
 				if (chrome.runtime.lastError) {
 					return reject(chrome.runtime.lastError);
 				}
@@ -24,7 +24,7 @@ const PersistenceService = {
 
 	set(name, value) {
 		return new Promise((resolve, reject) => {
-			chrome.storage.sync.set({[name]:value}, () => {
+			chrome.storage.sync.set({[name]: value}, () => {
 				if (chrome.runtime.lastError) {
 					return reject(chrome.runtime.lastError);
 				}

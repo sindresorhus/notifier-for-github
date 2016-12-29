@@ -14,7 +14,7 @@ module.exports = {
 				test: /\.js$/,
 				loader: 'babel-loader',
 				query: {
-					"plugins": ["syntax-async-functions"]
+					plugins: ['syntax-async-functions']
 				}
 			}
 		]

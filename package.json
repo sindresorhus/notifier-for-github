@@ -11,6 +11,7 @@
     "babel-core": "^6.21.0",
     "babel-loader": "^6.2.10",
     "babel-plugin-syntax-async-functions": "^6.13.0",
+    "babel-preset-es2017": "^6.16.0",
     "chrome-stub": "^1.3.2",
     "chrome-webstore-upload-cli": "^1.0.3",
     "istanbul": "^0.4.0",
@@ -22,7 +23,11 @@
     "xo": "*"
   },
   "ava": {
-    "files": "test/*-test.*"
+    "files": "test/*-test.*",
+    "require": ["babel-register"]
+  },
+  "babel": {
+    "presets": ["es2017"]
   },
   "xo": {
     "esnext": true,

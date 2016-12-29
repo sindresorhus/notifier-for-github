@@ -5,7 +5,7 @@ const PermissionsService = require('./src/permissions-service');
 const PersistenceService = require('./src/persistence-service');
 const TabsService = require('./src/tabs-service');
 
-const handleInterval = async interval => {
+async function handleInterval(interval) {
 	const intervalSetting = await PersistenceService.get('interval');
 	const intervalValue = interval || 60;
 
@@ -19,7 +19,7 @@ const handleInterval = async interval => {
 	window.chrome.alarms.create({delayInMinutes});
 }
 
-const handleLastModified = async date => {
+async function handleLastModified(date) {
 	let lastModified = await PersistenceService.get('lastModified');
 	const emptyLastModified = String(lastModified) === 'null' || String(lastModified) === 'undefined';
 	lastModified = emptyLastModified ? new Date(0) : lastModified;
@@ -33,7 +33,7 @@ const handleLastModified = async date => {
 	}
 }
 
-const handleNotificationsResponse = async response => {
+async function handleNotificationsResponse(response) {
 	const {count, interval, lastModified} = response;
 
 	await handleInterval(interval);
@@ -42,12 +42,12 @@ const handleNotificationsResponse = async response => {
 	BadgeService.renderCount(count);
 }
 
-const update = async () => {
+async function update() {
 	try {
 		const response = await API.getNotifications();
 		handleNotificationsResponse(response);
-	} catch (e) {
-		handleError(e);
+	} catch (err) {
+		handleError(err);
 	}
 }
 
@@ -55,7 +55,7 @@ function handleError(error) {
 	BadgeService.renderError(error);
 }
 
-const handleBrowserActionClick = async tab => {
+async function handleBrowserActionClick(tab) {
 	const tabUrl = await API.getTabUrl();
 
 	// request optional permissions the 1rst time
@@ -65,7 +65,7 @@ const handleBrowserActionClick = async tab => {
 		await PersistenceService.set('tabs_permission', granted);
 	}
 	await TabsService.openTab(tabUrl, tab);
-};
+}
 
 function handleInstalled(details) {
 	if (details.reason === 'install') {
@@ -73,7 +73,7 @@ function handleInstalled(details) {
 	}
 }
 
-const checkDesktopNotificationsPermission = async () => {
+async function checkDesktopNotificationsPermission() {
 	const granted = await PermissionsService.queryPermission('notifications');
 	if (granted) {
 		window.chrome.notifications.onClicked.addListener(id => {
@@ -84,7 +84,7 @@ const checkDesktopNotificationsPermission = async () => {
 			NotificationsService.removeNotification(id);
 		});
 	}
-};
+}
 
 window.chrome.alarms.create({when: Date.now() + 2000});
 window.chrome.alarms.onAlarm.addListener(update);

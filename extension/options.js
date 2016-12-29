@@ -88,7 +88,7 @@ document.addEventListener('DOMContentLoaded', () => {
 			RootUrlOption.readValue(),
 			OauthTokenOption.readValue(),
 			UseParticipatingCountOption.readValue(),
-			ShowDesktopNotificationsOption.readValue(),
+			ShowDesktopNotificationsOption.readValue()
 		]);
 	}
 });

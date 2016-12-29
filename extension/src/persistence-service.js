@@ -3,9 +3,9 @@ const Defaults = require('./defaults.js');
 const PersistenceService = {
 	getItemAsync(name) {
 		return new Promise((resolve, reject) => {
-			chrome.storage.sync.get(name, value => {
-				if (chrome.runtime.lastError) {
-					return reject(chrome.runtime.lastError);
+			window.chrome.storage.sync.get(name, value => {
+				if (window.chrome.runtime.lastError) {
+					return reject(window.chrome.runtime.lastError);
 				}
 				resolve(value);
 			});
@@ -19,14 +19,14 @@ const PersistenceService = {
 			return Defaults.get(name);
 		}
 
-		return item[name];
+		return typeof item === 'object' ? item[name] : item;
 	},
 
 	set(name, value) {
 		return new Promise((resolve, reject) => {
-			chrome.storage.sync.set({[name]: value}, () => {
-				if (chrome.runtime.lastError) {
-					return reject(chrome.runtime.lastError);
+			window.chrome.storage.sync.set({[name]: value}, () => {
+				if (window.chrome.runtime.lastError) {
+					return reject(window.chrome.runtime.lastError);
 				}
 				resolve();
 			});
@@ -35,9 +35,9 @@ const PersistenceService = {
 
 	remove(name) {
 		return new Promise((resolve, reject) => {
-			chrome.storage.sync.remove(name, () => {
-				if (chrome.runtime.lastError) {
-					return reject(chrome.runtime.lastError);
+			window.chrome.storage.sync.remove(name, () => {
+				if (window.chrome.runtime.lastError) {
+					return reject(window.chrome.runtime.lastError);
 				}
 				resolve();
 			});
@@ -46,9 +46,9 @@ const PersistenceService = {
 
 	reset() {
 		return new Promise((resolve, reject) => {
-			chrome.storage.sync.reset(name, () => {
-				if (chrome.runtime.lastError) {
-					return reject(chrome.runtime.lastError);
+			window.chrome.storage.sync.reset(() => {
+				if (window.chrome.runtime.lastError) {
+					return reject(window.chrome.runtime.lastError);
 				}
 				resolve();
 			});

@@ -24,74 +24,74 @@ test.beforeEach(t => {
 	};
 });
 
-test('#buildQuery respects per_page option', t => {
+test('#buildQuery respects per_page option', async t => {
 	const service = t.context.api;
 
-	t.is(service.buildQuery({perPage: 1}), 'per_page=1');
+	t.is(await service.buildQuery({perPage: 1}), 'per_page=1');
 });
 
-test('#buildQuery respects useParticipatingCount setting', t => {
+test('#buildQuery respects useParticipatingCount setting', async t => {
 	const service = t.context.api;
 
-	window.localStorage.getItem = sinon.stub().returns(true);
+	window.chrome.storage.sync.get = sinon.stub().yieldsAsync(true);
 
-	t.is(service.buildQuery({perPage: 1}), 'per_page=1&participating=true');
+	t.is(await service.buildQuery({perPage: 1}), 'per_page=1&participating=true');
 });
 
-test('#getApiUrl uses default endpoint if rootUrl matches GitHub', t => {
+test('#getApiUrl uses default endpoint if rootUrl matches GitHub', async t => {
 	const service = t.context.api;
 
-	window.localStorage.getItem = sinon.stub().returns('https://api.github.com/');
+	window.chrome.storage.sync.get = sinon.stub().yieldsAsync('https://api.github.com/');
 
-	t.is(service.getApiUrl(), 'https://api.github.com/notifications');
+	t.is(await service.getApiUrl(), 'https://api.github.com/notifications');
 });
 
-test('#getApiUrl uses custom endpoint if rootUrl is something other than GitHub', t => {
+test('#getApiUrl uses custom endpoint if rootUrl is something other than GitHub', async t => {
 	const service = t.context.api;
 
-	window.localStorage.getItem = sinon.stub().returns('https://something.com/');
+	window.chrome.storage.sync.get = sinon.stub().yieldsAsync('https://something.com/');
 
-	t.is(service.getApiUrl(), 'https://something.com/api/v3/notifications');
+	t.is(await service.getApiUrl(), 'https://something.com/api/v3/notifications');
 });
 
-test('#getApiUrl uses query if passed', t => {
+test('#getApiUrl uses query if passed', async t => {
 	const service = t.context.api;
 
-	window.localStorage.getItem = sinon.stub();
-	window.localStorage.getItem.withArgs('rootUrl').returns('https://api.github.com/');
-	window.localStorage.getItem.withArgs('useParticipatingCount').returns(false);
+	window.chrome.storage.sync.get = sinon.stub();
+	window.chrome.storage.sync.get.withArgs('rootUrl').yieldsAsync('https://api.github.com/');
+	window.chrome.storage.sync.get.withArgs('useParticipatingCount').yieldsAsync(false);
 
-	t.is(service.getApiUrl({perPage: 123}), 'https://api.github.com/notifications?per_page=123');
+	t.is(await service.getApiUrl({perPage: 123}), 'https://api.github.com/notifications?per_page=123');
 });
 
-test('#getTabUrl uses default page if rootUrl matches GitHub', t => {
+test('#getTabUrl uses default page if rootUrl matches GitHub', async t => {
 	const service = t.context.api;
 
-	window.localStorage.getItem = sinon.stub();
-	window.localStorage.getItem.withArgs('rootUrl').returns('https://api.github.com/');
-	window.localStorage.getItem.withArgs('useParticipatingCount').returns(false);
+	window.chrome.storage.sync.get = sinon.stub();
+	window.chrome.storage.sync.get.withArgs('rootUrl').yieldsAsync('https://api.github.com/');
+	window.chrome.storage.sync.get.withArgs('useParticipatingCount').yieldsAsync(false);
 
-	t.is(service.getTabUrl(), 'https://github.com/notifications');
+	t.is(await service.getTabUrl(), 'https://github.com/notifications');
 });
 
-test('#getTabUrl uses uses custom page if rootUrl is something other than GitHub', t => {
+test('#getTabUrl uses uses custom page if rootUrl is something other than GitHub', async t => {
 	const service = t.context.api;
 
-	window.localStorage.getItem = sinon.stub();
-	window.localStorage.getItem.withArgs('rootUrl').returns('https://something.com/');
-	window.localStorage.getItem.withArgs('useParticipatingCount').returns(false);
+	window.chrome.storage.sync.get = sinon.stub();
+	window.chrome.storage.sync.get.withArgs('rootUrl').yieldsAsync('https://something.com/');
+	window.chrome.storage.sync.get.withArgs('useParticipatingCount').yieldsAsync(false);
 
-	t.is(service.getTabUrl(), 'https://something.com/notifications');
+	t.is(await service.getTabUrl(), 'https://something.com/notifications');
 });
 
-test('#getTabUrl respects useParticipatingCount setting', t => {
+test('#getTabUrl respects useParticipatingCount setting', async t => {
 	const service = t.context.api;
 
-	window.localStorage.getItem = sinon.stub();
-	window.localStorage.getItem.withArgs('rootUrl').returns('https://api.github.com/');
-	window.localStorage.getItem.withArgs('useParticipatingCount').returns(true);
+	window.chrome.storage.sync.get = sinon.stub();
+	window.chrome.storage.sync.get.withArgs('rootUrl').yieldsAsync('https://api.github.com/');
+	window.chrome.storage.sync.get.withArgs('useParticipatingCount').yieldsAsync(true);
 
-	t.is(service.getTabUrl(), 'https://github.com/notifications/participating');
+	t.is(await service.getTabUrl(), 'https://github.com/notifications/participating');
 });
 
 test('#parseApiResponse promise resolves response of 0 notifications if Link header is null', async t => {
@@ -122,7 +122,7 @@ test('#parseApiResponse promise resolves response of N notifications according t
 	t.deepEqual(nextParsedResponse, {count: 3, interval: 60, lastModified: null});
 });
 
-test.serial('#parseApiResponse returns rejected promise for 4xx status codes', t => {
+test('#parseApiResponse returns rejected promise for 4xx status codes', t => {
 	const service = t.context.api;
 	const resp = t.context.getDefaultResponse({
 		status: 404,
@@ -132,7 +132,7 @@ test.serial('#parseApiResponse returns rejected promise for 4xx status codes', t
 	t.throws(service.parseApiResponse(resp), 'client error: 404 Not found');
 });
 
-test('#parseApiResponse returns rejected promise for 5xx status codes', t => {
+test('#parseApiResponse returns rejected promise for 5xx status codes', async t => {
 	const service = t.context.api;
 	const resp = t.context.getDefaultResponse({
 		status: 500
@@ -141,34 +141,34 @@ test('#parseApiResponse returns rejected promise for 5xx status codes', t => {
 	t.throws(service.parseApiResponse(resp), 'server error');
 });
 
-test('#makeApiRequest makes networkRequest for provided url', t => {
+test('#makeApiRequest makes networkRequest for provided url', async t => {
 	const service = t.context.api;
 	const url = 'https://api.github.com/resource';
 
 	window.fetch = sinon.stub().returns(Promise.resolve('response'));
-	window.localStorage.getItem = sinon.stub().returns('token');
+	window.chrome.storage.sync.get = sinon.stub().yieldsAsync('token');
 
-	service.makeApiRequest({url});
+	await service.makeApiRequest({url});
 
 	t.true(window.fetch.calledWith(url));
 });
 
-test('#makeApiRequest makes networkRequest to #getApiUrl if no url provided in options', t => {
+test('#makeApiRequest makes networkRequest to #getApiUrl if no url provided in options', async t => {
 	const service = t.context.api;
 	const url = 'https://api.github.com/resource';
 
 	window.fetch = sinon.stub().returns(Promise.resolve('response'));
-	window.localStorage.getItem = sinon.stub().returns('token');
+	window.chrome.storage.sync.get = sinon.stub().yieldsAsync('token');
 
-	service.makeApiRequest({url});
+	await service.makeApiRequest({url});
 
 	t.true(window.fetch.calledWith(url));
 });
 
 test('#getNotifications returns promise that resolves to parsed API response', async t => {
 	const service = t.context.api;
-	service.getApiUrl = sinon.stub().returns('https://api.github.com/resource');
 
+	window.chrome.storage.sync.get = sinon.stub().yieldsAsync('token');
 	window.fetch = sinon.stub().returns(Promise.resolve(t.context.getDefaultResponse()));
 
 	service.makeApiRequest = sinon.spy(service, 'makeApiRequest');

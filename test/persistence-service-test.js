@@ -11,65 +11,55 @@ test.beforeEach(t => {
 	t.context.persistence = Object.assign({}, PersistenceService);
 });
 
-test('#get calls localStorage#getItem', t => {
+test.serial('#get calls chrome.storage.sync#get', async t => {
 	const service = t.context.persistence;
 
-	window.localStorage.getItem = sinon.spy();
-	service.get('name');
+	window.chrome.storage.sync.get = sinon.stub().yieldsAsync(null);
+	await service.get('name');
 
-	t.true(window.localStorage.getItem.calledWith('name'));
+	t.true(window.chrome.storage.sync.get.calledWith('name'));
 });
 
-test('#get converts "true" and "false" strings to booleans', t => {
+test('#get looks up in defaults if item is null', async t => {
 	const service = t.context.persistence;
 
-	window.localStorage.getItem = sinon.stub().returns('true');
-	t.true(service.get('boolean'));
+	window.chrome.storage.sync.get = sinon.stub().yieldsAsync(null);
 
-	window.localStorage.getItem = sinon.stub().returns('false');
-	t.false(service.get('boolean'));
+	t.is(await service.get('rootUrl'), Defaults.get('rootUrl'));
 });
 
-test('#get looks up in defaults if item is null', t => {
+test('#get returns undefined if no item found in defaults', async t => {
 	const service = t.context.persistence;
 
-	window.localStorage.getItem = sinon.stub().returns(null);
+	window.chrome.storage.sync.get = sinon.stub().yieldsAsync(null);
 
-	t.is(service.get('rootUrl'), Defaults.get('rootUrl'));
+	t.is(await service.get('no such thing'), undefined);
 });
 
-test('#get returns undefined if no item found in defaults', t => {
+test('#set calls chrome.storage.sync#set', async t => {
 	const service = t.context.persistence;
-
-	window.localStorage.getItem = sinon.stub().returns(null);
-
-	t.is(service.get('no such thing'), undefined);
-});
-
-test('#set calls localStorage#set', t => {
-	const service = t.context.persistence;
-	window.localStorage.setItem = sinon.spy();
+	window.chrome.storage.sync.set = sinon.stub().yieldsAsync();
 
 	const obj = {value: 42};
-	service.set('name', obj);
+	await service.set('name', obj);
 
-	t.true(window.localStorage.setItem.calledWith('name', obj));
+	t.true(window.chrome.storage.sync.set.calledWith({name: obj}));
 });
 
-test('#reset calls localStorage#clear', t => {
+test('#reset calls window.chrome.storage.sync#reset', async t => {
 	const service = t.context.persistence;
 
-	window.localStorage.clear = sinon.spy();
-	service.reset();
+	window.chrome.storage.sync.reset = sinon.stub().yieldsAsync();
+	await service.reset();
 
-	t.true(window.localStorage.clear.called);
+	t.true(window.chrome.storage.sync.reset.called);
 });
 
-test('#remove calls localStorage#removeItem', t => {
+test('#remove calls chrome.storage.sync#remove', async t => {
 	const service = t.context.persistence;
 
-	window.localStorage.removeItem = sinon.spy();
-	service.remove('name');
+	window.chrome.storage.sync.remove = sinon.stub().yieldsAsync();
+	await service.remove('name');
 
-	t.true(global.window.localStorage.removeItem.calledWith('name'));
+	t.true(global.window.chrome.storage.sync.remove.calledWith('name'));
 });

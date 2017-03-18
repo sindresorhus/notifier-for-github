@@ -5,7 +5,7 @@ const PermissionsService = require('./src/permissions-service');
 const PersistenceService = require('./src/persistence-service');
 const TabsService = require('./src/tabs-service');
 
-function handleInterval(interval) {
+function scheduleAlaram(interval) {
 	const intervalSetting = parseInt(PersistenceService.get('interval'), 10) || 60;
 	const intervalValue = interval || 60;
 
@@ -35,7 +35,7 @@ function handleLastModified(date) {
 function handleNotificationsResponse(response) {
 	const {count, interval, lastModified} = response;
 
-	handleInterval(interval);
+	scheduleAlaram(interval);
 	handleLastModified(lastModified);
 
 	BadgeService.renderCount(count);
@@ -46,6 +46,8 @@ function update() {
 }
 
 function handleError(error) {
+	scheduleAlaram();
+
 	BadgeService.renderError(error);
 }
 

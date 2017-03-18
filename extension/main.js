@@ -42,13 +42,21 @@ function handleNotificationsResponse(response) {
 }
 
 function update() {
-	API.getNotifications().then(handleNotificationsResponse).catch(handleError);
+	if (navigator.onLine) {
+		API.getNotifications().then(handleNotificationsResponse).catch(handleError);
+	} else {
+		handleOfflineStatus();
+	}
 }
 
 function handleError(error) {
 	scheduleAlaram();
 
 	BadgeService.renderError(error);
+}
+
+function handleOfflineStatus() {
+	BadgeService.renderWarning('offline');
 }
 
 function handleBrowserActionClick(tab) {
@@ -70,6 +78,17 @@ function handleInstalled(details) {
 		window.chrome.runtime.openOptionsPage();
 	}
 }
+
+function handleConnectionStatus(event) {
+	if (event.type === 'online') {
+		scheduleAlaram();
+	} else if(event.type === 'offline') {
+		handleOfflineStatus();
+	}
+}
+
+window.addEventListener('online',  handleConnectionStatus);
+window.addEventListener('offline', handleConnectionStatus);
 
 window.chrome.alarms.create({when: Date.now() + 2000});
 window.chrome.alarms.onAlarm.addListener(update);

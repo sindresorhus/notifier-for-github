@@ -30,9 +30,20 @@ const errorSymbols = new Map([
 	['default', '?']
 ]);
 
+const warningTitles = new Map([
+	['default', 'Unknown warning'],
+	['offline', 'No Internet connnection']
+]);
+
+const warningSymbols = new Map([
+	['default', 'warn'],
+	['offline', 'off']
+]);
+
 const colors = new Map([
 	['default', [65, 131, 196, 255]],
-	['error', [166, 41, 41, 255]]
+	['error', [166, 41, 41, 255]],
+	['warning', [245, 159, 0, 255]]
 ]);
 
 module.exports = exports = defaults;
@@ -43,6 +54,18 @@ exports.getBadgeDefaultColor = () => {
 
 exports.getBadgeErrorColor = () => {
 	return colors.get('error');
+};
+
+exports.getBadgeWarningColor = () => {
+	return colors.get('warning');
+};
+
+exports.getWarningTitle = warning => {
+	return warningTitles.get(warning) || warningTitles.get('default');
+};
+
+exports.getWarningSymbol = warning => {
+	return warningSymbols.get(warning) || warningSymbols.get('default');
 };
 
 exports.getErrorTitle = error => {

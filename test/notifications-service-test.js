@@ -99,7 +99,7 @@ test('#openNotification closes notification on error', async t => {
 
 	window.chrome.permissions.contains = sinon.stub().yieldsAsync(true);
 	window.chrome.tabs.query = sinon.stub().yieldsAsync([]);
-	window.fetch = sinon.stub().returns(Promise.reject('error'));
+	window.fetch = sinon.stub().returns(Promise.reject(new Error('error')));
 	window.localStorage.getItem.withArgs(t.context.notificationId).returns(t.context.notificationsUrl);
 
 	await service.openNotification(t.context.notificationId);
@@ -112,7 +112,7 @@ test('#openNotification opens nofifications tab on error', async t => {
 
 	window.chrome.permissions.contains = sinon.stub().yieldsAsync(true);
 	window.chrome.tabs.query = sinon.stub().yieldsAsync([]);
-	window.fetch = sinon.stub().returns(Promise.reject('error'));
+	window.fetch = sinon.stub().returns(Promise.reject(new Error('error')));
 	window.localStorage.getItem.withArgs(t.context.notificationId).returns(t.context.notificationsUrl);
 
 	await service.openNotification(t.context.notificationId);

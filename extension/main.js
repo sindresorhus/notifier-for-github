@@ -13,7 +13,7 @@ function scheduleAlaram(interval) {
 		PersistenceService.set('interval', intervalValue);
 	}
 
-	// delay less than 1 minute will cause a warning
+	// Delay less than 1 minute will cause a warning
 	const delayInMinutes = Math.max(Math.ceil(intervalValue / 60), 1);
 
 	window.chrome.alarms.create({delayInMinutes});
@@ -62,7 +62,7 @@ function handleOfflineStatus() {
 function handleBrowserActionClick(tab) {
 	const tabUrl = API.getTabUrl();
 
-	// request optional permissions the 1rst time
+	// Request optional permissions the 1rst time
 	if (PersistenceService.get('tabs_permission') === undefined) {
 		PermissionsService.requestPermission('tabs').then(granted => {
 			PersistenceService.set('tabs_permission', granted);
@@ -82,12 +82,12 @@ function handleInstalled(details) {
 function handleConnectionStatus(event) {
 	if (event.type === 'online') {
 		scheduleAlaram();
-	} else if(event.type === 'offline') {
+	} else if (event.type === 'offline') {
 		handleOfflineStatus();
 	}
 }
 
-window.addEventListener('online',  handleConnectionStatus);
+window.addEventListener('online', handleConnectionStatus);
 window.addEventListener('offline', handleConnectionStatus);
 
 window.chrome.alarms.create({when: Date.now() + 2000});

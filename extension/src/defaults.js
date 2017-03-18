@@ -46,7 +46,8 @@ const colors = new Map([
 	['warning', [245, 159, 0, 255]]
 ]);
 
-module.exports = exports = defaults;
+exports = defaults;
+module.exports = exports;
 
 exports.getBadgeDefaultColor = () => {
 	return colors.get('default');

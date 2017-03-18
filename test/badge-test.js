@@ -79,7 +79,7 @@ test('#renderError uses proper messages for errors', t => {
 
 	messages.forEach(message => {
 		Badge.renderError({message});
-		const title = window.chrome.browserAction.setTitle.lastCall.args[0].title; // title arg is 1st
+		const title = window.chrome.browserAction.setTitle.lastCall.args[0].title; // 'title' arg is 1st
 
 		t.is(title, Defaults.getErrorTitle({message}));
 	});

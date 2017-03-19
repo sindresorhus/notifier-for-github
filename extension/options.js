@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 			const urlSettings = `${normalizeRoot(option.element.value)}settings/tokens/new?scopes=notifications`;
 
-			// case of url is empty: set to default
+			// If url is empty - set to default
 			if (url === normalizeRoot('')) {
 				PersistenceService.remove('rootUrl');
 				url = PersistenceService.get('rootUrl');
@@ -69,7 +69,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 	function normalizeRoot(url) {
 		if (!/^https?:\/\//.test(url)) {
-			// assume it is https
+			// Assume it is https
 			url = `https://${url}`;
 		}
 

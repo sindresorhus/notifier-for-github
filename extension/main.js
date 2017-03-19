@@ -5,7 +5,7 @@ const PermissionsService = require('./src/permissions-service');
 const PersistenceService = require('./src/persistence-service');
 const TabsService = require('./src/tabs-service');
 
-function handleInterval(interval) {
+function scheduleAlaram(interval) {
 	const intervalSetting = parseInt(PersistenceService.get('interval'), 10) || 60;
 	const intervalValue = interval || 60;
 
@@ -13,7 +13,7 @@ function handleInterval(interval) {
 		PersistenceService.set('interval', intervalValue);
 	}
 
-	// delay less than 1 minute will cause a warning
+	// Delay less than 1 minute will cause a warning
 	const delayInMinutes = Math.max(Math.ceil(intervalValue / 60), 1);
 
 	window.chrome.alarms.create({delayInMinutes});
@@ -35,24 +35,34 @@ function handleLastModified(date) {
 function handleNotificationsResponse(response) {
 	const {count, interval, lastModified} = response;
 
-	handleInterval(interval);
+	scheduleAlaram(interval);
 	handleLastModified(lastModified);
 
 	BadgeService.renderCount(count);
 }
 
 function update() {
-	API.getNotifications().then(handleNotificationsResponse).catch(handleError);
+	if (navigator.onLine) {
+		API.getNotifications().then(handleNotificationsResponse).catch(handleError);
+	} else {
+		handleOfflineStatus();
+	}
 }
 
 function handleError(error) {
+	scheduleAlaram();
+
 	BadgeService.renderError(error);
+}
+
+function handleOfflineStatus() {
+	BadgeService.renderWarning('offline');
 }
 
 function handleBrowserActionClick(tab) {
 	const tabUrl = API.getTabUrl();
 
-	// request optional permissions the 1rst time
+	// Request optional permissions the 1rst time
 	if (PersistenceService.get('tabs_permission') === undefined) {
 		PermissionsService.requestPermission('tabs').then(granted => {
 			PersistenceService.set('tabs_permission', granted);
@@ -68,6 +78,17 @@ function handleInstalled(details) {
 		window.chrome.runtime.openOptionsPage();
 	}
 }
+
+function handleConnectionStatus(event) {
+	if (event.type === 'online') {
+		scheduleAlaram();
+	} else if (event.type === 'offline') {
+		handleOfflineStatus();
+	}
+}
+
+window.addEventListener('online', handleConnectionStatus);
+window.addEventListener('offline', handleConnectionStatus);
 
 window.chrome.alarms.create({when: Date.now() + 2000});
 window.chrome.alarms.onAlarm.addListener(update);

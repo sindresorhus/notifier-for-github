@@ -67,7 +67,7 @@ function handleOfflineStatus() {
 async function handleBrowserActionClick(tab) {
 	const tabUrl = await API.getTabUrl();
 
-	// request optional permissions the 1rst time
+	// Request optional permissions the 1rst time
 	const tabsAlreadyGranted = await PersistenceService.get('tabs_permission');
 	if (tabsAlreadyGranted === undefined) {
 		const granted = await PermissionsService.requestPermission('tabs');
@@ -87,6 +87,20 @@ function handleConnectionStatus(event) {
 		scheduleAlaram();
 	} else if (event.type === 'offline') {
 		handleOfflineStatus();
+	}
+}
+
+async function checkDesktopNotificationsPermission() {
+	const granted = await PermissionsService.queryPermission('notifications');
+
+	if (granted) {
+		window.chrome.notifications.onClicked.addListener(id => {
+			NotificationsService.openNotification(id);
+		});
+
+		window.chrome.notifications.onClosed.addListener(id => {
+			NotificationsService.removeNotification(id);
+		});
 	}
 }
 

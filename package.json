@@ -4,7 +4,8 @@
   "scripts": {
     "release": "npm run build && webstore upload --source=extension --auto-publish",
     "test": "xo && ava",
-    "build": "webpack --config webpack.config.js"
+    "build": "webpack --config webpack.config.js",
+    "build:watch": "webpack --config webpack.config.js --watch"
   },
   "devDependencies": {
     "ava": "*",

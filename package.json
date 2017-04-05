@@ -18,7 +18,7 @@
     "istanbul": "^0.4.0",
     "moment": "^2.14.1",
     "p-immediate": "^2.1.0",
-    "sinon": "^1.15.4",
+    "sinon": "^2.1.0",
     "url-search-params": "^0.6.1",
     "webpack": "^1.14.0",
     "xo": "*"

@@ -32,3 +32,10 @@ exports.renderError = error => {
 	const {symbol, title} = getErrorData(error);
 	render(symbol, color, title);
 };
+
+exports.renderWarning = warning => {
+	const color = Defaults.getBadgeWarningColor();
+	const title = Defaults.getWarningTitle(warning);
+	const symbol = Defaults.getWarningSymbol(warning);
+	render(symbol, color, title);
+};

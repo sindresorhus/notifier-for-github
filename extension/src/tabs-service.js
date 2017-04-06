@@ -38,8 +38,8 @@ const TabsService = {
 			} else if (tab && tab.url === 'chrome://newtab/') {
 				return this.updateTab(null, {url, active: false});
 			}
-			return this.createTab(url);
 		}
+		return this.createTab(url);
 	}
 };
 

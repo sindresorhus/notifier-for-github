@@ -4,19 +4,31 @@ import pImmediate from 'p-immediate';
 import util from './util';
 
 global.window = util.setupWindow();
+const sandbox = sinon.sandbox.create();
 
 const PermissionsService = require('../extension/src/permissions-service.js');
 
 test.beforeEach(t => {
 	t.context.service = Object.assign({}, PermissionsService);
+	window.chrome.permissions.request = () => {};
+	window.chrome.permissions.contains = () => {};
+});
+
+test.afterEach(t => {
+	sandbox.restore();
+	window.chrome.runtime.lastError = null;
 });
 
 test('#requestPermission returns Promise', async t => {
 	const service = t.context.service;
-	await service.requestPermission('tabs');
+
+	sandbox.stub(window.chrome.permissions, 'request').yieldsAsync(true);
+
+	const permissions = await service.requestPermission('tabs');
+	t.pass();
 });
 
-test.serial('#requestPermission Promise resolves to chrome.permissions.request callback value', async t => {
+test('#requestPermission Promise resolves to chrome.permissions.request callback value', async t => {
 	const service = t.context.service;
 
 	window.chrome.permissions.request = sinon.stub().yieldsAsync(true);
@@ -38,14 +50,18 @@ test('#requestPermission returns rejected Promise if chrome.runtime.lastError is
 	window.chrome.permissions.request = sinon.stub().yieldsAsync();
 	window.chrome.runtime.lastError = new Error('#requestPermission failed');
 
-	t.throws(service.requestPermission('tabs'));
+	await t.throws(service.requestPermission('tabs'));
 });
 
 // --- Mostly same as #requestPermission except for naming ---
 
 test('#queryPermission returns Promise', async t => {
 	const service = t.context.service;
-	await service.queryPermission('tabs');
+
+	sandbox.stub(window.chrome.permissions, 'contains').yieldsAsync(true);
+
+	const permission = await service.queryPermission('tabs');
+	t.pass();
 });
 
 test.serial('#queryPermission Promise resolves to chrome.permissions.request callback value', async t => {
@@ -70,5 +86,5 @@ test('#queryPermission returns rejected Promise if chrome.runtime.lastError is s
 	window.chrome.permissions.contains = sinon.stub().yieldsAsync();
 	window.chrome.runtime.lastError = new Error('#queryPermission failed');
 
-	t.throws(service.queryPermission('tabs'));
+	await t.throws(service.queryPermission('tabs'));
 });

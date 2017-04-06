@@ -11,7 +11,7 @@ test.beforeEach(t => {
 	t.context.persistence = Object.assign({}, PersistenceService);
 });
 
-test.serial('#get calls chrome.storage.sync#get', async t => {
+test('#get calls chrome.storage.sync#get', async t => {
 	const service = t.context.persistence;
 
 	window.chrome.storage.sync.get = sinon.stub().yieldsAsync(null);

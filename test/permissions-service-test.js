@@ -64,7 +64,7 @@ test('#queryPermission returns Promise', async t => {
 	t.pass();
 });
 
-test.serial('#queryPermission Promise resolves to chrome.permissions.request callback value', async t => {
+test('#queryPermission Promise resolves to chrome.permissions.request callback value', async t => {
 	const service = t.context.service;
 
 	window.chrome.permissions.contains = sinon.stub().yieldsAsync(true);

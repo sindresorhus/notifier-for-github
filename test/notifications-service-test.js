@@ -33,7 +33,7 @@ test.beforeEach(t => {
 	window.localStorage.getItem.withArgs('oauthToken').returns('token');
 });
 
-test.serial('#openNotification gets notification url by notificationId from PersistenceService', async t => {
+test('#openNotification gets notification url by notificationId from PersistenceService', async t => {
 	const service = t.context.service;
 
 	window.chrome.permissions.contains = sinon.stub().yieldsAsync(true);
@@ -59,7 +59,7 @@ test('#openNotification clears notification from queue by notificationId', async
 	t.true(window.chrome.notifications.clear.calledWithMatch(t.context.notificationId));
 });
 
-test.serial('#openNotification skips network requests if no url returned by PersistenceService', async t => {
+test('#openNotification skips network requests if no url returned by PersistenceService', async t => {
 	const service = t.context.service;
 
 	window.localStorage.getItem = sinon.stub().returns(null);
@@ -120,7 +120,7 @@ test('#openNotification opens nofifications tab on error', async t => {
 	t.true(window.chrome.tabs.create.calledWith({url: 'root/notifications'}));
 });
 
-test.serial('#closeNotification returns promise and clears notifications by id', async t => {
+test('#closeNotification returns promise and clears notifications by id', async t => {
 	const service = t.context.service;
 	const id = t.context.notificationId;
 

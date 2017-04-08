@@ -12,15 +12,16 @@ class Option {
 		this.readValue();
 	}
 
-	readValue() {
-		this.element[this.valueType] = PersistenceService.get(this.storageKey);
+	async readValue() {
+		const value = await PersistenceService.get(this.storageKey);
+		this.element[this.valueType] = value;
 	}
 
-	writeValue(override) {
+	async writeValue(override) {
 		if (override) {
 			this.element[this.valueType] = override;
 		}
-		PersistenceService.set(this.storageKey, this.element[this.valueType]);
+		await PersistenceService.set(this.storageKey, this.element[this.valueType]);
 	}
 }
 

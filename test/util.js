@@ -1,9 +1,9 @@
-const chromeStub = require('chrome-stub');
 const URLSearchParams = require('url-search-params');
 
 module.exports = {
 	setupWindow: () => {
 		return {
+			fetch() {},
 			URLSearchParams,
 			localStorage: {
 				setItem: () => {},
@@ -11,9 +11,13 @@ module.exports = {
 				removeItem: () => {}
 			},
 			chrome: Object.assign({}, {
+				browserAction: {},
 				runtime: {},
-				notifications: {}
-			}, chromeStub)
+				notifications: {},
+				tabs: {},
+				permissions: {},
+				storage: {}
+			})
 		};
 	}
 };

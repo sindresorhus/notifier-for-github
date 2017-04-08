@@ -4,25 +4,41 @@ import pImmediate from 'p-immediate';
 import util from './util';
 
 global.window = util.setupWindow();
+const sandbox = sinon.sandbox.create();
 
 const PermissionsService = require('../extension/src/permissions-service.js');
 
 test.beforeEach(t => {
 	t.context.service = Object.assign({}, PermissionsService);
+	window.chrome.permissions = {request() {}, contains() {}};
+	window.chrome.storage.sync = {get() {}, set() {}};
+	sandbox.stub(window.chrome.permissions, 'request');
+	sandbox.stub(window.chrome.permissions, 'contains');
+});
+
+test.afterEach(() => {
+	sandbox.restore();
+	window.chrome.runtime.lastError = null;
 });
 
 test('#requestPermission returns Promise', async t => {
 	const service = t.context.service;
-	await service.requestPermission('tabs');
+
+	window.chrome.permissions.request.yieldsAsync(true);
+
+	const permission = await service.requestPermission('tabs');
+	t.true(permission);
 });
 
-test.serial('#requestPermission Promise resolves to chrome.permissions.request callback value', async t => {
+test('#requestPermission Promise resolves to chrome.permissions.request callback value', async t => {
 	const service = t.context.service;
 
-	window.chrome.permissions.request = sinon.stub().yieldsAsync(true);
+	window.chrome.permissions.request.yieldsAsync(true);
 	const permissionGranted = service.requestPermission('tabs');
 
-	window.chrome.permissions.request = sinon.stub().yieldsAsync(false);
+	window.chrome.permissions.request.reset();
+
+	window.chrome.permissions.request.yieldsAsync(false);
 	const permissionDenied = service.requestPermission('tabs');
 
 	const response = await Promise.all([permissionGranted, permissionDenied]);
@@ -35,26 +51,32 @@ test('#requestPermission returns rejected Promise if chrome.runtime.lastError is
 
 	await pImmediate();
 
-	window.chrome.permissions.request = sinon.stub().yieldsAsync();
+	window.chrome.permissions.request.yieldsAsync(true);
 	window.chrome.runtime.lastError = new Error('#requestPermission failed');
 
-	t.throws(service.requestPermission('tabs'));
+	await t.throws(service.requestPermission('tabs'));
 });
 
 // --- Mostly same as #requestPermission except for naming ---
 
 test('#queryPermission returns Promise', async t => {
 	const service = t.context.service;
-	await service.queryPermission('tabs');
+
+	window.chrome.permissions.contains.yieldsAsync(true);
+
+	const permission = await service.queryPermission('tabs');
+	t.true(permission);
 });
 
-test.serial('#queryPermission Promise resolves to chrome.permissions.request callback value', async t => {
+test('#queryPermission Promise resolves to chrome.permissions.request callback value', async t => {
 	const service = t.context.service;
 
-	window.chrome.permissions.contains = sinon.stub().yieldsAsync(true);
+	window.chrome.permissions.contains.yieldsAsync(true);
 	const permissionGranted = service.queryPermission('tabs');
 
-	window.chrome.permissions.contains = sinon.stub().yieldsAsync(false);
+	window.chrome.permissions.contains.reset();
+
+	window.chrome.permissions.contains.yieldsAsync(false);
 	const permissionDenied = service.queryPermission('tabs');
 
 	const response = await Promise.all([permissionGranted, permissionDenied]);
@@ -67,8 +89,8 @@ test('#queryPermission returns rejected Promise if chrome.runtime.lastError is s
 
 	await pImmediate();
 
-	window.chrome.permissions.contains = sinon.stub().yieldsAsync();
+	window.chrome.permissions.contains.yieldsAsync(true);
 	window.chrome.runtime.lastError = new Error('#queryPermission failed');
 
-	t.throws(service.queryPermission('tabs'));
+	await t.throws(service.queryPermission('tabs'));
 });

@@ -1,9 +1,11 @@
 import test from 'ava';
 import sinon from 'sinon';
 import moment from 'moment';
+import pImmediate from 'p-immediate';
 import util from './util';
 
 global.window = util.setupWindow();
+const sandbox = sinon.sandbox.create();
 
 const NotificationsService = require('../extension/src/notifications-service.js');
 const Defaults = require('../extension/src/defaults.js');
@@ -25,69 +27,87 @@ test.beforeEach(t => {
 		}
 	};
 
-	window.chrome.tabs.create = sinon.stub().yieldsAsync();
-	window.chrome.notifications.clear = sinon.stub().yieldsAsync();
+	window.chrome.storage.sync = {get() {}, remove() {}, set() {}};
 
-	window.localStorage.getItem = sinon.stub();
-	window.localStorage.getItem.withArgs('rootUrl').returns('root/');
-	window.localStorage.getItem.withArgs('oauthToken').returns('token');
+	sandbox.stub(window.chrome.storage.sync, 'get')
+		.withArgs('useParticipatingCount').yieldsAsync(false)
+		.withArgs('rootUrl').yieldsAsync('root/')
+		.withArgs('oauthToken').yieldsAsync('token');
+	sandbox.stub(window.chrome.storage.sync, 'set').yieldsAsync();
+
+	window.chrome.tabs = {create() {}, query() {}, clear() {}};
+	window.chrome.notifications = {clear() {}, create() {}};
+	window.chrome.permissions = {contains() {}};
+
+	sandbox.stub(window.chrome.permissions, 'contains').yieldsAsync(true);
+	sandbox.stub(window.chrome.notifications, 'clear').yieldsAsync();
+	sandbox.stub(window.chrome.notifications, 'create');
+	sandbox.stub(window.chrome.tabs, 'create').yieldsAsync();
+	sandbox.stub(window.chrome.tabs, 'query').yieldsAsync([]);
 });
 
-test.serial('#openNotification gets notification url by notificationId from PersistenceService', async t => {
+test.afterEach(() => {
+	sandbox.restore();
+});
+
+test('#openNotification gets notification url by notificationId from PersistenceService', async t => {
 	const service = t.context.service;
 
-	window.chrome.permissions.contains = sinon.stub().yieldsAsync(true);
-	window.chrome.tabs.query = sinon.stub().yieldsAsync([]);
-	window.fetch = sinon.stub().returns(Promise.resolve(t.context.defaultResponse));
-	window.localStorage.getItem.withArgs(t.context.notificationId).returns(t.context.notificationsUrl);
+	sandbox.stub(window, 'fetch').returns(Promise.resolve(t.context.defaultResponse));
+
+	window.chrome.storage.sync.get
+		.withArgs(t.context.notificationId).yieldsAsync(t.context.notificationsUrl);
 
 	await service.openNotification(t.context.notificationId);
 
-	t.true(window.localStorage.getItem.calledWith(t.context.notificationId));
+	t.true(window.chrome.storage.sync.get.calledWith(t.context.notificationId));
 });
 
 test('#openNotification clears notification from queue by notificationId', async t => {
 	const service = t.context.service;
 
-	window.chrome.permissions.contains = sinon.stub().yieldsAsync(true);
-	window.chrome.tabs.query = sinon.stub().yieldsAsync([]);
-	window.fetch = sinon.stub().returns(Promise.resolve(t.context.defaultResponse));
-	window.localStorage.getItem.withArgs(t.context.notificationId).returns(t.context.notificationsUrl);
+	sandbox.stub(window, 'fetch').returns(Promise.resolve(t.context.defaultResponse));
+
+	window.chrome.storage.sync.get
+		.withArgs(t.context.notificationId).yieldsAsync(t.context.notificationsUrl);
 
 	await service.openNotification(t.context.notificationId);
 
 	t.true(window.chrome.notifications.clear.calledWithMatch(t.context.notificationId));
 });
 
-test.serial('#openNotification skips network requests if no url returned by PersistenceService', async t => {
+test('#openNotification skips network requests if no url returned by PersistenceService', async t => {
 	const service = t.context.service;
 
-	window.localStorage.getItem = sinon.stub().returns(null);
-	window.fetch = sinon.stub().returns(Promise.resolve(t.context.defaultResponse));
+	window.chrome.storage.sync.get
+		.withArgs(t.context.notificationId).yieldsAsync(null);
+	sandbox.stub(window, 'fetch').returns(Promise.resolve(t.context.defaultResponse));
 
 	await service.openNotification(t.context.notificationId);
 
-	t.is(window.fetch.callCount, 0);
+	t.false(window.fetch.called);
 });
 
 test('#openNotification closes notification if no url returned by PersistenceService', async t => {
 	const service = t.context.service;
 
-	window.localStorage.getItem = sinon.stub().returns(null);
-	service.closeNotification = sinon.stub().returns(Promise.resolve());
+	window.chrome.storage.sync.get
+		.withArgs(t.context.notificationId).yieldsAsync(null);
+
+	sandbox.spy(service, 'closeNotification');
 
 	await service.openNotification(t.context.notificationId);
 
-	t.is(service.closeNotification.callCount, 1);
+	t.true(service.closeNotification.calledOnce);
 });
 
 test('#openNotification opens tab with url from network response', async t => {
 	const service = t.context.service;
 
-	window.chrome.permissions.contains = sinon.stub().yieldsAsync(true);
-	window.chrome.tabs.query = sinon.stub().yieldsAsync([]);
-	window.fetch = sinon.stub().returns(Promise.resolve(t.context.defaultResponse));
-	window.localStorage.getItem.withArgs(t.context.notificationId).returns(t.context.notificationsUrl);
+	sandbox.stub(window, 'fetch').returns(Promise.resolve(t.context.defaultResponse));
+
+	window.chrome.storage.sync.get
+		.withArgs(t.context.notificationId).yieldsAsync(t.context.notificationsUrl);
 
 	await service.openNotification(t.context.notificationId);
 
@@ -97,10 +117,10 @@ test('#openNotification opens tab with url from network response', async t => {
 test('#openNotification closes notification on error', async t => {
 	const service = t.context.service;
 
-	window.chrome.permissions.contains = sinon.stub().yieldsAsync(true);
-	window.chrome.tabs.query = sinon.stub().yieldsAsync([]);
-	window.fetch = sinon.stub().returns(Promise.reject(new Error('error')));
-	window.localStorage.getItem.withArgs(t.context.notificationId).returns(t.context.notificationsUrl);
+	sandbox.stub(window, 'fetch').returns(Promise.reject(new Error('error')));
+
+	window.chrome.storage.sync.get
+		.withArgs(t.context.notificationId).yieldsAsync(t.context.notificationsUrl);
 
 	await service.openNotification(t.context.notificationId);
 
@@ -110,47 +130,44 @@ test('#openNotification closes notification on error', async t => {
 test('#openNotification opens nofifications tab on error', async t => {
 	const service = t.context.service;
 
-	window.chrome.permissions.contains = sinon.stub().yieldsAsync(true);
-	window.chrome.tabs.query = sinon.stub().yieldsAsync([]);
-	window.fetch = sinon.stub().returns(Promise.reject(new Error('error')));
-	window.localStorage.getItem.withArgs(t.context.notificationId).returns(t.context.notificationsUrl);
+	sandbox.stub(window, 'fetch').returns(Promise.reject(new Error('error')));
+
+	window.chrome.storage.sync.get
+		.withArgs(t.context.notificationId).yieldsAsync(t.context.notificationsUrl);
 
 	await service.openNotification(t.context.notificationId);
 
 	t.true(window.chrome.tabs.create.calledWith({url: 'root/notifications'}));
 });
 
-test.serial('#closeNotification returns promise and clears notifications by id', async t => {
+test('#closeNotification returns promise and clears notifications by id', async t => {
 	const service = t.context.service;
-	const id = t.context.notificationId;
 
-	window.chrome.notifications.clear = sinon.stub().yieldsAsync();
+	await service.closeNotification(t.context.notificationId);
 
-	await service.closeNotification(id);
-
-	t.true(window.chrome.notifications.clear.calledWith(id));
+	t.true(window.chrome.notifications.clear.calledWith(t.context.notificationId));
 });
 
-test('#removeNotification removes notifications from storage', t => {
+test('#removeNotification removes notifications from storage', async t => {
 	const service = t.context.service;
 
-	window.localStorage.removeItem = sinon.spy();
-	service.removeNotification(t.context.notificationId);
+	sandbox.spy(window.chrome.storage.sync, 'remove');
 
-	t.true(window.localStorage.removeItem.calledWith(t.context.notificationId));
+	await service.removeNotification(t.context.notificationId);
+
+	t.true(window.chrome.storage.sync.remove.calledWith(t.context.notificationId));
 });
 
 test('#checkNotifications makes API request and shows notifications', async t => {
 	const service = t.context.service;
 	const response = {
 		json() {
-			return [];
+			return Promise.resolve([]);
 		}
 	};
 
-	window.fetch = sinon.stub().returns(Promise.resolve(response));
-	window.localStorage.getItem = sinon.stub().returns('token');
-	service.showNotifications = sinon.stub();
+	sandbox.stub(window, 'fetch').returns(response);
+	sandbox.spy(service, 'showNotifications');
 
 	await service.checkNotifications();
 
@@ -195,13 +212,13 @@ test('#filterNotificationsByDate filters latest notifications', t => {
 	t.is(moment().subtract(5, 'days').format(), latestNotifications[0].updated_at);
 });
 
-test('#showNotifications shows notifications', t => {
+test('#showNotifications shows notifications', async t => {
 	const service = t.context.service;
-	/* eslint-disable camelcase */
 	const title = 'notification title';
 	const repositoryName = 'user/repo';
 	const reason = 'subscribed';
 
+	/* eslint-disable camelcase */
 	const oldNotifications = [{
 		updated_at: moment().subtract(9, 'days').format(),
 		repository: {full_name: repositoryName},
@@ -228,15 +245,14 @@ test('#showNotifications shows notifications', t => {
 	}];
 	/* eslint-enable camelcase */
 
-	window.chrome.notifications.create = sinon.stub();
+	const notifications = [...oldNotifications, ...newNotification];
 
-	const notifications = oldNotifications.concat(newNotification);
-
-	service.filterNotificationsByDate = sinon.stub().returns(newNotification);
+	sandbox.stub(service, 'filterNotificationsByDate').returns(newNotification);
 
 	service.showNotifications(notifications, moment().subtract(7, 'days').format());
 
-	t.true(service.filterNotificationsByDate.called);
-	t.true(window.chrome.notifications.create.called);
-	t.is(window.chrome.notifications.create.callCount, 1);
+	await pImmediate();
+
+	t.true(service.filterNotificationsByDate.calledOnce);
+	t.true(window.chrome.notifications.create.calledOnce);
 });

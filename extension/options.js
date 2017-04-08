@@ -1,4 +1,5 @@
 const Option = require('./src/option');
+const Defaults = require('./src/defaults');
 const PermissionsService = require('./src/permissions-service');
 const PersistenceService = require('./src/persistence-service');
 
@@ -10,21 +11,21 @@ document.addEventListener('DOMContentLoaded', () => {
 		id: 'root_url',
 		storageKey: 'rootUrl',
 		valueType: 'value',
-		onChange: option => {
+		async onChange(option) {
 			let url = normalizeRoot(option.element.value);
 
 			const urlSettings = `${normalizeRoot(option.element.value)}settings/tokens/new?scopes=notifications`;
 
 			// If url is empty - set to default
 			if (url === normalizeRoot('')) {
-				PersistenceService.remove('rootUrl');
-				url = PersistenceService.get('rootUrl');
+				await PersistenceService.remove('rootUrl');
+				url = Defaults.get('rootUrl');
 			}
 
-			option.writeValue(url);
+			await option.writeValue(url);
 			ghSettingsUrl.href = urlSettings;
 			updateBadge();
-			reloadSettings();
+			await reloadSettings();
 		}
 	});
 
@@ -32,8 +33,8 @@ document.addEventListener('DOMContentLoaded', () => {
 		id: 'oauth_token',
 		storageKey: 'oauthToken',
 		valueType: 'value',
-		onChange(option) {
-			option.writeValue();
+		async onChange(option) {
+			await option.writeValue();
 			updateBadge();
 		}
 	});
@@ -42,8 +43,8 @@ document.addEventListener('DOMContentLoaded', () => {
 		id: 'use_participating',
 		storageKey: 'useParticipatingCount',
 		valueType: 'checked',
-		onChange(option) {
-			option.writeValue();
+		async onChange(option) {
+			await option.writeValue();
 			updateBadge();
 		}
 	});
@@ -52,15 +53,13 @@ document.addEventListener('DOMContentLoaded', () => {
 		id: 'show_desktop_notif',
 		storageKey: 'showDesktopNotif',
 		valueType: 'checked',
-		onChange(option) {
+		async onChange(option) {
 			if (showDesktopNotif.checked) {
-				PermissionsService.requestPermission('notifications').then(granted => {
-					if (granted) {
-						updateBadge();
-					}
-
-					option.writeValue(granted);
-				});
+				const granted = PermissionsService.requestPermission('notifications');
+				if (granted) {
+					updateBadge();
+				}
+				await option.writeValue(granted);
 			} else {
 				option.writeValue();
 			}
@@ -85,9 +84,11 @@ document.addEventListener('DOMContentLoaded', () => {
 	}
 
 	function reloadSettings() {
-		RootUrlOption.readValue();
-		OauthTokenOption.readValue();
-		UseParticipatingCountOption.readValue();
-		ShowDesktopNotificationsOption.readValue();
+		return Promise.all([
+			RootUrlOption.readValue(),
+			OauthTokenOption.readValue(),
+			UseParticipatingCountOption.readValue(),
+			ShowDesktopNotificationsOption.readValue()
+		]);
 	}
 });

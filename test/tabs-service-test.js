@@ -3,18 +3,25 @@ import sinon from 'sinon';
 import util from './util';
 
 global.window = util.setupWindow();
+const sandbox = sinon.sandbox.create();
 
 const TabsService = require('../extension/src/tabs-service.js');
 
 test.beforeEach(t => {
 	t.context.service = Object.assign({}, TabsService);
+	window.chrome.tabs = {create() {}, update() {}, query() {}};
+	window.chrome.permissions = {contains() {}};
+});
+
+test.afterEach(() => {
+	sandbox.restore();
 });
 
 test('#createTab calls chrome.tabs.create and returns promise', async t => {
 	const service = t.context.service;
 	const url = 'https://api.github.com/resource';
 
-	window.chrome.tabs.create = sinon.stub().yieldsAsync({id: 1, url});
+	sandbox.stub(window.chrome.tabs, 'create').yieldsAsync({id: 1, url});
 
 	const tab = await service.createTab(url);
 
@@ -25,7 +32,7 @@ test('#updateTab calls chrome.tabs.update and returns promise', async t => {
 	const service = t.context.service;
 	const url = 'https://api.github.com/resource';
 
-	window.chrome.tabs.update = sinon.stub().yieldsAsync({id: 1, url});
+	sandbox.stub(window.chrome.tabs, 'update').yieldsAsync({id: 1, url});
 
 	const tab = await service.updateTab(42, {url});
 
@@ -38,7 +45,7 @@ test('#queryTabs calls chrome.tabs.query and returns promise', async t => {
 	const url = 'https://api.github.com/resource';
 	const tabs = [{id: 1, url}, {id: 2, url}];
 
-	window.chrome.tabs.query = sinon.stub().yieldsAsync(tabs);
+	sandbox.stub(window.chrome.tabs, 'query').yieldsAsync(tabs);
 
 	const matchedTabs = await service.queryTabs(url);
 
@@ -49,7 +56,8 @@ test('#openTab returns promise', async t => {
 	const service = t.context.service;
 	const url = 'https://api.github.com/resource';
 
-	window.chrome.permissions.contains = sinon.stub().yieldsAsync(false);
+	sandbox.stub(window.chrome.permissions, 'contains').yieldsAsync(false);
+	sandbox.stub(window.chrome.tabs, 'create').yieldsAsync();
 
 	await service.openTab(url);
 
@@ -60,13 +68,14 @@ test('#openTab creates new tab if querying tabs is not allowed', async t => {
 	const service = t.context.service;
 	const url = 'https://api.github.com/resource';
 
-	window.chrome.permissions.contains = sinon.stub().yieldsAsync(false);
-	service.createTab = sinon.spy();
+	sandbox.stub(window.chrome.permissions, 'contains').yieldsAsync(false);
+	sandbox.stub(window.chrome.tabs, 'create').yieldsAsync();
+	sandbox.spy(service, 'createTab');
 
 	await service.openTab(url);
 
 	t.true(service.createTab.calledOnce);
-	t.deepEqual(service.createTab.lastCall.args, [url]);
+	t.true(service.createTab.calledWith(url));
 });
 
 test('#openTab updates with first matched tab', async t => {
@@ -75,9 +84,10 @@ test('#openTab updates with first matched tab', async t => {
 	const firstTab = {id: 1, url};
 	const tabs = [firstTab, {id: 2, url}];
 
-	window.chrome.permissions.contains = sinon.stub().yieldsAsync(true);
-	service.queryTabs = sinon.stub().returns(Promise.resolve(tabs));
-	service.updateTab = sinon.spy();
+	sandbox.stub(window.chrome.permissions, 'contains').yieldsAsync(true);
+	sandbox.stub(window.chrome.tabs, 'update').yieldsAsync();
+	sandbox.stub(service, 'queryTabs').returns(Promise.resolve(tabs));
+	sandbox.spy(service, 'updateTab');
 
 	await service.openTab(url);
 
@@ -92,14 +102,12 @@ test('#openTab updates empty tab if provided', async t => {
 	const url = 'https://api.github.com/resource';
 	const emptyTab = {id: 0, url: 'chrome://newtab/'};
 
-	window.chrome.permissions.contains = sinon.stub().yieldsAsync(true);
-	service.updateTab = sinon.spy();
-	service.queryTabs = sinon.stub().returns(Promise.resolve([]));
+	sandbox.stub(window.chrome.permissions, 'contains').yieldsAsync(true);
+	sandbox.stub(window.chrome.tabs, 'update').yieldsAsync();
+	sandbox.stub(service, 'queryTabs').returns(Promise.resolve([]));
+	sandbox.spy(service, 'updateTab');
 
 	await service.openTab(url, emptyTab);
 
-	t.deepEqual(service.updateTab.lastCall.args, [null, {
-		url,
-		active: false
-	}]);
+	t.true(service.updateTab.calledWith(null, {url, active: false}));
 });

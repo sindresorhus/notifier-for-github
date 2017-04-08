@@ -4,15 +4,17 @@ const PersistenceService = require('./persistence-service.js');
 const TabsService = require('./tabs-service.js');
 
 const NotificationsService = {
-	openNotification(notificationId) {
-		const url = PersistenceService.get(notificationId);
+	async openNotification(notificationId) {
+		const url = await PersistenceService.get(notificationId);
 		if (url) {
-			return API.makeApiRequest({url}).then(res => res.json()).then(json => {
-				const tabUrl = json.message === 'Not Found' ? API.getTabUrl() : json.html_url;
-				return TabsService.openTab(tabUrl);
-			}).then(() => this.closeNotification(notificationId))
-				.catch(() => TabsService.openTab(API.getTabUrl()))
-				.then(() => this.closeNotification(notificationId));
+			try {
+				const json = await API.makeApiRequest({url}).then(res => res.json());
+				const tabUrl = json.message === 'Not Found' ? await API.getTabUrl() : json.html_url;
+				await TabsService.openTab(tabUrl);
+			} catch (err) {
+				await TabsService.openTab(await API.getTabUrl());
+				return this.closeNotification(notificationId);
+			}
 		}
 		return this.closeNotification(notificationId);
 	},
@@ -27,10 +29,9 @@ const NotificationsService = {
 		PersistenceService.remove(notificationId);
 	},
 
-	checkNotifications(lastModified) {
-		return API.makeApiRequest({perPage: 100}).then(res => res.json()).then(notifications => {
-			this.showNotifications(notifications, lastModified);
-		});
+	async checkNotifications(lastModified) {
+		const notifications = await API.makeApiRequest({perPage: 100}).then(res => res.json());
+		this.showNotifications(notifications, lastModified);
 	},
 
 	getNotificationObject(notificationInfo) {

@@ -5,12 +5,12 @@ const PermissionsService = require('./src/permissions-service');
 const PersistenceService = require('./src/persistence-service');
 const TabsService = require('./src/tabs-service');
 
-function scheduleAlaram(interval) {
-	const intervalSetting = parseInt(PersistenceService.get('interval'), 10) || 60;
+async function scheduleAlaram(interval) {
+	const intervalSetting = await PersistenceService.get('interval');
 	const intervalValue = interval || 60;
 
 	if (intervalSetting !== intervalValue) {
-		PersistenceService.set('interval', intervalValue);
+		await PersistenceService.set('interval', intervalValue);
 	}
 
 	// Delay less than 1 minute will cause a warning
@@ -19,33 +19,38 @@ function scheduleAlaram(interval) {
 	window.chrome.alarms.create({delayInMinutes});
 }
 
-function handleLastModified(date) {
-	let lastModified = PersistenceService.get('lastModified');
+async function handleLastModified(date) {
+	let lastModified = await PersistenceService.get('lastModified');
 	const emptyLastModified = String(lastModified) === 'null' || String(lastModified) === 'undefined';
 	lastModified = emptyLastModified ? new Date(0) : lastModified;
 
 	if (date !== lastModified) {
-		PersistenceService.set('lastModified', date);
-		if (PersistenceService.get('showDesktopNotif') === true) {
+		await PersistenceService.set('lastModified', date);
+		const showDesktopNotif = await PersistenceService.get('showDesktopNotif');
+		if (showDesktopNotif) {
 			NotificationsService.checkNotifications(lastModified);
 		}
 	}
 }
 
-function handleNotificationsResponse(response) {
+async function handleNotificationsResponse(response) {
 	const {count, interval, lastModified} = response;
 
-	scheduleAlaram(interval);
-	handleLastModified(lastModified);
+	await scheduleAlaram(interval);
+	await handleLastModified(lastModified);
 
 	BadgeService.renderCount(count);
 }
 
-function update() {
-	if (navigator.onLine) {
-		API.getNotifications().then(handleNotificationsResponse).catch(handleError);
-	} else {
-		handleOfflineStatus();
+async function update() {
+	if (!navigator.onLine) {
+		return handleOfflineStatus();
+	}
+	try {
+		const response = await API.getNotifications();
+		handleNotificationsResponse(response);
+	} catch (err) {
+		handleError(err);
 	}
 }
 
@@ -59,18 +64,16 @@ function handleOfflineStatus() {
 	BadgeService.renderWarning('offline');
 }
 
-function handleBrowserActionClick(tab) {
-	const tabUrl = API.getTabUrl();
+async function handleBrowserActionClick(tab) {
+	const tabUrl = await API.getTabUrl();
 
 	// Request optional permissions the 1rst time
-	if (PersistenceService.get('tabs_permission') === undefined) {
-		PermissionsService.requestPermission('tabs').then(granted => {
-			PersistenceService.set('tabs_permission', granted);
-			TabsService.openTab(tabUrl, tab);
-		});
-	} else {
-		TabsService.openTab(tabUrl, tab);
+	const tabsAlreadyGranted = await PersistenceService.get('tabs_permission');
+	if (tabsAlreadyGranted === undefined) {
+		const granted = await PermissionsService.requestPermission('tabs');
+		await PersistenceService.set('tabs_permission', granted);
 	}
+	await TabsService.openTab(tabUrl, tab);
 }
 
 function handleInstalled(details) {
@@ -87,14 +90,9 @@ function handleConnectionStatus(event) {
 	}
 }
 
-window.addEventListener('online', handleConnectionStatus);
-window.addEventListener('offline', handleConnectionStatus);
+async function checkDesktopNotificationsPermission() {
+	const granted = await PermissionsService.queryPermission('notifications');
 
-window.chrome.alarms.create({when: Date.now() + 2000});
-window.chrome.alarms.onAlarm.addListener(update);
-window.chrome.runtime.onMessage.addListener(update);
-
-PermissionsService.queryPermission('notifications').then(granted => {
 	if (granted) {
 		window.chrome.notifications.onClicked.addListener(id => {
 			NotificationsService.openNotification(id);
@@ -104,9 +102,16 @@ PermissionsService.queryPermission('notifications').then(granted => {
 			NotificationsService.removeNotification(id);
 		});
 	}
-});
+}
 
-window.chrome.runtime.onInstalled.addListener(handleInstalled);
+window.addEventListener('online', handleConnectionStatus);
+window.addEventListener('offline', handleConnectionStatus);
+
+window.chrome.alarms.create({when: Date.now() + 2000});
+window.chrome.alarms.onAlarm.addListener(update);
 window.chrome.browserAction.onClicked.addListener(handleBrowserActionClick);
+window.chrome.runtime.onMessage.addListener(update);
+window.chrome.runtime.onInstalled.addListener(handleInstalled);
 
+checkDesktopNotificationsPermission();
 update();

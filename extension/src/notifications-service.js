@@ -7,9 +7,14 @@ const NotificationsService = {
 	async openNotification(notificationId) {
 		const url = await PersistenceService.get(notificationId);
 		if (url) {
-			const json = await API.makeApiRequest({url}).then(res => res.json());
-			const tabUrl = json.message === 'Not Found' ? await API.getTabUrl() : json.html_url;
-			await TabsService.openTab(tabUrl);
+			try {
+				const json = await API.makeApiRequest({url}).then(res => res.json());
+				const tabUrl = json.message === 'Not Found' ? await API.getTabUrl() : json.html_url;
+				await TabsService.openTab(tabUrl);
+			} catch (e) {
+				await TabsService.openTab(await API.getTabUrl());
+				return this.closeNotification(notificationId);
+			}
 		}
 		return this.closeNotification(notificationId);
 	},
@@ -25,8 +30,7 @@ const NotificationsService = {
 	},
 
 	async checkNotifications(lastModified) {
-		const response = await API.makeApiRequest({perPage: 100});
-		const notifications = await response.json();
+		const notifications = await API.makeApiRequest({perPage: 100}).then(res => res.json());
 		this.showNotifications(notifications, lastModified);
 	},
 

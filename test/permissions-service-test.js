@@ -11,6 +11,7 @@ const PermissionsService = require('../extension/src/permissions-service.js');
 test.beforeEach(t => {
 	t.context.service = Object.assign({}, PermissionsService);
 	window.chrome.permissions = {request() {}, contains() {}};
+	window.chrome.storage.sync = {get() {}, set() {}};
 	sandbox.stub(window.chrome.permissions, 'request');
 	sandbox.stub(window.chrome.permissions, 'contains');
 });

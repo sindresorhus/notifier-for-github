@@ -25,8 +25,8 @@ test.beforeEach(t => {
 		valueType: 'value',
 		onChange() {}
 	};
+	window.chrome.storage.sync = {get() {}, set() {}};
 	t.context.option = new Option(t.context.optionParams);
-	window.chrome.storage.sync = {get: () => {}};
 });
 
 test.afterEach(() => {

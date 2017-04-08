@@ -1,4 +1,3 @@
-const chromeStub = require('chrome-stub');
 const URLSearchParams = require('url-search-params');
 
 module.exports = {
@@ -12,9 +11,13 @@ module.exports = {
 				removeItem: () => {}
 			},
 			chrome: Object.assign({}, {
+				browserAction: {},
 				runtime: {},
-				notifications: {}
-			}, chromeStub)
+				notifications: {},
+				tabs: {},
+				permissions: {},
+				storage: {}
+			})
 		};
 	}
 };

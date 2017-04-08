@@ -13,7 +13,6 @@
     "babel-loader": "^6.2.10",
     "babel-plugin-syntax-async-functions": "^6.13.0",
     "babel-preset-es2017": "^6.16.0",
-    "chrome-stub": "^1.3.2",
     "chrome-webstore-upload-cli": "^1.0.3",
     "istanbul": "^0.4.0",
     "moment": "^2.14.1",

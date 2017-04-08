@@ -9,11 +9,10 @@ const networkRequest = require('../extension/src/network-request.js');
 
 test.beforeEach(t => {
 	t.context.endpoint = 'http://endpoint.net/foo';
-	window.chrome.storage.sync = { get: () => {} };
-	window.fetch = () => {};
+	window.chrome.storage.sync = {get: () => {}};
 });
 
-test.afterEach(t => {
+test.afterEach(() => {
 	sandbox.restore();
 });
 

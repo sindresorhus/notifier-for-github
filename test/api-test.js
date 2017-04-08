@@ -14,19 +14,20 @@ test.beforeEach(t => {
 		const headers = new Map([
 			['X-Poll-Interval', '60'],
 			['Last-Modified', null],
-			['Link', null],
+			['Link', null]
 		]);
 		return Object.assign({
 			status: 200,
-			headers: headers,
+			headers,
 			json: () => Promise.resolve([])
 		}, overrides);
 	};
 
-	window.chrome.storage.sync = { get: () => {} };
+	window.chrome.storage.sync = {get: () => {}};
+	sandbox.stub(window, 'fetch');
 });
 
-test.afterEach(t => {
+test.afterEach(() => {
 	sandbox.restore();
 });
 
@@ -160,12 +161,8 @@ test('#parseApiResponse returns rejected promise for 5xx status codes', async t 
 test('#makeApiRequest makes networkRequest for provided url', async t => {
 	const service = t.context.api;
 	const url = 'https://api.github.com/resource';
-	let calls = 0;
 
-	window.fetch = () => {
-		calls += 1;
-		return Promise.resolve('response');
-	};
+	window.fetch.returns(Promise.resolve('response'));
 
 	sandbox.stub(window.chrome.storage.sync, 'get')
 		.withArgs('useParticipatingCount').yieldsAsync(false)
@@ -173,31 +170,29 @@ test('#makeApiRequest makes networkRequest for provided url', async t => {
 
 	await service.makeApiRequest({url});
 
-	t.is(calls, 1);
+	t.true(window.fetch.calledOnce);
 });
 
 test('#makeApiRequest makes networkRequest to #getApiUrl if no url provided in options', async t => {
 	const service = t.context.api;
 	const url = 'https://api.github.com/resource';
-	let calls = 0;
 
-	window.fetch = () => {
-		calls += 1;
-		return Promise.resolve('response');
-	};
+	window.fetch.returns(Promise.resolve('response'));
+
 	sandbox.stub(window.chrome.storage.sync, 'get')
 		.withArgs('useParticipatingCount').yieldsAsync(false)
 		.withArgs('oauthToken').yieldsAsync('token');
 
 	await service.makeApiRequest({url});
 
-	t.is(calls, 1);
+	t.true(window.fetch.calledOnce);
 });
 
 test('#getNotifications returns promise that resolves to parsed API response', async t => {
 	const service = t.context.api;
 
-	window.fetch = () => { return Promise.resolve(t.context.getDefaultResponse()) }
+	window.fetch.returns(Promise.resolve(t.context.getDefaultResponse()));
+
 	sandbox.stub(window.chrome.storage.sync, 'get')
 		.withArgs('useParticipatingCount').yieldsAsync(false)
 		.withArgs('rootUrl').yieldsAsync('https://api.github.com/')

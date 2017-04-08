@@ -4,6 +4,7 @@ const URLSearchParams = require('url-search-params');
 module.exports = {
 	setupWindow: () => {
 		return {
+			fetch() {},
 			URLSearchParams,
 			localStorage: {
 				setItem: () => {},

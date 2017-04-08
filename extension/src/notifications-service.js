@@ -11,7 +11,7 @@ const NotificationsService = {
 				const json = await API.makeApiRequest({url}).then(res => res.json());
 				const tabUrl = json.message === 'Not Found' ? await API.getTabUrl() : json.html_url;
 				await TabsService.openTab(tabUrl);
-			} catch (e) {
+			} catch (err) {
 				await TabsService.openTab(await API.getTabUrl());
 				return this.closeNotification(notificationId);
 			}

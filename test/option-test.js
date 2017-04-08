@@ -26,10 +26,10 @@ test.beforeEach(t => {
 		onChange() {}
 	};
 	t.context.option = new Option(t.context.optionParams);
-	window.chrome.storage.sync = { get: () => {} };
+	window.chrome.storage.sync = {get: () => {}};
 });
 
-test.afterEach(t => {
+test.afterEach(() => {
 	sandbox.restore();
 });
 

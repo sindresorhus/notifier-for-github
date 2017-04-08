@@ -1,8 +1,8 @@
 import test from 'ava';
 import sinon from 'sinon';
 import moment from 'moment';
-import util from './util';
 import pImmediate from 'p-immediate';
+import util from './util';
 
 global.window = util.setupWindow();
 const sandbox = sinon.sandbox.create();
@@ -27,7 +27,7 @@ test.beforeEach(t => {
 		}
 	};
 
-	window.chrome.storage.sync = { get() {}, remove() {}, set() {} };
+	window.chrome.storage.sync = {get() {}, remove() {}, set() {}};
 
 	sandbox.stub(window.chrome.storage.sync, 'get')
 		.withArgs('useParticipatingCount').yieldsAsync(false)
@@ -35,10 +35,9 @@ test.beforeEach(t => {
 		.withArgs('oauthToken').yieldsAsync('token');
 	sandbox.stub(window.chrome.storage.sync, 'set').yieldsAsync();
 
-	window.fetch = () => {};
-	window.chrome.tabs = { create() {}, query() {}, clear() {} };
-	window.chrome.notifications = { clear() {}, create() {} };
-	window.chrome.permissions = { contains() {} };
+	window.chrome.tabs = {create() {}, query() {}, clear() {}};
+	window.chrome.notifications = {clear() {}, create() {}};
+	window.chrome.permissions = {contains() {}};
 
 	sandbox.stub(window.chrome.permissions, 'contains').yieldsAsync(true);
 	sandbox.stub(window.chrome.notifications, 'clear').yieldsAsync();
@@ -47,7 +46,7 @@ test.beforeEach(t => {
 	sandbox.stub(window.chrome.tabs, 'query').yieldsAsync([]);
 });
 
-test.afterEach(t => {
+test.afterEach(() => {
 	sandbox.restore();
 });
 
@@ -79,7 +78,6 @@ test('#openNotification clears notification from queue by notificationId', async
 
 test('#openNotification skips network requests if no url returned by PersistenceService', async t => {
 	const service = t.context.service;
-
 
 	window.chrome.storage.sync.get
 		.withArgs(t.context.notificationId).yieldsAsync(null);

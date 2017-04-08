@@ -109,11 +109,9 @@ window.addEventListener('offline', handleConnectionStatus);
 
 window.chrome.alarms.create({when: Date.now() + 2000});
 window.chrome.alarms.onAlarm.addListener(update);
+window.chrome.browserAction.onClicked.addListener(handleBrowserActionClick);
 window.chrome.runtime.onMessage.addListener(update);
+window.chrome.runtime.onInstalled.addListener(handleInstalled);
 
 checkDesktopNotificationsPermission();
-
-window.chrome.runtime.onInstalled.addListener(handleInstalled);
-window.chrome.browserAction.onClicked.addListener(handleBrowserActionClick);
-
 update();

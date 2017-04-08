@@ -40,9 +40,11 @@ test.beforeEach(t => {
 	window.chrome.notifications = { clear() {}, create() {} };
 	window.chrome.permissions = { contains() {} };
 
+	sandbox.stub(window.chrome.permissions, 'contains').yieldsAsync(true);
 	sandbox.stub(window.chrome.notifications, 'clear').yieldsAsync();
 	sandbox.stub(window.chrome.notifications, 'create');
 	sandbox.stub(window.chrome.tabs, 'create').yieldsAsync();
+	sandbox.stub(window.chrome.tabs, 'query').yieldsAsync([]);
 });
 
 test.afterEach(t => {
@@ -52,9 +54,6 @@ test.afterEach(t => {
 test('#openNotification gets notification url by notificationId from PersistenceService', async t => {
 	const service = t.context.service;
 
-	sandbox.stub(window.chrome.tabs, 'query').yieldsAsync([]);
-
-	sandbox.stub(window.chrome.permissions, 'contains').yieldsAsync(true);
 	sandbox.stub(window, 'fetch').returns(Promise.resolve(t.context.defaultResponse));
 
 	window.chrome.storage.sync.get
@@ -68,8 +67,6 @@ test('#openNotification gets notification url by notificationId from Persistence
 test('#openNotification clears notification from queue by notificationId', async t => {
 	const service = t.context.service;
 
-	sandbox.stub(window.chrome.tabs, 'query').yieldsAsync([]);
-	sandbox.stub(window.chrome.permissions, 'contains').yieldsAsync(true);
 	sandbox.stub(window, 'fetch').returns(Promise.resolve(t.context.defaultResponse));
 
 	window.chrome.storage.sync.get
@@ -83,8 +80,6 @@ test('#openNotification clears notification from queue by notificationId', async
 test('#openNotification skips network requests if no url returned by PersistenceService', async t => {
 	const service = t.context.service;
 
-	sandbox.stub(window.chrome.tabs, 'query').yieldsAsync([]);
-	sandbox.stub(window.chrome.permissions, 'contains').yieldsAsync(true);
 
 	window.chrome.storage.sync.get
 		.withArgs(t.context.notificationId).yieldsAsync(null);
@@ -97,9 +92,6 @@ test('#openNotification skips network requests if no url returned by Persistence
 
 test('#openNotification closes notification if no url returned by PersistenceService', async t => {
 	const service = t.context.service;
-
-	sandbox.stub(window.chrome.tabs, 'query').yieldsAsync([]);
-	sandbox.stub(window.chrome.permissions, 'contains').yieldsAsync(true);
 
 	window.chrome.storage.sync.get
 		.withArgs(t.context.notificationId).yieldsAsync(null);
@@ -114,8 +106,6 @@ test('#openNotification closes notification if no url returned by PersistenceSer
 test('#openNotification opens tab with url from network response', async t => {
 	const service = t.context.service;
 
-	sandbox.stub(window.chrome.tabs, 'query').yieldsAsync([]);
-	sandbox.stub(window.chrome.permissions, 'contains').yieldsAsync(true);
 	sandbox.stub(window, 'fetch').returns(Promise.resolve(t.context.defaultResponse));
 
 	window.chrome.storage.sync.get
@@ -129,8 +119,6 @@ test('#openNotification opens tab with url from network response', async t => {
 test('#openNotification closes notification on error', async t => {
 	const service = t.context.service;
 
-	sandbox.stub(window.chrome.tabs, 'query').yieldsAsync([]);
-	sandbox.stub(window.chrome.permissions, 'contains').yieldsAsync(true);
 	sandbox.stub(window, 'fetch').returns(Promise.reject(new Error('error')));
 
 	window.chrome.storage.sync.get
@@ -144,8 +132,6 @@ test('#openNotification closes notification on error', async t => {
 test('#openNotification opens nofifications tab on error', async t => {
 	const service = t.context.service;
 
-	sandbox.stub(window.chrome.tabs, 'query').yieldsAsync([]);
-	sandbox.stub(window.chrome.permissions, 'contains').yieldsAsync(true);
 	sandbox.stub(window, 'fetch').returns(Promise.reject(new Error('error')));
 
 	window.chrome.storage.sync.get

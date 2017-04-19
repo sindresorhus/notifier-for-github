@@ -2,7 +2,7 @@ sudo: false
 language: node_js
 node_js:
   - 'node'
-  - '7.7.3'
+  - 7.7.3
 env:
   - EXTENSION_ID=lmjdlojahmbbcodnpecnjnmlddbkjhnn
 deploy:

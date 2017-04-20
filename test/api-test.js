@@ -122,23 +122,23 @@ test('#parseApiResponse promise resolves response of N notifications according t
 	t.deepEqual(nextParsedResponse, {count: 3, interval: 60, lastModified: null});
 });
 
-test.serial('#parseApiResponse returns rejected promise for 4xx status codes', t => {
+test.serial('#parseApiResponse returns rejected promise for 4xx status codes', async t => {
 	const service = t.context.api;
 	const resp = t.context.getDefaultResponse({
 		status: 404,
 		statusText: 'Not found'
 	});
 
-	t.throws(service.parseApiResponse(resp), 'client error: 404 Not found');
+	await t.throws(service.parseApiResponse(resp), 'client error: 404 Not found');
 });
 
-test('#parseApiResponse returns rejected promise for 5xx status codes', t => {
+test('#parseApiResponse returns rejected promise for 5xx status codes', async t => {
 	const service = t.context.api;
 	const resp = t.context.getDefaultResponse({
 		status: 500
 	});
 
-	t.throws(service.parseApiResponse(resp), 'server error');
+	await t.throws(service.parseApiResponse(resp), 'server error');
 });
 
 test('#makeApiRequest makes networkRequest for provided url', t => {

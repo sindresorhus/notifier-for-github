@@ -37,8 +37,8 @@ test('#request requests fetches given url with proper headers', async t => {
 	t.is(response, '{}');
 });
 
-test('#request returns rejected Promise if oauthToken is empty', t => {
+test('#request returns rejected Promise if oauthToken is empty', async t => {
 	window.localStorage.getItem = sinon.stub().returns('');
 
-	t.throws(networkRequest(t.context.endpoint), 'missing token');
+	await t.throws(networkRequest(t.context.endpoint), 'missing token');
 });

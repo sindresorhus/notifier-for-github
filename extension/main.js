@@ -81,7 +81,7 @@ function handleInstalled(details) {
 
 function handleConnectionStatus(event) {
 	if (event.type === 'online') {
-		scheduleAlaram();
+		update();
 	} else if (event.type === 'offline') {
 		handleOfflineStatus();
 	}

@@ -22,12 +22,20 @@
 		]
 	},
 	"browser_action": {
+		"browser_style": true,
 		"default_icon": {
 			"38": "icon-38.png"
 		}
 	},
 	"options_ui": {
 		"page": "options.html",
+		"browser_style": true,
 		"chrome_style": true
+	},
+	"applications": {
+		"gecko": {
+			"id": "jid1-DMjSwVBPnk7a1Q@jetpack",
+			"strict_min_version": "52.0"
+		}
 	}
 }

@@ -5,7 +5,6 @@ const PersistenceService = require('./src/persistence-service');
 document.addEventListener('DOMContentLoaded', () => {
 	const ghSettingsUrl = document.getElementById('gh_link');
 	const showDesktopNotif = document.getElementById('show_desktop_notif');
-	const playSoundNotif = document.getElementById('play_sound_notif');
 
 	const RootUrlOption = new Option({
 		id: 'root_url',

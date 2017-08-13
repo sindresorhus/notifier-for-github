@@ -19,7 +19,7 @@ const NotificationsService = {
 
 	playNotification() {
 		const audio = new Audio();
-		audio.src = chrome.extension.getURL("/sounds/bell.ogg");
+		audio.src = chrome.extension.getURL('/sounds/bell.ogg');
 		audio.play();
 	},
 

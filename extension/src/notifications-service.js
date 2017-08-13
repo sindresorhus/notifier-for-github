@@ -64,7 +64,7 @@ const NotificationsService = {
 
 	playNotification(notifications, lastModified) {
 		if (this.filterNotificationsByDate(notifications, lastModified).length > 0) {
-			const audio = new Audio();
+			const audio = new window.Audio();
 			audio.src = window.chrome.extension.getURL('/sounds/bell.ogg');
 			audio.play();
 		}

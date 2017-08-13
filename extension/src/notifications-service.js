@@ -17,12 +17,6 @@ const NotificationsService = {
 		return this.closeNotification(notificationId);
 	},
 
-	playNotification() {
-		const audio = new Audio();
-		audio.src = chrome.extension.getURL('/sounds/bell.ogg');
-		audio.play();
-	},
-
 	closeNotification(notificationId) {
 		return new Promise(resolve => {
 			window.chrome.notifications.clear(notificationId, resolve);
@@ -35,7 +29,12 @@ const NotificationsService = {
 
 	checkNotifications(lastModified) {
 		return API.makeApiRequest({perPage: 100}).then(res => res.json()).then(notifications => {
-			this.showNotifications(notifications, lastModified);
+			if (PersistenceService.get('showDesktopNotif') === true) {
+				this.showNotifications(notifications, lastModified);
+			}
+			if (PersistenceService.get('playSoundNotif') === true) {
+				this.playNotification(notifications, lastModified);
+			}
 		});
 	},
 
@@ -60,6 +59,14 @@ const NotificationsService = {
 			const notificationObject = this.getNotificationObject(notification);
 			window.chrome.notifications.create(notificationId, notificationObject);
 			PersistenceService.set(notificationId, notification.subject.url);
+		}
+	},
+
+	playNotification(notifications, lastModified) {
+		if (this.filterNotificationsByDate(notifications, lastModified).length > 0) {
+			const audio = new Audio();
+			audio.src = window.chrome.extension.getURL('/sounds/bell.ogg');
+			audio.play();
 		}
 	}
 };

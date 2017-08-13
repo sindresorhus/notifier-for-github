@@ -17,6 +17,12 @@ const NotificationsService = {
 		return this.closeNotification(notificationId);
 	},
 
+	playNotification() {
+		const audio = new Audio();
+		audio.src = chrome.extension.getURL("/sounds/bell.ogg");
+		audio.play();
+	},
+
 	closeNotification(notificationId) {
 		return new Promise(resolve => {
 			window.chrome.notifications.clear(notificationId, resolve);

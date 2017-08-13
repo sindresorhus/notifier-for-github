@@ -29,6 +29,9 @@ function handleLastModified(date) {
 		if (PersistenceService.get('showDesktopNotif') === true) {
 			NotificationsService.checkNotifications(lastModified);
 		}
+		if (PersistenceService.get('playSoundNotif') === true) {
+			NotificationsService.playNotification();
+		}
 	}
 }
 

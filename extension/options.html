@@ -10,6 +10,9 @@
 			section h3 {
 				-webkit-margin-start: -18px;
 			}
+			section h3 + p {
+				margin-top: 0;
+			}
 			input[type='text'], input[type='password'] {
 				width: 350px;
 			}
@@ -41,11 +44,13 @@
 		</section>
 		<section>
 			<h3>Notifications</h3>
-			<input type="checkbox" id="show_desktop_notif">
-			<label for="show_desktop_notif">Show desktop notifications</label>
 			<p>
-				<input type="checkbox" id="play_sound_notif">
-				<label for="play_sound_notif">Enable sound notifications</label>
+				<input type="checkbox" id="show_desktop_notif">
+				<label for="show_desktop_notif">Show desktop notifications</label>
+			</p>
+			<p>
+				<input type="checkbox" id="play_notif_sound">
+				<label for="play_notif_sound">Enable notification sound</label>
 			</p>
 		</section>
 	</body>

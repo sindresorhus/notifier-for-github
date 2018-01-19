@@ -32,7 +32,7 @@ test.beforeEach(t => {
 	window.localStorage.getItem.withArgs('rootUrl').returns('root/');
 	window.localStorage.getItem.withArgs('oauthToken').returns('token');
 	window.localStorage.getItem.withArgs('showDesktopNotif').returns(true);
-	window.localStorage.getItem.withArgs('playSoundNotif').returns(true);
+	window.localStorage.getItem.withArgs('playNotifSound').returns(true);
 });
 
 test.serial('#openNotification gets notification url by notificationId from PersistenceService', async t => {
@@ -154,7 +154,7 @@ test('#checkNotifications makes API request, shows notifications and play notifi
 	window.localStorage.getItem = sinon.stub();
 	window.localStorage.getItem.withArgs('oauthToken').returns('token');
 	window.localStorage.getItem.withArgs('showDesktopNotif').returns(true);
-	window.localStorage.getItem.withArgs('playSoundNotif').returns(true);
+	window.localStorage.getItem.withArgs('playNotifSound').returns(true);
 	service.showNotifications = sinon.stub();
 	service.playNotification = sinon.stub();
 
@@ -248,7 +248,7 @@ test('#showNotifications shows notifications', t => {
 	t.is(window.chrome.notifications.create.callCount, 1);
 });
 
-test('#playNotification plays sound notification', t => {
+test('#playNotification plays notification sound', t => {
 	const service = t.context.service;
 
 	/* eslint-disable camelcase */

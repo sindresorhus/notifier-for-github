@@ -67,9 +67,9 @@ document.addEventListener('DOMContentLoaded', () => {
 		}
 	});
 
-	const PlaySoundNotificationsOption = new Option({
-		id: 'play_sound_notif',
-		storageKey: 'playSoundNotif',
+	const PlayNotificationSoundOption = new Option({
+		id: 'play_notif_sound',
+		storageKey: 'playNotifSound',
 		valueType: 'checked',
 		onChange(option) {
 			option.writeValue();
@@ -99,6 +99,6 @@ document.addEventListener('DOMContentLoaded', () => {
 		OauthTokenOption.readValue();
 		UseParticipatingCountOption.readValue();
 		ShowDesktopNotificationsOption.readValue();
-		PlaySoundNotificationsOption.readValue();
+		PlayNotificationSoundOption.readValue();
 	}
 });

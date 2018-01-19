@@ -32,7 +32,7 @@ const NotificationsService = {
 			if (PersistenceService.get('showDesktopNotif') === true) {
 				this.showNotifications(notifications, lastModified);
 			}
-			if (PersistenceService.get('playSoundNotif') === true) {
+			if (PersistenceService.get('playNotifSound') === true) {
 				this.playNotification(notifications, lastModified);
 			}
 		});

@@ -17,6 +17,9 @@
 				font-style: italic;
 				color: grey;
 			}
+			span#notifications-permission-error {
+				color: red;
+			}
 		</style>
 		<script defer src="dist/options.js"></script>
 	</head>
@@ -42,7 +45,8 @@
 		<section>
  			<h3>Desktop Notifications</h3>
  			<input type="checkbox" id="show_desktop_notif">
- 			<label for="show_desktop_notif">Show desktop notifications</label>
+			 <label for="show_desktop_notif">Show desktop notifications</label>
+			 <span id="notifications-permission-error" style="display: none" role="alert">Could not request notifications permission. If you are using Firefox, open <a href="options.html">this page</a> in a new tab and try again.</span>
  		</section>
 	</body>
 </html>

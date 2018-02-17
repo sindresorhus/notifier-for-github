@@ -60,6 +60,9 @@ document.addEventListener('DOMContentLoaded', () => {
 					}
 
 					option.writeValue(granted);
+				}).catch(() => {
+					// Workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1382953
+					document.getElementById('notifications-permission-error').style.display = 'block';
 				});
 			} else {
 				option.writeValue();

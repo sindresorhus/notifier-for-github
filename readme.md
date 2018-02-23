@@ -49,7 +49,9 @@ You can opt-in to receive desktop notifications for new notifications on GitHub.
 
 ## Related
 
-Also available on [Firefox](https://github.com/sindresorhus/notifier-for-github-firefox) and [Safari](https://github.com/sindresorhus/notifier-for-github-safari).
+Also available for [Safari](https://github.com/sindresorhus/notifier-for-github-safari).
+
+Deprecated [Firefox Add-on](https://github.com/sindresorhus/notifier-for-github-firefox)
 
 
 ## Maintainers

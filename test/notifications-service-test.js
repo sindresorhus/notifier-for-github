@@ -173,7 +173,8 @@ test('#getNotificationObject returns Notification object made via options and De
 		message: repositoryName,
 		type: 'basic',
 		iconUrl: 'icon-notif-128.png',
-		contextMessage: Defaults.getNotificationReasonText(reason)
+		contextMessage: Defaults.getNotificationReasonText(reason),
+		requireInteraction: true
 	});
 });
 

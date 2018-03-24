@@ -39,7 +39,8 @@ const NotificationsService = {
 			iconUrl: 'icon-notif-128.png',
 			type: 'basic',
 			message: notificationInfo.repository.full_name,
-			contextMessage: Defaults.getNotificationReasonText(notificationInfo.reason)
+			contextMessage: Defaults.getNotificationReasonText(notificationInfo.reason),
+			requireInteraction: true
 		};
 	},
 

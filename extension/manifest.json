@@ -29,11 +29,5 @@
 	"options_ui": {
 		"page": "options.html",
 		"chrome_style": true
-	},
-	"applications": {
-		"gecko": {
-			"id": "jid1-DMjSwVBPnk7a1Q@jetpack",
-			"strict_min_version": "55.0"
-		}
 	}
 }

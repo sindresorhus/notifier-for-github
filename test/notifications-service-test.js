@@ -31,6 +31,8 @@ test.beforeEach(t => {
 	window.localStorage.getItem = sinon.stub();
 	window.localStorage.getItem.withArgs('rootUrl').returns('root/');
 	window.localStorage.getItem.withArgs('oauthToken').returns('token');
+	window.localStorage.getItem.withArgs('showDesktopNotif').returns(true);
+	window.localStorage.getItem.withArgs('playNotifSound').returns(true);
 });
 
 test.serial('#openNotification gets notification url by notificationId from PersistenceService', async t => {
@@ -140,7 +142,7 @@ test('#removeNotification removes notifications from storage', t => {
 	t.true(window.localStorage.removeItem.calledWith(t.context.notificationId));
 });
 
-test('#checkNotifications makes API request and shows notifications', async t => {
+test('#checkNotifications makes API request, shows notifications and play notification sound', async t => {
 	const service = t.context.service;
 	const response = {
 		json() {
@@ -149,12 +151,17 @@ test('#checkNotifications makes API request and shows notifications', async t =>
 	};
 
 	window.fetch = sinon.stub().returns(Promise.resolve(response));
-	window.localStorage.getItem = sinon.stub().returns('token');
+	window.localStorage.getItem = sinon.stub();
+	window.localStorage.getItem.withArgs('oauthToken').returns('token');
+	window.localStorage.getItem.withArgs('showDesktopNotif').returns(true);
+	window.localStorage.getItem.withArgs('playNotifSound').returns(true);
 	service.showNotifications = sinon.stub();
+	service.playNotification = sinon.stub();
 
 	await service.checkNotifications();
 
 	t.true(service.showNotifications.calledWith([]));
+	t.true(service.playNotification.calledWith([]));
 });
 
 test('#getNotificationObject returns Notification object made via options and Defaults method call', t => {
@@ -239,4 +246,28 @@ test('#showNotifications shows notifications', t => {
 	t.true(service.filterNotificationsByDate.called);
 	t.true(window.chrome.notifications.create.called);
 	t.is(window.chrome.notifications.create.callCount, 1);
+});
+
+test('#playNotification plays notification sound', t => {
+	const service = t.context.service;
+
+	/* eslint-disable camelcase */
+	const notifications = [{
+		updated_at: moment().subtract(9, 'days').format()
+	}];
+	/* eslint-enable camelcase */
+
+	service.filterNotificationsByDate = sinon.stub().returns(notifications);
+
+	window.chrome.extension = sinon.stub();
+	window.chrome.extension.getURL = sinon.stub();
+
+	window.Audio = sinon.stub();
+	window.Audio.prototype.play = sinon.stub();
+
+	service.playNotification(notifications, moment().subtract(7, 'days').format());
+
+	t.true(service.filterNotificationsByDate.called);
+	t.true(window.Audio.calledOnce);
+	t.true(window.Audio.prototype.play.calledOnce);
 });

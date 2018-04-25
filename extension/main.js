@@ -26,7 +26,7 @@ function handleLastModified(date) {
 
 	if (date !== lastModified) {
 		PersistenceService.set('lastModified', date);
-		if (PersistenceService.get('showDesktopNotif') === true) {
+		if (PersistenceService.get('showDesktopNotif') === true || PersistenceService.get('playSoundNotif') === true) {
 			NotificationsService.checkNotifications(lastModified);
 		}
 	}

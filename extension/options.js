@@ -70,6 +70,16 @@ document.addEventListener('DOMContentLoaded', () => {
 		}
 	});
 
+	const PlayNotificationSoundOption = new Option({
+		id: 'play_notif_sound',
+		storageKey: 'playNotifSound',
+		valueType: 'checked',
+		onChange(option) {
+			option.writeValue();
+			updateBadge();
+		}
+	});
+
 	function normalizeRoot(url) {
 		if (!/^https?:\/\//.test(url)) {
 			// Assume it is https
@@ -92,5 +102,6 @@ document.addEventListener('DOMContentLoaded', () => {
 		OauthTokenOption.readValue();
 		UseParticipatingCountOption.readValue();
 		ShowDesktopNotificationsOption.readValue();
+		PlayNotificationSoundOption.readValue();
 	}
 });

@@ -10,6 +10,9 @@
 			section h3 {
 				-webkit-margin-start: -18px;
 			}
+			section h3 + p {
+				margin-top: 0;
+			}
 			input[type='text'], input[type='password'] {
 				width: 350px;
 			}
@@ -43,10 +46,16 @@
 			<label for="use_participating">Only show unread count for issues I'm participating in</label>
 		</section>
 		<section>
- 			<h3>Desktop Notifications</h3>
- 			<input type="checkbox" id="show_desktop_notif">
-			<label for="show_desktop_notif">Show desktop notifications</label>
-			<span id="notifications-permission-error" style="display: none" role="alert">Could not request notifications permission. If you are using Firefox, open <a href="options.html">this page</a> in a new tab and try again.</span>
- 		</section>
+			<h3>Notifications</h3>
+			<p>
+				<input type="checkbox" id="show_desktop_notif">
+				<label for="show_desktop_notif">Show desktop notifications</label>
+			  <span id="notifications-permission-error" style="display: none" role="alert">Could not request notifications permission. If you are using Firefox, open <a href="options.html">this page</a> in a new tab and try again.</span>
+			</p>
+			<p>
+				<input type="checkbox" id="play_notif_sound">
+				<label for="play_notif_sound">Enable notification sound</label>
+			</p>
+		</section>
 	</body>
 </html>

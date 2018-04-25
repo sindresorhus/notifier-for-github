@@ -31,6 +31,7 @@ test.beforeEach(t => {
 	window.localStorage.getItem = sinon.stub();
 	window.localStorage.getItem.withArgs('rootUrl').returns('root/');
 	window.localStorage.getItem.withArgs('oauthToken').returns('token');
+	window.localStorage.getItem.withArgs('requireDismiss').returns(true);
 });
 
 test.serial('#openNotification gets notification url by notificationId from PersistenceService', async t => {

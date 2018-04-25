@@ -1,5 +1,6 @@
+'use strict';
+const {URLSearchParams} = require('url');
 const chromeStub = require('chrome-stub');
-const URLSearchParams = require('url-search-params');
 
 module.exports = {
 	setupWindow: () => {

@@ -13,8 +13,8 @@ It checks for new GitHub notifications every minute.
 
 *Make sure to add a token in the options.*
 
-![](screenshot.png)
-![](screenshot-webstore2.png)
+![](media/screenshot.png)
+![](media/screenshot-webstore2.png)
 
 
 ## Install
@@ -43,7 +43,7 @@ If you want to receive (useful) desktop notifications for any private repositori
 
 ## Desktop notifications
 
-![](screenshot-notification.png)
+![](media/screenshot-notification.png)
 
 You can opt-in to receive desktop notifications for new notifications on GitHub. The extension checks for new notifications every minute, and displays notifications that arrived after the last check if there are any. Clicking on the notification opens it on GitHub.
 

@@ -9,9 +9,12 @@ const render = (text, color, title) => {
 const getCountString = count => {
 	if (count === 0) {
 		return '';
-	} else if (count > 9999) {
+	}
+
+	if (count > 9999) {
 		return '∞';
 	}
+
 	return String(count);
 };
 

@@ -1,9 +1,9 @@
 const Defaults = require('./defaults.js');
 
 const render = (text, color, title) => {
-	window.chrome.browserAction.setBadgeText({text});
-	window.chrome.browserAction.setBadgeBackgroundColor({color});
-	window.chrome.browserAction.setTitle({title});
+	browser.browserAction.setBadgeText({text});
+	browser.browserAction.setBadgeBackgroundColor({color});
+	browser.browserAction.setTitle({title});
 };
 
 const getCountString = count => {

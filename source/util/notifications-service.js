@@ -19,7 +19,7 @@ const NotificationsService = {
 
 	closeNotification(notificationId) {
 		return new Promise(resolve => {
-			window.chrome.notifications.clear(notificationId, resolve);
+			browser.notifications.clear(notificationId, resolve);
 		});
 	},
 
@@ -41,7 +41,7 @@ const NotificationsService = {
 	getNotificationObject(notificationInfo) {
 		return {
 			title: notificationInfo.subject.title,
-			iconUrl: 'icon-notif-128.png',
+			iconUrl: 'icon-notif.png',
 			type: 'basic',
 			message: notificationInfo.repository.full_name,
 			contextMessage: Defaults.getNotificationReasonText(notificationInfo.reason)
@@ -57,7 +57,7 @@ const NotificationsService = {
 		for (const notification of this.filterNotificationsByDate(notifications, lastModified)) {
 			const notificationId = `github-notifier-${notification.id}`;
 			const notificationObject = this.getNotificationObject(notification);
-			window.chrome.notifications.create(notificationId, notificationObject);
+			browser.notifications.create(notificationId, notificationObject);
 			PersistenceService.set(notificationId, notification.subject.url);
 		}
 	},
@@ -65,7 +65,7 @@ const NotificationsService = {
 	playNotification(notifications, lastModified) {
 		if (this.filterNotificationsByDate(notifications, lastModified).length > 0) {
 			const audio = new window.Audio();
-			audio.src = window.chrome.extension.getURL('/sounds/bell.ogg');
+			audio.src = browser.extension.getURL('/sounds/bell.ogg');
 			audio.play();
 		}
 	}

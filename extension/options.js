@@ -70,6 +70,16 @@ document.addEventListener('DOMContentLoaded', () => {
 		}
 	});
 
+	const PlayNotificationSoundOption = new Option({
+		id: 'play_notif_sound',
+		storageKey: 'playNotifSound',
+		valueType: 'checked',
+		onChange(option) {
+			option.writeValue();
+			updateBadge();
+		}
+	});
+
 	const RequireDismissOption = new Option({
 		id: 'require_dismiss',
 		storageKey: 'requireDismiss',
@@ -102,6 +112,7 @@ document.addEventListener('DOMContentLoaded', () => {
 		OauthTokenOption.readValue();
 		UseParticipatingCountOption.readValue();
 		ShowDesktopNotificationsOption.readValue();
+		PlayNotificationSoundOption.readValue();
 		RequireDismissOption.readValue();
 	}
 });

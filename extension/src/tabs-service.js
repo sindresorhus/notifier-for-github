@@ -37,9 +37,12 @@ const TabsService = {
 		}).then(tabs => {
 			if (tabs && tabs.length > 0) {
 				return this.updateTab(tabs[0].id, {url, active: true});
-			} else if (tab && tab.url === 'chrome://newtab/') {
+			}
+
+			if (tab && tab.url === 'chrome://newtab/') {
 				return this.updateTab(null, {url, active: false});
 			}
+
 			return this.createTab(url);
 		});
 	}

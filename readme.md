@@ -1,6 +1,6 @@
-# Notifier for GitHub [![Build Status](https://travis-ci.org/sindresorhus/notifier-for-github-chrome.svg?branch=master)](https://travis-ci.org/sindresorhus/notifier-for-github-chrome)
+# Notifier for GitHub [![Build Status](https://travis-ci.org/sindresorhus/notifier-for-github.svg?branch=master)](https://travis-ci.org/sindresorhus/notifier-for-github)
 
-> Chrome extension - Displays your GitHub notifications unread count
+> Browser extension - Displays your GitHub notifications unread count
 
 It checks for new GitHub notifications every minute.
 
@@ -13,14 +13,15 @@ It checks for new GitHub notifications every minute.
 
 *Make sure to add a token in the options.*
 
-![](screenshot.png)
-![](screenshot-webstore2.png)
+![](media/screenshot.png)
+![](media/screenshot-webstore2.png)
 
 
 ## Install
 
-- [Chrome extension](https://chrome.google.com/webstore/detail/notifier-for-github/lmjdlojahmbbcodnpecnjnmlddbkjhnn)
-- [Opera add-on](https://addons.opera.com/en/extensions/details/github-notifier/)
+- [**Chrome** extension](https://chrome.google.com/webstore/detail/notifier-for-github/lmjdlojahmbbcodnpecnjnmlddbkjhnn)
+- **Firefox** add-on: Use [this](https://addons.mozilla.org/en-US/firefox/addon/chrome-store-foxified/) to enable installing Chrome extensions and then install [Notifier for GitHub](https://chrome.google.com/webstore/detail/notifier-for-github/lmjdlojahmbbcodnpecnjnmlddbkjhnn)
+- **Opera** extension: Use [this](https://addons.opera.com/en/extensions/details/download-chrome-extension-9/) to enable installing Chrome extensions and then install [Notifier for GitHub](https://chrome.google.com/webstore/detail/notifier-for-github/lmjdlojahmbbcodnpecnjnmlddbkjhnn)
 
 
 ## Permissions
@@ -42,7 +43,7 @@ If you want to receive (useful) desktop notifications for any private repositori
 
 ## Desktop notifications
 
-![](screenshot-notification.png)
+![](media/screenshot-notification.png)
 
 You can opt-in to receive desktop notifications for new notifications on GitHub. The extension checks for new notifications every minute, and displays notifications that arrived after the last check if there are any. Clicking on the notification opens it on GitHub.
 
@@ -51,15 +52,10 @@ You can opt-in to receive desktop notifications for new notifications on GitHub.
 
 Also available for [Safari](https://github.com/sindresorhus/notifier-for-github-safari).
 
-Deprecated [Firefox Add-on](https://github.com/sindresorhus/notifier-for-github-firefox)
-
 
 ## Maintainers
 
-- [@YurySolovyov](https://github.com/YurySolovyov) (Yury Solovyov)
-- [@gcochard](https://github.com/gcochard) (Greg Cochard)
-- [@fstoerkle](https://github.com/fstoerkle) (Florian Störkle)
-- [@jacobbearden](https://github.com/jacobbearden) (Jacob Bearden)
+- [Yury Solovyov](https://github.com/YurySolovyov)
 
 
 ## License

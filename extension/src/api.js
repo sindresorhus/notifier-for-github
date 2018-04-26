@@ -41,7 +41,7 @@ const API = {
 		return tabUrl;
 	},
 
-	parseApiResponse(response) {
+	async parseApiResponse(response) {
 		const status = response.status;
 
 		if (status >= 500) {
@@ -57,9 +57,12 @@ const API = {
 		const linkheader = response.headers.get('Link');
 
 		if (linkheader === null) {
-			return response.json().then(data => {
+			try {
+				const data = await response.json();
 				return {count: data.length, interval, lastModified};
-			});
+			} catch (err) {
+
+			}
 		}
 
 		const lastlink = linkheader.split(', ').find(link => {
@@ -75,7 +78,7 @@ const API = {
 		return networkRequest(url);
 	},
 
-	getNotifications() {
+	async getNotifications() {
 		return this.makeApiRequest({perPage: 1}).then(this.parseApiResponse);
 	}
 };

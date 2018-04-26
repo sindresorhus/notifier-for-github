@@ -9,10 +9,12 @@
 		"128": "icon.png"
 	},
 	"permissions": [
-		"tabs",
-		"alarms"
+		"alarms",
+		"storage",
+		"contextMenus"
 	],
 	"optional_permissions": [
+		"tabs",
 		"notifications"
 	],
 	"background": {

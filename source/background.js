@@ -1,21 +1,21 @@
-import API from './util/api';
-import BadgeService from './util/badge';
-import NotificationsService from './util/notifications-service';
-import PermissionsService from './util/permissions-service';
-import PersistenceService from './util/persistence-service';
-import TabsService from './util/tabs-service';
 import OptionsSync from 'webext-options-sync';
 import domainPermissionToggle from 'webext-domain-permission-toggle';
-import api from './lib/api';
+import localStore from './lib/local-store';
+import {getNotificationCount, getTabUrl} from './lib/api';
+import {openTab} from './lib/tabs-service';
+import BadgeService from './lib/badge';
+import {checkNotifications, openNotification, removeNotification} from './lib/notifications-service';
+import {queryPermission} from './lib/permissions-service';
 
-const {local: localStore} = browser.storage;
+const syncStore = new OptionsSync();
 
 new OptionsSync().define({
 	defaults: {
 		token: '',
-		onlyParticipating: false,
+		rootUrl: 'https://api.github.com/',
 		playSound: false,
-		showDesktopNotif: false
+		showDesktopNotif: false,
+		onlyParticipating: false
 	},
 	migrations: [
 		OptionsSync.migrations.removeUnused
@@ -23,8 +23,6 @@ new OptionsSync().define({
 });
 
 domainPermissionToggle.addContextMenu();
-
-const options = new OptionsSync().getAll();
 
 const scheduleAlaram = interval => {
 	const intervalSetting = localStore.get('interval') || 60;
@@ -40,17 +38,17 @@ const scheduleAlaram = interval => {
 	browser.alarms.create({delayInMinutes});
 };
 
-const handleLastModified = date => {
+const handleLastModified = async date => {
 	const lastModified = localStore.get('lastModified') || new Date(0);
 
 	if (date !== lastModified) {
 		localStore.set('lastModified', date);
-		const {showDesktopNotif, playSound} = await options;
+		const {showDesktopNotif, playSound} = await syncStore.getAll();
 		if (showDesktopNotif === true || playSound === true) {
-			NotificationsService.checkNotifications(lastModified);
+			checkNotifications(lastModified);
 		}
 	}
-}
+};
 
 const handleNotificationsResponse = response => {
 	const {count, interval, lastModified} = response;
@@ -59,12 +57,12 @@ const handleNotificationsResponse = response => {
 	handleLastModified(lastModified);
 
 	BadgeService.renderCount(count);
-}
+};
 
 async function update() {
 	if (navigator.onLine) {
 		try {
-			handleNotificationsResponse(await api.getNotifications());
+			handleNotificationsResponse(await getNotificationCount());
 		} catch (error) {
 			handleError(error);
 		}
@@ -83,21 +81,15 @@ function handleOfflineStatus() {
 	BadgeService.renderWarning('offline');
 }
 
-function handleBrowserActionClick() {
-	const {onlyParticipating} = await options;
+const handleBrowserActionClick = async () => {
+	const {onlyParticipating} = await syncStore.getAll();
 
 	if (onlyParticipating) {
-		browser.tabs.create({
-			url: `${location.hostname}/notifications`,
-			active: true
-		});
+		openTab(`${getTabUrl()}notifications`);
 	} else {
-		browser.tabs.create({
-			url: `${location.hostname}/notifications/participating`,
-			active: true
-		});
+		openTab(`${getTabUrl()}notifications/participating`);
 	}
-}
+};
 
 function handleInstalled(details) {
 	if (details.reason === 'install') {
@@ -120,17 +112,17 @@ browser.alarms.create({when: Date.now() + 2000});
 browser.alarms.onAlarm.addListener(update);
 browser.runtime.onMessage.addListener(update);
 
-PermissionsService.queryPermission('notifications').then(granted => {
-	if (granted) {
+(async () => {
+	if (await queryPermission('notifications')) {
 		browser.notifications.onClicked.addListener(id => {
-			NotificationsService.openNotification(id);
+			openNotification(id);
 		});
 
 		browser.notifications.onClosed.addListener(id => {
-			NotificationsService.removeNotification(id);
+			removeNotification(id);
 		});
 	}
-});
+})();
 
 browser.runtime.onInstalled.addListener(handleInstalled);
 browser.browserAction.onClicked.addListener(handleBrowserActionClick);

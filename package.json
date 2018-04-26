@@ -9,6 +9,9 @@
 	},
 	"devDependencies": {
 		"ava": "*",
+		"babel-core": "^6.26.2",
+		"babel-loader": "^7.1.4",
+		"babel-plugin-transform-es2015-modules-commonjs": "^6.26.2",
 		"chrome-stub": "^1.3.2",
 		"chrome-webstore-upload-cli": "^1.0.3",
 		"copy-webpack-plugin": "^4.5.1",

@@ -41,9 +41,14 @@ function handleNotificationsResponse(response) {
 	BadgeService.renderCount(count);
 }
 
-function update() {
+async function update() {
 	if (navigator.onLine) {
-		API.getNotifications().then(handleNotificationsResponse).catch(handleError);
+		try {
+			const notifications = await API.getNotifications();
+			handleNotificationsResponse(notifications);
+		} catch (err) {
+			handleError(err);
+		}
 	} else {
 		handleOfflineStatus();
 	}
@@ -59,15 +64,18 @@ function handleOfflineStatus() {
 	BadgeService.renderWarning('offline');
 }
 
-function handleBrowserActionClick(tab) {
+async function handleBrowserActionClick(tab) {
 	const tabUrl = API.getTabUrl();
 
 	// Request optional permissions the 1rst time
 	if (PersistenceService.get('tabs_permission') === undefined) {
-		PermissionsService.requestPermission('tabs').then(granted => {
+		try {
+			const granted = await PermissionsService.requestPermission('tabs');
 			PersistenceService.set('tabs_permission', granted);
 			TabsService.openTab(tabUrl, tab);
-		});
+		} catch (err) {
+			handleError(err);
+		}
 	} else {
 		TabsService.openTab(tabUrl, tab);
 	}
@@ -93,19 +101,22 @@ window.addEventListener('offline', handleConnectionStatus);
 window.chrome.alarms.create({when: Date.now() + 2000});
 window.chrome.alarms.onAlarm.addListener(update);
 window.chrome.runtime.onMessage.addListener(update);
+(async () => {
+	try {
+		const granted = await PermissionsService.queryPermission('notifications');
+		if (granted) {
+			window.chrome.notifications.onClicked.addListener(id => {
+				NotificationsService.openNotification(id);
+			});
 
-PermissionsService.queryPermission('notifications').then(granted => {
-	if (granted) {
-		window.chrome.notifications.onClicked.addListener(id => {
-			NotificationsService.openNotification(id);
-		});
-
-		window.chrome.notifications.onClosed.addListener(id => {
-			NotificationsService.removeNotification(id);
-		});
+			window.chrome.notifications.onClosed.addListener(id => {
+				NotificationsService.removeNotification(id);
+			});
+		}
+	} catch (err) {
+		handleError(err);
 	}
-});
-
+})();
 window.chrome.runtime.onInstalled.addListener(handleInstalled);
 window.chrome.browserAction.onClicked.addListener(handleBrowserActionClick);
 

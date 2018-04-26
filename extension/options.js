@@ -52,18 +52,18 @@ document.addEventListener('DOMContentLoaded', () => {
 		id: 'show_desktop_notif',
 		storageKey: 'showDesktopNotif',
 		valueType: 'checked',
-		onChange(option) {
+		async onChange(option) {
 			if (showDesktopNotif.checked) {
-				PermissionsService.requestPermission('notifications').then(granted => {
+				try {
+					const granted = PermissionsService.requestPermission('notifications');
 					if (granted) {
 						updateBadge();
 					}
-
 					option.writeValue(granted);
-				}).catch(() => {
+				} catch (err) {
 					// Workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1382953
 					document.getElementById('notifications-permission-error').style.display = 'block';
-				});
+				}
 			} else {
 				option.writeValue();
 			}

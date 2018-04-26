@@ -1,33 +1,28 @@
 import {queryPermission} from './permissions-service';
 
 export const createTab = async url => {
-	return new Promise((resolve, reject) => {
-		if (browser.runtime.lastError) {
-			return reject(browser.runtime.lastError);
-		}
+	if (browser.runtime.lastError) {
+		throw new Error(browser.runtime.lastError);
+	}
 
-		browser.tabs.create({url}, resolve);
-	});
+	return browser.tabs.create({url});
 };
 
 export const updateTab = async (tabId, options) => {
-	return new Promise((resolve, reject) => {
-		if (browser.runtime.lastError) {
-			return reject(browser.runtime.lastError);
-		}
+	if (browser.runtime.lastError) {
+		throw new Error(browser.runtime.lastError);
+	}
 
-		browser.tabs.update(tabId, options, resolve);
-	});
+	return browser.tabs.update(tabId, options);
 };
 
 export const queryTabs = async url => {
-	return new Promise((resolve, reject) => {
-		if (browser.runtime.lastError) {
-			return reject(browser.runtime.lastError);
-		}
-		const currentWindow = true;
-		browser.tabs.query({ currentWindow, url }, resolve);
-	});
+	if (browser.runtime.lastError) {
+		throw new Error(browser.runtime.lastError);
+	}
+
+	const currentWindow = true;
+	return browser.tabs.query({currentWindow, url});
 };
 
 export const openTab = async (url, tab) => {
@@ -44,9 +39,4 @@ export const openTab = async (url, tab) => {
 
 		return createTab(url);
 	}
-
-	await browser.tabs.create({
-		url,
-		active: true
-	});
 };

@@ -1,6 +1,6 @@
 import test from 'ava';
 
-const Defaults = require('../extension/src/defaults.js');
+const Defaults = require('../source/lib/defaults.js');
 
 test('#getBadgeDefaultColor return array of 4 numbers between 0 and 255 inclusive', t => {
 	const color = Defaults.getBadgeDefaultColor();

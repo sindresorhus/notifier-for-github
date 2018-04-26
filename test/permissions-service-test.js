@@ -5,7 +5,7 @@ import util from './util';
 
 global.window = util.setupWindow();
 
-const PermissionsService = require('../extension/src/permissions-service.js');
+const PermissionsService = require('../source/lib/permissions-service.js');
 
 test.beforeEach(t => {
 	t.context.service = Object.assign({}, PermissionsService);

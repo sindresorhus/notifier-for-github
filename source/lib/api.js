@@ -9,8 +9,8 @@ export const getApiUrl = async () => {
 	if (/(^(https:\/\/)?(api\.)?github\.com)/.test(rootUrl)) {
 		return 'https://api.github.com/';
 	}
-		return `${rootUrl}api/v3/`;
 
+	return `${rootUrl}api/v3/`;
 };
 
 export const getTabUrl = async () => {
@@ -20,8 +20,8 @@ export const getTabUrl = async () => {
 	if (/(^(https:\/\/)?(api\.)?github\.com)/.test(rootUrl)) {
 		return `https://github.com/notifications/${useParticipating}`;
 	}
-		return `${rootUrl}/notifications/${useParticipating}`;
 
+	return `${rootUrl}/notifications/${useParticipating}`;
 };
 
 export const api = async (endpoint, params) => {
@@ -50,7 +50,7 @@ export const getNotificationResponse = async (maxItems = 100) => {
 	if (onlyParticipating) {
 		return api('notifications', {
 			participating: onlyParticipating,
-			per_page: maxItems // eslint-disable-line
+			per_page: maxItems // eslint-disable-line camelcase
 		});
 	}
 

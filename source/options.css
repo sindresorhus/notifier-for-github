@@ -7,13 +7,14 @@ section h3 {
 section h3 + p {
 	margin-top: 0;
 }
-input[type='text'], input[type='password'] {
+input[type='text'],
+input[type='password'] {
 	width: 350px;
 }
 span.description {
 	font-style: italic;
-	color: grey;
+	color: #ccc;
 }
 span#notifications-permission-error {
-	color: red;
+	color: #f44336;
 }

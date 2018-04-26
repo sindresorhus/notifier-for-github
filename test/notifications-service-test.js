@@ -5,8 +5,8 @@ import util from './util';
 
 global.window = util.setupWindow();
 
-const NotificationsService = require('../extension/src/notifications-service.js');
-const Defaults = require('../extension/src/defaults.js');
+const NotificationsService = require('../source/lib/notifications-service.js');
+const Defaults = require('../source/lib/defaults.js');
 
 test.beforeEach(t => {
 	t.context.service = Object.assign({}, NotificationsService);

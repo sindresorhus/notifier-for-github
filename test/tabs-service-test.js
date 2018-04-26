@@ -4,7 +4,7 @@ import util from './util';
 
 global.window = util.setupWindow();
 
-const TabsService = require('../extension/src/tabs-service.js');
+const TabsService = require('../source/lib/tabs-service.js');
 
 test.beforeEach(t => {
 	t.context.service = Object.assign({}, TabsService);

@@ -1,4 +1,4 @@
-const Defaults = require('./defaults.js');
+import defaults from './defaults';
 
 const render = (text, color, title) => {
 	browser.browserAction.setBadgeText({text});
@@ -19,26 +19,26 @@ const getCountString = count => {
 };
 
 const getErrorData = error => {
-	const title = Defaults.getErrorTitle(error);
-	const symbol = Defaults.getErrorSymbol(error);
+	const title = defaults.getErrorTitle(error);
+	const symbol = defaults.getErrorSymbol(error);
 	return {symbol, title};
 };
 
-exports.renderCount = count => {
-	const color = Defaults.getBadgeDefaultColor();
-	const title = Defaults.defaultTitle;
+export const renderCount = count => {
+	const color = defaults.getBadgeDefaultColor();
+	const title = defaults.defaultTitle;
 	render(getCountString(count), color, title);
 };
 
-exports.renderError = error => {
-	const color = Defaults.getBadgeErrorColor();
+export const renderError = error => {
+	const color = defaults.getBadgeErrorColor();
 	const {symbol, title} = getErrorData(error);
 	render(symbol, color, title);
 };
 
-exports.renderWarning = warning => {
-	const color = Defaults.getBadgeWarningColor();
-	const title = Defaults.getWarningTitle(warning);
-	const symbol = Defaults.getWarningSymbol(warning);
+export const renderWarning = warning => {
+	const color = defaults.getBadgeWarningColor();
+	const title = defaults.getWarningTitle(warning);
+	const symbol = defaults.getWarningSymbol(warning);
 	render(symbol, color, title);
 };

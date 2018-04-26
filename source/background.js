@@ -1,11 +1,11 @@
 import OptionsSync from 'webext-options-sync';
 import domainPermissionToggle from 'webext-domain-permission-toggle';
 import localStore from './lib/local-store';
-import {getNotificationCount, getTabUrl} from './lib/api';
 import {openTab} from './lib/tabs-service';
-import BadgeService from './lib/badge';
-import {checkNotifications, openNotification, removeNotification} from './lib/notifications-service';
 import {queryPermission} from './lib/permissions-service';
+import {getNotificationCount, getTabUrl} from './lib/api';
+import {renderCount, renderWarning, renderError} from './lib/badge';
+import {checkNotifications, openNotification, removeNotification} from './lib/notifications-service';
 
 const syncStore = new OptionsSync();
 
@@ -56,7 +56,7 @@ const handleNotificationsResponse = response => {
 	scheduleAlaram(interval);
 	handleLastModified(lastModified);
 
-	BadgeService.renderCount(count);
+	renderCount(count);
 };
 
 async function update() {
@@ -74,11 +74,11 @@ async function update() {
 function handleError(error) {
 	scheduleAlaram();
 
-	BadgeService.renderError(error);
+	renderError(error);
 }
 
 function handleOfflineStatus() {
-	BadgeService.renderWarning('offline');
+	renderWarning('offline');
 }
 
 const handleBrowserActionClick = async () => {

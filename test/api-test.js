@@ -4,7 +4,7 @@ import util from './util';
 
 global.window = util.setupWindow();
 
-const API = require('../extension/src/api.js');
+const API = require('../source/lib/api.js');
 
 test.beforeEach(t => {
 	t.context.api = Object.assign({}, API);

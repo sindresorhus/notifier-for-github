@@ -4,8 +4,8 @@ import util from './util';
 
 global.window = util.setupWindow();
 
-const Defaults = require('../extension/src/defaults.js');
-const Badge = require('../extension/src/badge.js');
+const Defaults = require('../source/lib/defaults.js');
+const Badge = require('../source/lib/badge.js');
 
 test.beforeEach(() => {
 	window.chrome.browserAction.setBadgeText = sinon.spy();

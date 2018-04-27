@@ -27,16 +27,16 @@ export const queryTabs = async url => {
 
 export const openTab = async (url, tab) => {
 	if (await queryPermission('tabs')) {
-		const tabs = await this.queryTabs(url);
+		const tabs = await queryTabs(url);
 
 		if (tabs && tabs.length > 0) {
-			return this.updateTab(tabs[0].id, {url, active: true});
+			return updateTab(tabs[0].id, {url, active: true});
 		}
 
 		if (tab && (tab.url === 'chrome://newtab/' || tab.href === 'about:home')) {
-			return this.updateTab(null, {url, active: false});
+			return updateTab(null, {url, active: false});
 		}
 
-		return this.createTab(url);
+		return createTab(url);
 	}
 };

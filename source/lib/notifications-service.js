@@ -18,7 +18,7 @@ export const openNotification = async notificationId => {
 			const {json} = await makeApiRequest(url);
 			const targetUrl = json.message === 'Not Found' ? await getTabUrl() : json.html_url;
 			await openTab(targetUrl);
-			await this.closeNotification(notificationId);
+			await closeNotification(notificationId);
 		} catch (error) {
 			await openTab(await getTabUrl());
 		}
@@ -49,16 +49,16 @@ export const filterNotificationsByDate = (notifications, lastModified) => {
 };
 
 export const showNotifications = (notifications, lastModified) => {
-	for (const notification of this.filterNotificationsByDate(notifications, lastModified)) {
+	for (const notification of filterNotificationsByDate(notifications, lastModified)) {
 		const notificationId = `github-notifier-${notification.id}`;
-		const notificationObject = this.getNotificationObject(notification);
+		const notificationObject = getNotificationObject(notification);
 		browser.notifications.create(notificationId, notificationObject);
 		localStore.set(notificationId, notification.subject.url);
 	}
 };
 
 export const playNotification = async (notifications, lastModified) => {
-	if (this.filterNotificationsByDate(notifications, lastModified).length > 0) {
+	if (filterNotificationsByDate(notifications, lastModified).length > 0) {
 		const audio = new Audio();
 		audio.src = await browser.extension.getURL('/sounds/bell.ogg');
 		audio.play();
@@ -74,10 +74,10 @@ export const checkNotifications = async lastModified => {
 	const {showDesktopNotif, playNotifSound} = await syncStore.getAll();
 
 	if (showDesktopNotif) {
-		await this.showNotifications(notifications, lastModified);
+		await showNotifications(notifications, lastModified);
 	}
 
 	if (playNotifSound) {
-		await this.playNotification(notifications, lastModified);
+		await playNotification(notifications, lastModified);
 	}
 };

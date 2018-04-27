@@ -1,11 +1,11 @@
 import OptionsSync from 'webext-options-sync';
 import domainPermissionToggle from 'webext-domain-permission-toggle';
 import localStore from './lib/local-store';
-import {openTab} from './lib/tabs-service';
+import badge from './lib/badge';
+import tabs from './lib/tabs-service';
 import {queryPermission} from './lib/permissions-service';
 import {getNotificationCount, getTabUrl} from './lib/api';
-import {renderCount, renderWarning, renderError} from './lib/badge';
-import {checkNotifications, openNotification, removeNotification} from './lib/notifications-service';
+import notifications from './lib/notifications-service';
 
 const syncStore = new OptionsSync();
 
@@ -13,7 +13,7 @@ new OptionsSync().define({
 	defaults: {
 		token: '',
 		rootUrl: 'https://api.github.com/',
-		playSound: false,
+		playNotifSound: false,
 		showDesktopNotif: false,
 		onlyParticipating: false
 	},
@@ -43,9 +43,9 @@ const handleLastModified = async date => {
 
 	if (date !== lastModified) {
 		localStore.set('lastModified', date);
-		const {showDesktopNotif, playSound} = await syncStore.getAll();
-		if (showDesktopNotif === true || playSound === true) {
-			checkNotifications(lastModified);
+		const {showDesktopNotif, playNotifSound} = await syncStore.getAll();
+		if (showDesktopNotif === true || playNotifSound === true) {
+			notifications.checkNotifications(lastModified);
 		}
 	}
 };
@@ -56,7 +56,17 @@ const handleNotificationsResponse = response => {
 	scheduleAlaram(interval);
 	handleLastModified(lastModified);
 
-	renderCount(count);
+	badge.renderCount(count);
+};
+
+const handleError = error => {
+	scheduleAlaram();
+
+	badge.renderError(error);
+};
+
+const handleOfflineStatus = () => {
+	badge.renderWarning('offline');
 };
 
 async function update() {
@@ -71,23 +81,13 @@ async function update() {
 	}
 }
 
-function handleError(error) {
-	scheduleAlaram();
-
-	renderError(error);
-}
-
-function handleOfflineStatus() {
-	renderWarning('offline');
-}
-
 const handleBrowserActionClick = async () => {
 	const {onlyParticipating} = await syncStore.getAll();
 
 	if (onlyParticipating) {
-		openTab(`${getTabUrl()}notifications`);
+		tabs.openTab(`${getTabUrl()}notifications`);
 	} else {
-		openTab(`${getTabUrl()}notifications/participating`);
+		tabs.openTab(`${getTabUrl()}notifications/participating`);
 	}
 };
 
@@ -115,11 +115,11 @@ browser.runtime.onMessage.addListener(update);
 (async () => {
 	if (await queryPermission('notifications')) {
 		browser.notifications.onClicked.addListener(id => {
-			openNotification(id);
+			notifications.openNotification(id);
 		});
 
 		browser.notifications.onClosed.addListener(id => {
-			removeNotification(id);
+			notifications.removeNotification(id);
 		});
 	}
 })();

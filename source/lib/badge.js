@@ -1,4 +1,4 @@
-import defaults from './defaults';
+import * as defaults from './defaults';
 
 const render = (text, color, title) => {
 	browser.browserAction.setBadgeText({text});
@@ -24,21 +24,27 @@ const getErrorData = error => {
 	return {symbol, title};
 };
 
-export const renderCount = count => {
+const renderCount = count => {
 	const color = defaults.getBadgeDefaultColor();
 	const title = defaults.defaultTitle;
 	render(getCountString(count), color, title);
 };
 
-export const renderError = error => {
+const renderError = error => {
 	const color = defaults.getBadgeErrorColor();
 	const {symbol, title} = getErrorData(error);
 	render(symbol, color, title);
 };
 
-export const renderWarning = warning => {
+const renderWarning = warning => {
 	const color = defaults.getBadgeWarningColor();
 	const title = defaults.getWarningTitle(warning);
 	const symbol = defaults.getWarningSymbol(warning);
 	render(symbol, color, title);
+};
+
+export default {
+	renderCount,
+	renderError,
+	renderWarning
 };

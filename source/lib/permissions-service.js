@@ -1,28 +1,32 @@
 import localStore from './local-store';
 
 export const queryPermission = async permission => {
-	const granted = await browser.permissions.contains({
-		permissions: [permission]
+	return new Promise((resolve, reject) => {
+		browser.permissions.contains({
+			permissions: [permission]
+		}, granted => {
+			if (browser.runtime.lastError) {
+				return reject(browser.runtime.lastError);
+			}
+
+			resolve(granted);
+		});
 	});
-
-	if (browser.runtime.lastError) {
-		throw new Error(browser.runtime.lastError);
-	}
-
-	return granted;
 };
 
 export const requestPermission = async permission => {
-	const granted = await browser.permissions.request({
-		permissions: [permission]
+	return new Promise((resolve, reject) => {
+		browser.permissions.request({
+			permissions: [permission]
+		}, granted => {
+			if (browser.runtime.lastError) {
+				return reject(browser.runtime.lastError);
+			}
+
+			// TODO: Are permissions sync?
+			localStore.set(`${permission}_permission`, granted);
+
+			resolve(granted);
+		});
 	});
-
-	if (browser.runtime.lastError) {
-		throw new Error(browser.runtime.lastError);
-	}
-
-	// TODO: Are permissions sync?
-	localStore.set(`${permission}_permission`, granted);
-
-	return granted;
 };

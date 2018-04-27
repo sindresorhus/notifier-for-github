@@ -3,7 +3,7 @@
 	"scripts": {
 		"release": "npm run build && webstore upload --source=extension --auto-publish",
 		"lint": "xo && stylelint --fix source/*.css",
-		"test": "npm run lint && cross-env BABEL_ENV=testing ava && npm run build",
+		"test": "npm run lint && cross-env BABEL_ENV=testing ava --verbose && npm run build",
 		"build": "webpack --mode=production",
 		"watch": "webpack --mode=development --watch"
 	},
@@ -19,7 +19,6 @@
 		"esm": "^3.0.27",
 		"lodash.merge": "^4.6.1",
 		"moment": "^2.14.1",
-		"node-fetch": "^2.1.2",
 		"p-immediate": "^2.1.0",
 		"sinon": "^4.5.0",
 		"stylelint": "^9.2.0",

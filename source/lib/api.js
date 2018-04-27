@@ -32,6 +32,10 @@ export const getParsedUrl = async (endpoint, params) => {
 export const getHeaders = async () => {
 	const {token} = await syncStore.getAll();
 
+	if (!(/[a-z0-9]{40}/.test(token))) {
+		throw new Error('missing token');
+	}
+
 	return {
 		/* eslint-disable quote-props */
 		'Authorization': `token ${token}`,

@@ -1,36 +1,6 @@
 import test from 'ava';
-import sinon from 'sinon';
-import merge from 'lodash.merge';
-
 import * as service from '../source/lib/api';
-
-const getNormalizedResponse = overrides => {
-	return merge({
-		status: 200,
-		statusText: 'OK',
-		headers: {
-			/* eslint-disable quote-props */
-			'X-Poll-Interval': '60',
-			'Last-Modified': null,
-			'Link': null
-			/* eslint-enable quote-props */
-		},
-		body: ''
-	}, overrides);
-};
-
-const fakeFetch = fakeResponse => {
-	const {status, statusText, headers, body} = getNormalizedResponse(fakeResponse);
-
-	return sinon.stub().returns({
-		status,
-		statusText,
-		headers: new Map(Object.entries(headers)),
-		async json() {
-			return body;
-		}
-	});
-};
+import {fakeFetch} from './util';
 
 test.beforeEach(() => {
 	// Reset storage before each test

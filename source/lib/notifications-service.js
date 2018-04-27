@@ -1,75 +1,85 @@
 import OptionsSync from 'webext-options-sync';
 import {makeApiRequest, getNotifications, getTabUrl} from '../lib/api';
 import {getNotificationReasonText} from './defaults';
-import {openTab} from './tabs-service';
+import tabs from './tabs-service';
+import localStore from './local-store';
 
-const {local: localStore} = browser.storage;
 const syncStore = new OptionsSync();
 
-export const closeNotification = notificationId => {
-	browser.notification.clear(notificationId);
-};
+export default {
+	async closeNotification(notificationId) {
+		return browser.notifications.clear(notificationId);
+	},
 
-export const openNotification = async notificationId => {
-	const url = localStore.get(notificationId);
+	async openNotification(notificationId) {
+		const url = await localStore.get(notificationId);
 
-	if (url) {
-		try {
-			const {json} = await makeApiRequest(url);
-			const targetUrl = json.message === 'Not Found' ? getTabUrl() : json.html_url;
-			await openTab(targetUrl);
-			closeNotification(notificationId);
-		} catch (error) {
-			openTab(getTabUrl());
+		if (url) {
+			try {
+				const {json} = await makeApiRequest(url);
+				const targetUrl = json.message === 'Not Found' ? await getTabUrl() : json.html_url;
+				await tabs.openTab(targetUrl);
+				await this.closeNotification(notificationId);
+			} catch (error) {
+				await tabs.openTab(await getTabUrl());
+			}
+
+			return true;
 		}
-	}
-};
 
-export const removeNotification = notificationId => {
-	localStore.remove(notificationId);
-};
+		return false;
+	},
 
-export const getNotificationObject = notificationInfo => {
-	return {
-		title: notificationInfo.subject.title,
-		iconUrl: 'icon-notif.png',
-		type: 'basic',
-		message: notificationInfo.repository.full_name,
-		contextMessage: getNotificationReasonText(notificationInfo.reason)
-	};
-};
+	async removeNotification(notificationId) {
+		return localStore.remove(notificationId);
+	},
 
-export const filterNotificationsByDate = (notifications, lastModified) => {
-	const lastModifedTime = new Date(lastModified).getTime();
-	return notifications.filter(n => new Date(n.updated_at).getTime() > lastModifedTime);
-};
+	getNotificationObject(notificationInfo) {
+		return {
+			title: notificationInfo.subject.title,
+			iconUrl: 'icon-notif.png',
+			type: 'basic',
+			message: notificationInfo.repository.full_name,
+			contextMessage: getNotificationReasonText(notificationInfo.reason)
+		};
+	},
 
-export const showNotifications = (notifications, lastModified) => {
-	for (const notification of filterNotificationsByDate(notifications, lastModified)) {
-		const notificationId = `github-notifier-${notification.id}`;
-		const notificationObject = getNotificationObject(notification);
-		browser.notifications.create(notificationId, notificationObject);
-		localStore.set(notificationId, notification.subject.url);
-	}
-};
+	filterNotificationsByDate(notifications, lastModified) {
+		const lastModifedTime = new Date(lastModified).getTime();
+		return notifications.filter(n => new Date(n.updated_at).getTime() > lastModifedTime);
+	},
 
-export const playNotification = (notifications, lastModified) => {
-	if (filterNotificationsByDate(notifications, lastModified).length > 0) {
-		const audio = new window.Audio();
-		audio.src = browser.extension.getURL('/sounds/bell.ogg');
-		audio.play();
-	}
-};
+	showNotifications(notifications, lastModified) {
+		for (const notification of this.filterNotificationsByDate(notifications, lastModified)) {
+			const notificationId = `github-notifier-${notification.id}`;
+			const notificationObject = this.getNotificationObject(notification);
+			browser.notifications.create(notificationId, notificationObject);
+			localStore.set(notificationId, notification.subject.url);
+		}
+	},
 
-export const checkNotifications = async lastModified => {
-	const notifications = await getNotifications(100);
-	const {showDesktopNotif, playNotifSound} = await syncStore.getAll();
+	async playNotification(notifications, lastModified) {
+		if (this.filterNotificationsByDate(notifications, lastModified).length > 0) {
+			const audio = new Audio();
+			audio.src = await browser.extension.getURL('/sounds/bell.ogg');
+			audio.play();
 
-	if (showDesktopNotif) {
-		showNotifications(notifications, lastModified);
-	}
+			return true;
+		}
 
-	if (playNotifSound) {
-		playNotification(notifications, lastModified);
+		return false;
+	},
+
+	async checkNotifications(lastModified) {
+		const notifications = await getNotifications(100);
+		const {showDesktopNotif, playNotifSound} = await syncStore.getAll();
+
+		if (showDesktopNotif) {
+			await this.showNotifications(notifications, lastModified);
+		}
+
+		if (playNotifSound) {
+			await this.playNotification(notifications, lastModified);
+		}
 	}
 };

@@ -1,7 +1,7 @@
 // This script tries to simulate a browser environment required by the extension
 // Instead of polluting node global scope with all possible properties from JSDOM, only required properties are added
 
-import { URLSearchParams } from 'url';
+import {URLSearchParams} from 'url';
 import chromeStub from 'chrome-stub';
 import fetch from 'node-fetch';
 

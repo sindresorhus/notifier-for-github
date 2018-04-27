@@ -1,9 +1,8 @@
 import OptionsSync from 'webext-options-sync';
-import domainPermissionToggle from 'webext-domain-permission-toggle';
 
 import localStore from './lib/local-store';
 import {openTab} from './lib/tabs-service';
-import {queryPermission} from './lib/permissions-service';
+import {queryPermission, requestPermission} from './lib/permissions-service';
 import {getNotificationCount, getTabUrl} from './lib/api';
 import {renderCount, renderError, renderWarning} from './lib/badge';
 import {checkNotifications, openNotification, removeNotification} from './lib/notifications-service';
@@ -22,8 +21,6 @@ new OptionsSync().define({
 		OptionsSync.migrations.removeUnused
 	]
 });
-
-domainPermissionToggle.addContextMenu();
 
 const scheduleAlaram = interval => {
 	const intervalSetting = localStore.get('interval') || 60;
@@ -83,13 +80,20 @@ async function update() {
 }
 
 const handleBrowserActionClick = async () => {
-	const {onlyParticipating} = await syncStore.getAll();
+	const alreadyGranted = await queryPermission('tabs');
 
-	if (onlyParticipating) {
-		openTab(`${getTabUrl()}notifications`);
-	} else {
-		openTab(`${getTabUrl()}notifications/participating`);
+	if (!alreadyGranted) {
+		try {
+			const granted = await requestPermission('tabs');
+			if (!granted) {
+				return;
+			}
+		} catch (error) {
+			return;
+		}
 	}
+
+	await openTab(await getTabUrl());
 };
 
 function handleInstalled(details) {
@@ -111,7 +115,11 @@ window.addEventListener('offline', handleConnectionStatus);
 
 browser.alarms.create({when: Date.now() + 2000});
 browser.alarms.onAlarm.addListener(update);
-browser.runtime.onMessage.addListener(update);
+browser.runtime.onMessage.addListener(message => {
+	if (message === 'update') {
+		update();
+	}
+});
 
 (async () => {
 	if (await queryPermission('notifications')) {

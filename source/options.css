@@ -1,20 +1,44 @@
-section {
-	-webkit-padding-start: 18px;
+body {
+	min-width: 430px;
 }
-section h3 {
-	-webkit-margin-start: -18px;
+
+h3 {
+	margin: 0;
+	margin-bottom: 0.5rem;
 }
-section h3 + p {
-	margin-top: 0;
+
+:root hr {
+	margin: 1rem -1rem;
+	border: none;
+	border-bottom: solid #d3d3d3 1px;
 }
-input[type='text'],
-input[type='password'] {
-	width: 350px;
+
+.small {
+	font-size: 0.9em;
 }
-span.description {
-	font-style: italic;
-	color: #ccc;
-}
-span#notifications-permission-error {
+
+#notifications-permission-error {
 	color: #f44336;
+}
+
+input[type='checkbox'] {
+	vertical-align: -0.16em;
+}
+
+label {
+	display: block;
+	width: 100%;
+	margin: 0.5rem 0;
+}
+
+input[type='url'],
+input[type='text'] {
+	display: block;
+	width: 100%;
+	margin-top: 0.5rem;
+}
+
+input[type='url']:invalid,
+input[type='text']:invalid {
+	border-color: #f44336 !important;
 }

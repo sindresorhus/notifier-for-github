@@ -96,7 +96,7 @@ test('#renderError uses proper symbols for errors', t => {
 
 	for (const message of crossMarkSymbolMessages) {
 		renderError({message});
-		t.true(browser.browserAction.setBadgeText.calledWith({text: '⨯'}));
+		t.true(browser.browserAction.setBadgeText.calledWith({text: 'X'}));
 	}
 
 	for (const message of questionSymbolMessages) {

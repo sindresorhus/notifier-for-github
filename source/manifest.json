@@ -15,7 +15,9 @@
 	],
 	"optional_permissions": [
 		"tabs",
-		"notifications"
+		"notifications",
+		"http://*/*",
+		"https://*/*"
 	],
 	"background": {
 		"persistent": false,

@@ -54,7 +54,7 @@ test('#getNotificationReasonText returns notification reasons', t => {
 });
 
 test('#getErrorSymbol returns either "X" or "?" strings', t => {
-	t.is(defaults.getErrorSymbol({message: 'missing token'}), '⨯');
+	t.is(defaults.getErrorSymbol({message: 'missing token'}), 'X');
 
 	const invalidMessages = [
 		'no such thing',

@@ -26,7 +26,7 @@ export const errorTitles = new Map([
 ]);
 
 export const errorSymbols = new Map([
-	['missing token', '⨯'],
+	['missing token', 'X'],
 	['default', '?']
 ]);
 

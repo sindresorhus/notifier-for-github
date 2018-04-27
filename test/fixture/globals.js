@@ -13,6 +13,6 @@ global.browser = Object.assign({}, {
 	notifications: {}
 }, chromeStub);
 
-// Required for webext-options-sync
+// Required for `webext-options-sync`
 global.chrome = global.browser;
-global.HTMLElement = class HTMLElement { };
+global.HTMLElement = class HTMLElement {};

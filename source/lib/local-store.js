@@ -5,6 +5,6 @@ export default {
 	},
 
 	async set(key, value) {
-		await browser.storage.local.set({key: value});
+		await browser.storage.local.set({[key]: value});
 	}
 };

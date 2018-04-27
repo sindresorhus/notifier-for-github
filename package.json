@@ -3,7 +3,7 @@
 	"scripts": {
 		"release": "npm run build && webstore upload --source=extension --auto-publish",
 		"lint": "xo && stylelint --fix source/*.css",
-		"test": "npm run lint && cross-env BABEL_ENV=testing ava",
+		"test": "npm run lint && cross-env BABEL_ENV=testing ava && npm run build",
 		"build": "webpack --mode=production",
 		"watch": "webpack --mode=development --watch"
 	},
@@ -16,10 +16,11 @@
 		"chrome-webstore-upload-cli": "^1.0.3",
 		"copy-webpack-plugin": "^4.5.1",
 		"cross-env": "^5.1.4",
-		"istanbul": "^0.4.0",
+		"esm": "^3.0.27",
+		"lodash.merge": "^4.6.1",
 		"moment": "^2.14.1",
+		"node-fetch": "^2.1.2",
 		"p-immediate": "^2.1.0",
-		"parse-link-header": "^1.0.1",
 		"sinon": "^4.5.0",
 		"stylelint": "^9.2.0",
 		"stylelint-config-xo": "*",
@@ -34,6 +35,10 @@
 	"ava": {
 		"files": [
 			"test/*-test.js"
+		],
+		"require": [
+			"esm",
+			"./test/fixture/globals.js"
 		]
 	},
 	"xo": {

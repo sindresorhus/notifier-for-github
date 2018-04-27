@@ -1,7 +1,17 @@
 import OptionsSync from 'webext-options-sync';
-import parseLinkHeader from 'parse-link-header';
 
 const syncStore = new OptionsSync();
+
+export const getTabUrl = async () => {
+	const {rootUrl, onlyParticipating} = await syncStore.getAll();
+	const useParticipating = onlyParticipating ? '/participating' : '';
+
+	if (/(^(https:\/\/)?(api\.)?github\.com)/.test(rootUrl)) {
+		return `https://github.com/notifications${useParticipating}`;
+	}
+
+	return `${rootUrl}notifications${useParticipating}`;
+};
 
 export const getApiUrl = async () => {
 	const {rootUrl} = await syncStore.getAll();
@@ -13,28 +23,39 @@ export const getApiUrl = async () => {
 	return `${rootUrl}api/v3/`;
 };
 
-export const getTabUrl = async () => {
-	const {rootUrl, onlyParticipating} = await syncStore.getAll();
-	const useParticipating = onlyParticipating ? 'participating' : '';
-
-	if (/(^(https:\/\/)?(api\.)?github\.com)/.test(rootUrl)) {
-		return `https://github.com/notifications/${useParticipating}`;
-	}
-
-	return `${rootUrl}/notifications/${useParticipating}`;
+export const getParsedUrl = async (endpoint, params) => {
+	const api = await getApiUrl();
+	const query = params ? '?' + (new URLSearchParams(params)).toString() : '';
+	return `${api}${endpoint}${query}`;
 };
 
-export const api = async (endpoint, params) => {
-	const api = await getApiUrl();
-	const {token = ''} = await syncStore.getAll();
-	const query = params ? '?' + (new URLSearchParams(params)).toString() : '';
-	const url = `${api}${endpoint}${query}`;
+export const getHeaders = async () => {
+	const {token} = await syncStore.getAll();
+
+	return {
+		/* eslint-disable quote-props */
+		'Authorization': `token ${token}`,
+		'If-Modified-Since': ''
+		/* eslint-enable quote-props */
+	};
+};
+
+export const makeApiRequest = async (endpoint, params) => {
+	const url = await getParsedUrl(endpoint, params);
 
 	const response = await fetch(url, {
-		headers: new Headers({
-			authorization: `token ${token}`
-		})
+		headers: await getHeaders()
 	});
+
+	const status = response.status;
+
+	if (status >= 500) {
+		return Promise.reject(new Error('server error'));
+	}
+
+	if (status >= 400) {
+		return Promise.reject(new Error(`client error: ${status} ${response.statusText}`));
+	}
 
 	const json = await response.json();
 
@@ -48,13 +69,13 @@ export const getNotificationResponse = async (maxItems = 100) => {
 	const {onlyParticipating} = await syncStore.getAll();
 
 	if (onlyParticipating) {
-		return api('notifications', {
+		return makeApiRequest('notifications', {
 			participating: onlyParticipating,
 			per_page: maxItems // eslint-disable-line camelcase
 		});
 	}
 
-	return api('notifications', {
+	return makeApiRequest('notifications', {
 		per_page: maxItems // eslint-disable-line camelcase
 	});
 };
@@ -79,13 +100,15 @@ export const getNotificationCount = async () => {
 		};
 	}
 
-	const parsedLinkHeader = parseLinkHeader(linkHeader);
+	const lastlink = linkHeader.split(', ').find(link => {
+		return link.endsWith('rel="last"');
+	});
+
+	const count = Number(lastlink.slice(lastlink.lastIndexOf('page=') + 5, lastlink.lastIndexOf('>')));
 
 	return {
-		count: Number(parsedLinkHeader.last.page),
+		count,
 		interval,
 		lastModified
 	};
 };
-
-export default api;

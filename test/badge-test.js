@@ -2,7 +2,7 @@ import test from 'ava';
 import sinon from 'sinon';
 
 import * as defaults from '../source/lib/defaults';
-import badge from '../source/lib/badge';
+import {renderCount, renderError} from '../source/lib/badge';
 
 test.beforeEach(() => {
 	browser.browserAction.setBadgeText = sinon.spy();
@@ -14,7 +14,7 @@ test('#renderCount uses default badge color', t => {
 	const count = 42;
 	const color = defaults.getBadgeDefaultColor();
 
-	badge.renderCount(count);
+	renderCount(count);
 
 	const text = String(count);
 	const title = defaults.defaultTitle;
@@ -28,7 +28,7 @@ test('#renderCount renders empty string when notifications count is 0', t => {
 	const count = 0;
 	const color = defaults.getBadgeDefaultColor();
 
-	badge.renderCount(count);
+	renderCount(count);
 
 	const text = '';
 	const title = defaults.defaultTitle;
@@ -42,7 +42,7 @@ test('#renderCount renders infinity ("∞") string when notifications count > 99
 	const count = 10000;
 	const color = defaults.getBadgeDefaultColor();
 
-	badge.renderCount(count);
+	renderCount(count);
 
 	const text = '∞';
 	const title = defaults.defaultTitle;
@@ -55,7 +55,7 @@ test('#renderCount renders infinity ("∞") string when notifications count > 99
 test('#renderError uses error badge color', t => {
 	const color = defaults.getBadgeErrorColor();
 
-	badge.renderError({});
+	renderError({});
 
 	const text = '?';
 	const title = 'Unknown error';
@@ -75,7 +75,7 @@ test('#renderError uses proper messages for errors', t => {
 	];
 
 	for (const message of messages) {
-		badge.renderError({message});
+		renderError({message});
 		const title = browser.browserAction.setTitle.lastCall.args[0].title; // 'title' arg is 1st
 
 		t.is(title, defaults.getErrorTitle({message}));
@@ -95,12 +95,12 @@ test('#renderError uses proper symbols for errors', t => {
 	];
 
 	for (const message of crossMarkSymbolMessages) {
-		badge.renderError({message});
+		renderError({message});
 		t.true(browser.browserAction.setBadgeText.calledWith({text: '⨯'}));
 	}
 
 	for (const message of questionSymbolMessages) {
-		badge.renderError({message});
+		renderError({message});
 		t.true(browser.browserAction.setBadgeText.calledWith({text: '?'}));
 	}
 });

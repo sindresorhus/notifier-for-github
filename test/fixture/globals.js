@@ -3,9 +3,7 @@
 
 import {URLSearchParams} from 'url';
 import chromeStub from 'chrome-stub';
-import fetch from 'node-fetch';
 
-global.fetch = fetch;
 global.URLSearchParams = URLSearchParams;
 
 global.browser = Object.assign({}, {

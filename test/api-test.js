@@ -6,6 +6,7 @@ test.beforeEach(() => {
 	// Reset storage before each test
 	browser.storage.sync.set({
 		options: {
+			token: 'a1b2c3d4e5f6g7h8i9j0a1b2c3d4e5f6g7h8i9j0',
 			rootUrl: 'https://api.github.com/',
 			onlyParticipating: false
 		}

@@ -1,7 +1,7 @@
 import test from 'ava';
 import sinon from 'sinon';
 
-import tabs from '../source/lib/tabs-service';
+import * as tabs from '../source/lib/tabs-service';
 
 test.beforeEach(t => {
 	t.context.service = Object.assign({}, tabs);

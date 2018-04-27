@@ -1,11 +1,12 @@
 import OptionsSync from 'webext-options-sync';
 import domainPermissionToggle from 'webext-domain-permission-toggle';
+
 import localStore from './lib/local-store';
-import badge from './lib/badge';
-import tabs from './lib/tabs-service';
+import {openTab} from './lib/tabs-service';
 import {queryPermission} from './lib/permissions-service';
 import {getNotificationCount, getTabUrl} from './lib/api';
-import notifications from './lib/notifications-service';
+import {renderCount, renderError, renderWarning} from './lib/badge';
+import {checkNotifications, openNotification, removeNotification} from './lib/notifications-service';
 
 const syncStore = new OptionsSync();
 
@@ -45,7 +46,7 @@ const handleLastModified = async date => {
 		localStore.set('lastModified', date);
 		const {showDesktopNotif, playNotifSound} = await syncStore.getAll();
 		if (showDesktopNotif === true || playNotifSound === true) {
-			notifications.checkNotifications(lastModified);
+			checkNotifications(lastModified);
 		}
 	}
 };
@@ -56,17 +57,17 @@ const handleNotificationsResponse = response => {
 	scheduleAlaram(interval);
 	handleLastModified(lastModified);
 
-	badge.renderCount(count);
+	renderCount(count);
 };
 
 const handleError = error => {
 	scheduleAlaram();
 
-	badge.renderError(error);
+	renderError(error);
 };
 
 const handleOfflineStatus = () => {
-	badge.renderWarning('offline');
+	renderWarning('offline');
 };
 
 async function update() {
@@ -85,9 +86,9 @@ const handleBrowserActionClick = async () => {
 	const {onlyParticipating} = await syncStore.getAll();
 
 	if (onlyParticipating) {
-		tabs.openTab(`${getTabUrl()}notifications`);
+		openTab(`${getTabUrl()}notifications`);
 	} else {
-		tabs.openTab(`${getTabUrl()}notifications/participating`);
+		openTab(`${getTabUrl()}notifications/participating`);
 	}
 };
 
@@ -115,11 +116,11 @@ browser.runtime.onMessage.addListener(update);
 (async () => {
 	if (await queryPermission('notifications')) {
 		browser.notifications.onClicked.addListener(id => {
-			notifications.openNotification(id);
+			openNotification(id);
 		});
 
 		browser.notifications.onClosed.addListener(id => {
-			notifications.removeNotification(id);
+			removeNotification(id);
 		});
 	}
 })();

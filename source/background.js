@@ -37,7 +37,7 @@ const scheduleAlaram = interval => {
 };
 
 const handleLastModified = async date => {
-	const lastModified = localStore.get('lastModified') || new Date(0);
+	const lastModified = await localStore.get('lastModified') || new Date(0);
 
 	if (date !== lastModified) {
 		localStore.set('lastModified', date);

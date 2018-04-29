@@ -9,17 +9,17 @@ test.beforeEach(t => {
 test.serial('#set calls StorageArea#set', async t => {
 	const {service} = t.context;
 
-	browser.storage.local.set = sinon.spy();
+	browser.storage.local.set = sinon.stub().resolves(true);
 
 	await service.set('name', 'notifier-for-github');
 
-	t.true(browser.storage.local.set.calledWith('name', 'notifier-for-github'));
+	t.true(browser.storage.local.set.calledWith({name: 'notifier-for-github'}));
 });
 
 test.serial('#get calls StorageArea#get', async t => {
 	const {service} = t.context;
 
-	browser.storage.local.get = sinon.stub().returns(Promise.resolve({}));
+	browser.storage.local.get = sinon.stub().resolves({});
 
 	await service.get('name');
 

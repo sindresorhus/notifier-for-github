@@ -1,9 +1,10 @@
 import test from 'ava';
-import * as service from '../source/lib/api';
+import * as api from '../source/lib/api';
 import {fakeFetch} from './util';
 
-test.beforeEach(() => {
-	// Reset storage before each test
+test.beforeEach(t => {
+	t.context.service = Object.assign({}, api);
+
 	browser.storage.sync.set({
 		options: {
 			token: 'a1b2c3d4e5f6g7h8i9j0a1b2c3d4e5f6g7h8i9j0',
@@ -14,6 +15,8 @@ test.beforeEach(() => {
 });
 
 test.serial('#getApiUrl uses default endpoint if rootUrl matches GitHub', async t => {
+	const {service} = t.context;
+
 	browser.storage.sync.set({
 		options: {
 			rootUrl: 'https://api.github.com/'
@@ -24,6 +27,8 @@ test.serial('#getApiUrl uses default endpoint if rootUrl matches GitHub', async 
 });
 
 test.serial('#getApiUrl uses custom endpoint if rootUrl is something other than GitHub', async t => {
+	const {service} = t.context;
+
 	browser.storage.sync.set({
 		options: {
 			rootUrl: 'https://something.com/'
@@ -34,6 +39,8 @@ test.serial('#getApiUrl uses custom endpoint if rootUrl is something other than 
 });
 
 test.serial('#getTabUrl uses default page if rootUrl matches GitHub', async t => {
+	const {service} = t.context;
+
 	browser.storage.sync.set({
 		options: {
 			rootUrl: 'https://api.github.com/',
@@ -45,6 +52,8 @@ test.serial('#getTabUrl uses default page if rootUrl matches GitHub', async t =>
 });
 
 test.serial('#getTabUrl uses uses custom page if rootUrl is something other than GitHub', async t => {
+	const {service} = t.context;
+
 	browser.storage.sync.set({
 		options: {
 			rootUrl: 'https://something.com/',
@@ -56,6 +65,8 @@ test.serial('#getTabUrl uses uses custom page if rootUrl is something other than
 });
 
 test.serial('#getTabUrl respects useParticipatingCount setting', async t => {
+	const {service} = t.context;
+
 	browser.storage.sync.set({
 		options: {
 			rootUrl: 'https://api.github.com/',
@@ -67,6 +78,8 @@ test.serial('#getTabUrl respects useParticipatingCount setting', async t => {
 });
 
 test.serial('#getNotificationCount promise resolves response of 0 notifications if Link header is null', async t => {
+	const {service} = t.context;
+
 	global.fetch = fakeFetch();
 
 	const response = await service.getNotificationCount();
@@ -74,6 +87,8 @@ test.serial('#getNotificationCount promise resolves response of 0 notifications 
 });
 
 test.serial('#getNotificationCount promise resolves response of N notifications according to Link header', async t => {
+	const {service} = t.context;
+
 	global.fetch = fakeFetch({
 		headers: {
 			// eslint-disable-next-line quote-props
@@ -97,6 +112,8 @@ test.serial('#getNotificationCount promise resolves response of N notifications 
 });
 
 test.serial('#makeApiRequest returns rejected promise for 4xx status codes', async t => {
+	const {service} = t.context;
+
 	global.fetch = fakeFetch({
 		status: 404,
 		statusText: 'Not found'
@@ -106,6 +123,8 @@ test.serial('#makeApiRequest returns rejected promise for 4xx status codes', asy
 });
 
 test.serial('#makeApiRequest returns rejected promise for 5xx status codes', async t => {
+	const {service} = t.context;
+
 	global.fetch = fakeFetch({
 		status: 501
 	});
@@ -114,6 +133,8 @@ test.serial('#makeApiRequest returns rejected promise for 5xx status codes', asy
 });
 
 test.serial('#makeApiRequest makes networkRequest for provided url', async t => {
+	const {service} = t.context;
+
 	const url = 'https://api.github.com/resource';
 
 	global.fetch = fakeFetch();
@@ -124,6 +145,8 @@ test.serial('#makeApiRequest makes networkRequest for provided url', async t => 
 });
 
 test.serial('#makeApiRequest makes networkRequest with provided params', async t => {
+	const {service} = t.context;
+
 	const url = 'https://api.github.com/resource?user=sindre';
 
 	global.fetch = fakeFetch({

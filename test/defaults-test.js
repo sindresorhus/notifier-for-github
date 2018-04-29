@@ -1,7 +1,7 @@
 import test from 'ava';
 import * as defaults from '../source/lib/defaults';
 
-test('#getBadgeDefaultColor return array of 4 numbers between 0 and 255 inclusive', t => {
+test.serial('#getBadgeDefaultColor return array of 4 numbers between 0 and 255 inclusive', t => {
 	const color = defaults.getBadgeDefaultColor();
 
 	t.is(color.length, 4);
@@ -13,7 +13,7 @@ test('#getBadgeDefaultColor return array of 4 numbers between 0 and 255 inclusiv
 	}
 });
 
-test('#getBadgeErrorColor return array of 4 numbers not same as default', t => {
+test.serial('#getBadgeErrorColor return array of 4 numbers not same as default', t => {
 	const color = defaults.getBadgeErrorColor();
 	t.is(color.length, 4);
 	t.notDeepEqual(color, defaults.getBadgeDefaultColor);
@@ -25,7 +25,7 @@ test('#getBadgeErrorColor return array of 4 numbers not same as default', t => {
 	}
 });
 
-test('#getNotificationReasonText returns notification reasons', t => {
+test.serial('#getNotificationReasonText returns notification reasons', t => {
 	const reasons = [
 		'subscribed',
 		'manual',
@@ -53,7 +53,7 @@ test('#getNotificationReasonText returns notification reasons', t => {
 	}
 });
 
-test('#getErrorSymbol returns either "X" or "?" strings', t => {
+test.serial('#getErrorSymbol returns either "X" or "?" strings', t => {
 	t.is(defaults.getErrorSymbol({message: 'missing token'}), 'X');
 
 	const invalidMessages = [

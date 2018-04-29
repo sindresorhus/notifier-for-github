@@ -22,22 +22,18 @@ test.beforeEach(t => {
 
 	global.fetch = fakeFetch(t.context.defaultResponse);
 
-	t.context.service.closeNotification = sinon.stub().returns(Promise.resolve(true));
-	t.context.service.showNotifications = sinon.stub().returns(Promise.resolve(true));
-	t.context.service.playNotification = sinon.stub().returns(Promise.resolve(true));
-
-	browser.storage.local.get = sinon.stub().returns(Promise.resolve({}));
+	browser.storage.local.get = sinon.stub().resolves({});
 	browser.storage.local.remove = sinon.spy();
 	browser.storage.local.get.withArgs(t.context.notificationId)
-		.returns(Promise.resolve({
+		.resolves({
 			[t.context.notificationId]: t.context.notificationsUrl
-		}));
+		});
 
-	browser.tabs.query = sinon.stub().returns(Promise.resolve([]));
-	browser.tabs.create = sinon.stub().returns(Promise.resolve(true));
+	browser.tabs.query = sinon.stub().resolves([]);
+	browser.tabs.create = sinon.stub().resolves(true);
 
-	browser.notifications.create = sinon.stub().returns(Promise.resolve(t.context.notificationId));
-	browser.notifications.clear = sinon.stub().returns(Promise.resolve(true));
+	browser.notifications.create = sinon.stub().resolves(t.context.notificationId);
+	browser.notifications.clear = sinon.stub().resolves(true);
 
 	browser.permissions.contains = sinon.stub().yieldsAsync(true);
 
@@ -68,25 +64,23 @@ test.serial('#openNotification clears notification from queue by notificationId'
 });
 
 test.serial('#openNotification skips network requests if no url returned by local-store', async t => {
-	const {service, notificationId} = t.context;
+	const {service} = t.context;
 
-	await service.openNotification(notificationId);
+	await service.openNotification('random-notification-id');
 
 	t.is(global.fetch.callCount, 0);
 });
 
 test.serial('#openNotification closes notification if no url returned by local-store', async t => {
-	const {service, notificationId} = t.context;
+	const {service} = t.context;
 
-	await service.openNotification(notificationId);
+	await service.openNotification('random-notification-id');
 
-	t.is(service.closeNotification.callCount, 1);
+	t.is(browser.notifications.clear.callCount, 1);
 });
 
 test.serial('#openNotification opens tab with url from network response', async t => {
 	const {service, notificationId, notificationHtmlUrl} = t.context;
-
-	browser.tabs.create = sinon.spy();
 
 	await service.openNotification(notificationId);
 
@@ -96,9 +90,7 @@ test.serial('#openNotification opens tab with url from network response', async 
 test.serial('#openNotification closes notification on error', async t => {
 	const {service, notificationId} = t.context;
 
-	const reject = Promise.reject(new Error('error'));
-
-	global.fetch = sinon.stub().returns(reject);
+	global.fetch = sinon.stub().rejects('error');
 
 	await service.openNotification(notificationId);
 
@@ -108,9 +100,7 @@ test.serial('#openNotification closes notification on error', async t => {
 test.serial('#openNotification opens nofifications tab on error', async t => {
 	const {service, notificationId} = t.context;
 
-	const reject = Promise.reject(new Error('error'));
-
-	global.fetch = sinon.stub().returns(reject);
+	global.fetch = sinon.stub().rejects('error');
 
 	await service.openNotification(notificationId);
 
@@ -131,22 +121,6 @@ test.serial('#removeNotification removes notifications from storage', async t =>
 	await service.removeNotification(notificationId);
 
 	t.true(browser.storage.local.remove.calledWith(notificationId));
-});
-
-test.serial('#checkNotifications makes API request, shows notifications and play notification sound', async t => {
-	const {service} = t.context;
-	const response = {
-		json() {
-			return [];
-		}
-	};
-
-	global.fetch = fakeFetch(response);
-
-	await service.checkNotifications();
-
-	t.true(service.showNotifications.calledWith([]));
-	t.true(service.playNotification.calledWith([]));
 });
 
 test.serial('#getNotificationObject returns Notification object made via options and Defaults method call', t => {
@@ -223,16 +197,13 @@ test.serial('#showNotifications shows notifications', t => {
 
 	const notifications = oldNotifications.concat(newNotification);
 
-	service.filterNotificationsByDate = sinon.stub().returns(newNotification);
-
 	service.showNotifications(notifications, moment().subtract(7, 'days').format());
 
-	t.true(service.filterNotificationsByDate.called);
 	t.true(browser.notifications.create.called);
 	t.is(browser.notifications.create.callCount, 1);
 });
 
-test.serial('#playNotification plays notification sound', t => {
+test.serial('#playNotification plays notification sound', async t => {
 	const {service} = t.context;
 
 	/* eslint-disable camelcase */
@@ -241,17 +212,14 @@ test.serial('#playNotification plays notification sound', t => {
 	}];
 	/* eslint-enable camelcase */
 
-	service.filterNotificationsByDate = sinon.stub().returns(notifications);
+	browser.extension = sinon.stub();
+	browser.extension.getURL = sinon.stub();
 
-	browser.extension = sinon.stub().returns(null);
-	browser.extension.getURL = sinon.stub().returns(null);
+	global.Audio = sinon.stub();
+	global.Audio.prototype.play = sinon.stub();
 
-	global.Audio = sinon.stub().returns(null);
-	global.Audio.prototype.play = sinon.stub().returns(null);
+	await service.playNotification(notifications, moment().subtract(10, 'days').format());
 
-	service.playNotification(notifications, moment().subtract(7, 'days').format());
-
-	t.true(service.filterNotificationsByDate.called);
 	t.true(global.Audio.calledOnce);
 	t.true(global.Audio.prototype.play.calledOnce);
 });

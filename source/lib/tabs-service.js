@@ -39,4 +39,6 @@ export const openTab = async (url, tab) => {
 
 		return createTab(url);
 	}
+
+	return false;
 };

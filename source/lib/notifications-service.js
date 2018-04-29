@@ -13,17 +13,16 @@ export const closeNotification = async notificationId => {
 export const openNotification = async notificationId => {
 	const url = await localStore.get(notificationId);
 
+	await closeNotification(notificationId);
+
 	if (url) {
 		try {
 			const {json} = await makeApiRequest(url);
 			const targetUrl = json.message === 'Not Found' ? await getTabUrl() : json.html_url;
-			await openTab(targetUrl);
-			await closeNotification(notificationId);
+			return openTab(targetUrl);
 		} catch (error) {
-			await openTab(await getTabUrl());
+			return openTab(await getTabUrl());
 		}
-
-		return true;
 	}
 
 	return false;
@@ -43,12 +42,12 @@ export const getNotificationObject = notificationInfo => {
 	};
 };
 
-export const filterNotificationsByDate = (notifications, lastModified) => {
+export const filterNotificationsByDate = (notifications = [], lastModified) => {
 	const lastModifedTime = new Date(lastModified).getTime();
 	return notifications.filter(n => new Date(n.updated_at).getTime() > lastModifedTime);
 };
 
-export const showNotifications = (notifications, lastModified) => {
+export const showNotifications = (notifications = [], lastModified) => {
 	for (const notification of filterNotificationsByDate(notifications, lastModified)) {
 		const notificationId = `github-notifier-${notification.id}`;
 		const notificationObject = getNotificationObject(notification);
@@ -57,7 +56,7 @@ export const showNotifications = (notifications, lastModified) => {
 	}
 };
 
-export const playNotification = async (notifications, lastModified) => {
+export const playNotification = async (notifications = [], lastModified) => {
 	if (filterNotificationsByDate(notifications, lastModified).length > 0) {
 		const audio = new Audio();
 		audio.src = await browser.extension.getURL('/sounds/bell.ogg');
@@ -70,7 +69,7 @@ export const playNotification = async (notifications, lastModified) => {
 };
 
 export const checkNotifications = async lastModified => {
-	const notifications = await getNotifications(100);
+	const {notifications = []} = await getNotifications(100);
 	const {showDesktopNotif, playNotifSound} = await syncStore.getAll();
 
 	if (showDesktopNotif) {

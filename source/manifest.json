@@ -6,25 +6,28 @@
 	"manifest_version": 2,
 	"minimum_chrome_version": "65",
 	"icons": {
-		"128": "icon-128.png"
+		"128": "icon.png"
 	},
 	"permissions": [
-		"alarms"
+		"alarms",
+		"storage",
+		"contextMenus"
 	],
 	"optional_permissions": [
 		"tabs",
-		"notifications"
+		"notifications",
+		"http://*/*",
+		"https://*/*"
 	],
 	"background": {
 		"persistent": false,
 		"scripts": [
-			"dist/main.js"
+			"browser-polyfill.min.js",
+			"background.js"
 		]
 	},
 	"browser_action": {
-		"default_icon": {
-			"38": "icon-38.png"
-		}
+		"default_icon": "icon.png"
 	},
 	"options_ui": {
 		"page": "options.html",

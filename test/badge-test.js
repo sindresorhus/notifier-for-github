@@ -1,71 +1,68 @@
 import test from 'ava';
 import sinon from 'sinon';
-import util from './util';
 
-global.window = util.setupWindow();
-
-const Defaults = require('../extension/src/defaults.js');
-const Badge = require('../extension/src/badge.js');
+import * as defaults from '../source/lib/defaults';
+import {renderCount, renderError} from '../source/lib/badge';
 
 test.beforeEach(() => {
-	window.chrome.browserAction.setBadgeText = sinon.spy();
-	window.chrome.browserAction.setBadgeBackgroundColor = sinon.spy();
-	window.chrome.browserAction.setTitle = sinon.spy();
+	browser.browserAction.setBadgeText = sinon.spy();
+	browser.browserAction.setBadgeBackgroundColor = sinon.spy();
+	browser.browserAction.setTitle = sinon.spy();
 });
 
 test('#renderCount uses default badge color', t => {
 	const count = 42;
-	const color = Defaults.getBadgeDefaultColor();
+	const color = defaults.getBadgeDefaultColor();
 
-	Badge.renderCount(count);
+	renderCount(count);
 
 	const text = String(count);
-	const title = Defaults.defaultTitle;
+	const title = defaults.defaultTitle;
 
-	t.true(window.chrome.browserAction.setBadgeText.calledWith({text}));
-	t.true(window.chrome.browserAction.setBadgeBackgroundColor.calledWith({color}));
-	t.true(window.chrome.browserAction.setTitle.calledWith({title}));
+	t.true(browser.browserAction.setBadgeText.calledWith({text}));
+	t.true(browser.browserAction.setBadgeBackgroundColor.calledWith({color}));
+	t.true(browser.browserAction.setTitle.calledWith({title}));
 });
 
 test('#renderCount renders empty string when notifications count is 0', t => {
 	const count = 0;
-	const color = Defaults.getBadgeDefaultColor();
+	const color = defaults.getBadgeDefaultColor();
 
-	Badge.renderCount(count);
+	renderCount(count);
 
 	const text = '';
-	const title = Defaults.defaultTitle;
+	const title = defaults.defaultTitle;
 
-	t.true(window.chrome.browserAction.setBadgeText.calledWith({text}));
-	t.true(window.chrome.browserAction.setBadgeBackgroundColor.calledWith({color}));
-	t.true(window.chrome.browserAction.setTitle.calledWith({title}));
+	t.true(browser.browserAction.setBadgeText.calledWith({text}));
+	t.true(browser.browserAction.setBadgeBackgroundColor.calledWith({color}));
+	t.true(browser.browserAction.setTitle.calledWith({title}));
 });
 
 test('#renderCount renders infinity ("∞") string when notifications count > 9999', t => {
 	const count = 10000;
-	const color = Defaults.getBadgeDefaultColor();
+	const color = defaults.getBadgeDefaultColor();
 
-	Badge.renderCount(count);
+	renderCount(count);
 
 	const text = '∞';
-	const title = Defaults.defaultTitle;
+	const title = defaults.defaultTitle;
 
-	t.true(window.chrome.browserAction.setBadgeText.calledWith({text}));
-	t.true(window.chrome.browserAction.setBadgeBackgroundColor.calledWith({color}));
-	t.true(window.chrome.browserAction.setTitle.calledWith({title}));
+	t.true(browser.browserAction.setBadgeText.calledWith({text}));
+	t.true(browser.browserAction.setBadgeBackgroundColor.calledWith({color}));
+	t.true(browser.browserAction.setTitle.calledWith({title}));
 });
 
 test('#renderError uses error badge color', t => {
-	const color = Defaults.getBadgeErrorColor();
+	const color = defaults.getBadgeErrorColor();
 
-	Badge.renderError({});
+	renderError({});
 
 	const text = '?';
 	const title = 'Unknown error';
 
-	t.true(window.chrome.browserAction.setBadgeText.calledWith({text}));
-	t.true(window.chrome.browserAction.setBadgeBackgroundColor.calledWith({color}));
-	t.true(window.chrome.browserAction.setTitle.calledWith({title}));
+	t.true(browser.browserAction.setBadgeText.calledWith({text}));
+	t.true(browser.browserAction.setBadgeBackgroundColor.calledWith({color}));
+	t.true(browser.browserAction.setTitle.calledWith({title}));
 });
 
 test('#renderError uses proper messages for errors', t => {
@@ -77,12 +74,12 @@ test('#renderError uses proper messages for errors', t => {
 		'default'
 	];
 
-	messages.forEach(message => {
-		Badge.renderError({message});
-		const title = window.chrome.browserAction.setTitle.lastCall.args[0].title; // 'title' arg is 1st
+	for (const message of messages) {
+		renderError({message});
+		const title = browser.browserAction.setTitle.lastCall.args[0].title; // 'title' arg is 1st
 
-		t.is(title, Defaults.getErrorTitle({message}));
-	});
+		t.is(title, defaults.getErrorTitle({message}));
+	}
 });
 
 test('#renderError uses proper symbols for errors', t => {
@@ -97,13 +94,13 @@ test('#renderError uses proper symbols for errors', t => {
 		'default'
 	];
 
-	crossMarkSymbolMessages.forEach(message => {
-		Badge.renderError({message});
-		t.true(window.chrome.browserAction.setBadgeText.calledWith({text: 'X'}));
-	});
+	for (const message of crossMarkSymbolMessages) {
+		renderError({message});
+		t.true(browser.browserAction.setBadgeText.calledWith({text: 'X'}));
+	}
 
-	questionSymbolMessages.forEach(message => {
-		Badge.renderError({message});
-		t.true(window.chrome.browserAction.setBadgeText.calledWith({text: '?'}));
-	});
+	for (const message of questionSymbolMessages) {
+		renderError({message});
+		t.true(browser.browserAction.setBadgeText.calledWith({text: '?'}));
+	}
 });

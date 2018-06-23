@@ -1,32 +1,31 @@
 import test from 'ava';
+import * as defaults from '../source/lib/defaults';
 
-const Defaults = require('../extension/src/defaults.js');
-
-test('#getBadgeDefaultColor return array of 4 numbers between 0 and 255 inclusive', t => {
-	const color = Defaults.getBadgeDefaultColor();
+test.serial('#getBadgeDefaultColor return array of 4 numbers between 0 and 255 inclusive', t => {
+	const color = defaults.getBadgeDefaultColor();
 
 	t.is(color.length, 4);
 
-	color.forEach(n => {
+	for (const n of color) {
 		t.is(typeof n, 'number');
 		t.true(n >= 0);
 		t.true(n <= 255);
-	});
+	}
 });
 
-test('#getBadgeErrorColor return array of 4 numbers not same as default', t => {
-	const color = Defaults.getBadgeErrorColor();
+test.serial('#getBadgeErrorColor return array of 4 numbers not same as default', t => {
+	const color = defaults.getBadgeErrorColor();
 	t.is(color.length, 4);
-	t.notDeepEqual(color, Defaults.getBadgeDefaultColor);
+	t.notDeepEqual(color, defaults.getBadgeDefaultColor);
 
-	color.forEach(n => {
+	for (const n of color) {
 		t.is(typeof n, 'number');
 		t.true(n >= 0);
 		t.true(n <= 255);
-	});
+	}
 });
 
-test('#getNotificationReasonText returns notification reasons', t => {
+test.serial('#getNotificationReasonText returns notification reasons', t => {
 	const reasons = [
 		'subscribed',
 		'manual',
@@ -46,16 +45,16 @@ test('#getNotificationReasonText returns notification reasons', t => {
 	];
 
 	for (const reason of reasons) {
-		t.truthy(Defaults.getNotificationReasonText(reason));
+		t.truthy(defaults.getNotificationReasonText(reason));
 	}
 
 	for (const reason of invalidReasons) {
-		t.is(Defaults.getNotificationReasonText(reason), '');
+		t.is(defaults.getNotificationReasonText(reason), '');
 	}
 });
 
-test('#getErrorSymbol returns either "X" or "?" strings', t => {
-	t.is(Defaults.getErrorSymbol({message: 'missing token'}), 'X');
+test.serial('#getErrorSymbol returns either "X" or "?" strings', t => {
+	t.is(defaults.getErrorSymbol({message: 'missing token'}), 'X');
 
 	const invalidMessages = [
 		'no such thing',
@@ -65,6 +64,6 @@ test('#getErrorSymbol returns either "X" or "?" strings', t => {
 	];
 
 	for (const message of invalidMessages) {
-		t.is(Defaults.getErrorSymbol({message}), '?');
+		t.is(defaults.getErrorSymbol({message}), '?');
 	}
 });

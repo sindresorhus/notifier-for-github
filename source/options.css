@@ -1,0 +1,44 @@
+body {
+	min-width: 430px;
+}
+
+h3 {
+	margin: 0;
+	margin-bottom: 0.5rem;
+}
+
+:root hr {
+	margin: 1rem -1rem;
+	border: none;
+	border-bottom: solid #d3d3d3 1px;
+}
+
+.small {
+	font-size: 0.9em;
+}
+
+#notifications-permission-error {
+	color: #f44336;
+}
+
+input[type='checkbox'] {
+	vertical-align: -0.16em;
+}
+
+label {
+	display: block;
+	width: 100%;
+	margin: 0.5rem 0;
+}
+
+input[type='url'],
+input[type='text'] {
+	display: block;
+	width: 100%;
+	margin-top: 0.5rem;
+}
+
+input[type='url']:invalid,
+input[type='text']:invalid {
+	border-color: #f44336 !important;
+}

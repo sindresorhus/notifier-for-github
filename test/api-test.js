@@ -1,182 +1,159 @@
 import test from 'ava';
-import sinon from 'sinon';
-import util from './util';
-
-global.window = util.setupWindow();
-
-const API = require('../extension/src/api.js');
+import * as api from '../source/lib/api';
+import {fakeFetch} from './util';
 
 test.beforeEach(t => {
-	t.context.api = Object.assign({}, API);
+	t.context.service = Object.assign({}, api);
 
-	t.context.getDefaultResponse = overrides => {
-		const headersGet = sinon.stub();
-		headersGet.withArgs('X-Poll-Interval').returns('60');
-		headersGet.withArgs('Last-Modified').returns(null);
-		headersGet.withArgs('Link').returns(null);
-		return Object.assign({
-			status: 200,
-			headers: {
-				get: headersGet
-			},
-			json: () => Promise.resolve([])
-		}, overrides);
-	};
+	browser.storage.sync.set({
+		options: {
+			token: 'a1b2c3d4e5f6g7h8i9j0a1b2c3d4e5f6g7h8i9j0',
+			rootUrl: 'https://api.github.com/',
+			onlyParticipating: false
+		}
+	});
 });
 
-test('#buildQuery respects per_page option', t => {
-	const service = t.context.api;
+test.serial('#getApiUrl uses default endpoint if rootUrl matches GitHub', async t => {
+	const {service} = t.context;
 
-	t.is(service.buildQuery({perPage: 1}), 'per_page=1');
+	browser.storage.sync.set({
+		options: {
+			rootUrl: 'https://api.github.com/'
+		}
+	});
+
+	t.is(await service.getApiUrl(), 'https://api.github.com/');
 });
 
-test('#buildQuery respects useParticipatingCount setting', t => {
-	const service = t.context.api;
+test.serial('#getApiUrl uses custom endpoint if rootUrl is something other than GitHub', async t => {
+	const {service} = t.context;
 
-	window.localStorage.getItem = sinon.stub().returns(true);
+	browser.storage.sync.set({
+		options: {
+			rootUrl: 'https://something.com/'
+		}
+	});
 
-	t.is(service.buildQuery({perPage: 1}), 'per_page=1&participating=true');
+	t.is(await service.getApiUrl(), 'https://something.com/api/v3/');
 });
 
-test('#getApiUrl uses default endpoint if rootUrl matches GitHub', t => {
-	const service = t.context.api;
+test.serial('#getTabUrl uses default page if rootUrl matches GitHub', async t => {
+	const {service} = t.context;
 
-	window.localStorage.getItem = sinon.stub().returns('https://api.github.com/');
+	browser.storage.sync.set({
+		options: {
+			rootUrl: 'https://api.github.com/',
+			onlyParticipating: false
+		}
+	});
 
-	t.is(service.getApiUrl(), 'https://api.github.com/notifications');
+	t.is(await service.getTabUrl(), 'https://github.com/notifications');
 });
 
-test('#getApiUrl uses custom endpoint if rootUrl is something other than GitHub', t => {
-	const service = t.context.api;
+test.serial('#getTabUrl uses uses custom page if rootUrl is something other than GitHub', async t => {
+	const {service} = t.context;
 
-	window.localStorage.getItem = sinon.stub().returns('https://something.com/');
+	browser.storage.sync.set({
+		options: {
+			rootUrl: 'https://something.com/',
+			onlyParticipating: false
+		}
+	});
 
-	t.is(service.getApiUrl(), 'https://something.com/api/v3/notifications');
+	t.is(await service.getTabUrl(), 'https://something.com/notifications');
 });
 
-test('#getApiUrl uses query if passed', t => {
-	const service = t.context.api;
+test.serial('#getTabUrl respects useParticipatingCount setting', async t => {
+	const {service} = t.context;
 
-	window.localStorage.getItem = sinon.stub();
-	window.localStorage.getItem.withArgs('rootUrl').returns('https://api.github.com/');
-	window.localStorage.getItem.withArgs('useParticipatingCount').returns(false);
+	browser.storage.sync.set({
+		options: {
+			rootUrl: 'https://api.github.com/',
+			onlyParticipating: true
+		}
+	});
 
-	t.is(service.getApiUrl({perPage: 123}), 'https://api.github.com/notifications?per_page=123');
+	t.is(await service.getTabUrl(), 'https://github.com/notifications/participating');
 });
 
-test('#getTabUrl uses default page if rootUrl matches GitHub', t => {
-	const service = t.context.api;
+test.serial('#getNotificationCount promise resolves response of 0 notifications if Link header is null', async t => {
+	const {service} = t.context;
 
-	window.localStorage.getItem = sinon.stub();
-	window.localStorage.getItem.withArgs('rootUrl').returns('https://api.github.com/');
-	window.localStorage.getItem.withArgs('useParticipatingCount').returns(false);
+	global.fetch = fakeFetch();
 
-	t.is(service.getTabUrl(), 'https://github.com/notifications');
-});
-
-test('#getTabUrl uses uses custom page if rootUrl is something other than GitHub', t => {
-	const service = t.context.api;
-
-	window.localStorage.getItem = sinon.stub();
-	window.localStorage.getItem.withArgs('rootUrl').returns('https://something.com/');
-	window.localStorage.getItem.withArgs('useParticipatingCount').returns(false);
-
-	t.is(service.getTabUrl(), 'https://something.com/notifications');
-});
-
-test('#getTabUrl respects useParticipatingCount setting', t => {
-	const service = t.context.api;
-
-	window.localStorage.getItem = sinon.stub();
-	window.localStorage.getItem.withArgs('rootUrl').returns('https://api.github.com/');
-	window.localStorage.getItem.withArgs('useParticipatingCount').returns(true);
-
-	t.is(service.getTabUrl(), 'https://github.com/notifications/participating');
-});
-
-test('#parseApiResponse promise resolves response of 0 notifications if Link header is null', async t => {
-	const service = t.context.api;
-	const resp = t.context.getDefaultResponse();
-
-	const response = await service.parseApiResponse(resp);
+	const response = await service.getNotificationCount();
 	t.deepEqual(response, {count: 0, interval: 60, lastModified: null});
 });
 
-test('#parseApiResponse promise resolves response of N notifications according to Link header', async t => {
-	const service = t.context.api;
+test.serial('#getNotificationCount promise resolves response of N notifications according to Link header', async t => {
+	const {service} = t.context;
 
-	const rawResponse = t.context.getDefaultResponse();
-	const twoLinkHeader = `<https://api.github.com/resource?page=1>; rel="next"
-												 <https://api.github.com/resource?page=2>; rel="last"`;
-	rawResponse.headers.get.withArgs('Link').returns(twoLinkHeader);
+	global.fetch = fakeFetch({
+		headers: {
+			// eslint-disable-next-line quote-props
+			'Link': `<https://api.github.com/resource?page=1>; rel="next"
+							 <https://api.github.com/resource?page=2>; rel="last"`
+		}
+	});
 
-	const parsed = await service.parseApiResponse(rawResponse);
-	t.deepEqual(parsed, {count: 2, interval: 60, lastModified: null});
+	t.deepEqual(await service.getNotificationCount(), {count: 2, interval: 60, lastModified: null});
 
-	const threeLinkHeader = `<https://api.github.com/resource?page=1>; rel="next"
-													 <https://api.github.com/resource?page=2>; rel="next"
-													 <https://api.github.com/resource?page=3>; rel="last"`;
-	rawResponse.headers.get.withArgs('Link').returns(threeLinkHeader);
+	global.fetch = fakeFetch({
+		headers: {
+			// eslint-disable-next-line quote-props
+			'Link': `<https://api.github.com/resource?page=1>; rel="next"
+							 <https://api.github.com/resource?page=2>; rel="next"
+							 <https://api.github.com/resource?page=3>; rel="last"`
+		}
+	});
 
-	const nextParsedResponse = await service.parseApiResponse(rawResponse);
-	t.deepEqual(nextParsedResponse, {count: 3, interval: 60, lastModified: null});
+	t.deepEqual(await service.getNotificationCount(), {count: 3, interval: 60, lastModified: null});
 });
 
-test.serial('#parseApiResponse returns rejected promise for 4xx status codes', async t => {
-	const service = t.context.api;
-	const resp = t.context.getDefaultResponse({
+test.serial('#makeApiRequest returns rejected promise for 4xx status codes', async t => {
+	const {service} = t.context;
+
+	global.fetch = fakeFetch({
 		status: 404,
 		statusText: 'Not found'
 	});
 
-	await t.throws(service.parseApiResponse(resp), 'client error: 404 Not found');
+	await t.throws(service.makeApiRequest('notifications'), 'client error: 404 Not found');
 });
 
-test('#parseApiResponse returns rejected promise for 5xx status codes', async t => {
-	const service = t.context.api;
-	const resp = t.context.getDefaultResponse({
-		status: 500
+test.serial('#makeApiRequest returns rejected promise for 5xx status codes', async t => {
+	const {service} = t.context;
+
+	global.fetch = fakeFetch({
+		status: 501
 	});
 
-	await t.throws(service.parseApiResponse(resp), 'server error');
+	await t.throws(service.makeApiRequest('notifications'), 'server error');
 });
 
-test('#makeApiRequest makes networkRequest for provided url', t => {
-	const service = t.context.api;
+test.serial('#makeApiRequest makes networkRequest for provided url', async t => {
+	const {service} = t.context;
+
 	const url = 'https://api.github.com/resource';
 
-	window.fetch = sinon.stub().returns(Promise.resolve('response'));
-	window.localStorage.getItem = sinon.stub().returns('token');
+	global.fetch = fakeFetch();
 
-	service.makeApiRequest({url});
+	await service.makeApiRequest('resource');
 
-	t.true(window.fetch.calledWith(url));
+	t.true(global.fetch.calledWith(url));
 });
 
-test('#makeApiRequest makes networkRequest to #getApiUrl if no url provided in options', t => {
-	const service = t.context.api;
-	const url = 'https://api.github.com/resource';
+test.serial('#makeApiRequest makes networkRequest with provided params', async t => {
+	const {service} = t.context;
 
-	window.fetch = sinon.stub().returns(Promise.resolve('response'));
-	window.localStorage.getItem = sinon.stub().returns('token');
+	const url = 'https://api.github.com/resource?user=sindre';
 
-	service.makeApiRequest({url});
+	global.fetch = fakeFetch({
+		body: 'Sindre is awesome'
+	});
 
-	t.true(window.fetch.calledWith(url));
-});
+	await service.makeApiRequest('resource', {user: 'sindre'});
 
-test('#getNotifications returns promise that resolves to parsed API response', async t => {
-	const service = t.context.api;
-	service.getApiUrl = sinon.stub().returns('https://api.github.com/resource');
-
-	window.fetch = sinon.stub().returns(Promise.resolve(t.context.getDefaultResponse()));
-
-	service.makeApiRequest = sinon.spy(service, 'makeApiRequest');
-	service.parseApiResponse = sinon.spy(service, 'parseApiResponse');
-
-	const response = await service.getNotifications();
-
-	t.deepEqual(response, {count: 0, interval: 60, lastModified: null});
-	t.true(service.makeApiRequest.calledOnce);
-	t.true(service.parseApiResponse.calledOnce);
+	t.true(global.fetch.calledWith(url));
 });

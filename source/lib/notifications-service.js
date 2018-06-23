@@ -1,5 +1,5 @@
 import OptionsSync from 'webext-options-sync';
-import {makeApiRequest, getNotifications, getTabUrl} from '../lib/api';
+import {makeApiRequest, getNotifications, getTabUrl} from './api';
 import {getNotificationReasonText} from './defaults';
 import {openTab} from './tabs-service';
 import localStore from './local-store';
@@ -20,7 +20,7 @@ export const openNotification = async notificationId => {
 			const {json} = await makeApiRequest(url);
 			const targetUrl = json.message === 'Not Found' ? await getTabUrl() : json.html_url;
 			return openTab(targetUrl);
-		} catch (error) {
+		} catch (_) {
 			return openTab(await getTabUrl());
 		}
 	}
@@ -28,9 +28,7 @@ export const openNotification = async notificationId => {
 	return false;
 };
 
-export const removeNotification = async notificationId => {
-	return localStore.remove(notificationId);
-};
+export const removeNotification = async notificationId => localStore.remove(notificationId);
 
 export const getNotificationObject = notificationInfo => {
 	return {

@@ -9,13 +9,13 @@ test.beforeEach(t => {
 });
 
 test('#requestPermission returns Promise', t => {
-	const service = t.context.service;
+	const {service} = t.context;
 
 	t.true(service.requestPermission('tabs') instanceof Promise);
 });
 
 test.serial('#requestPermission Promise resolves to chrome.permissions.request callback value', async t => {
-	const service = t.context.service;
+	const {service} = t.context;
 
 	browser.permissions.request = sinon.stub().yieldsAsync(true);
 	const permissionGranted = service.requestPermission('tabs');
@@ -29,7 +29,7 @@ test.serial('#requestPermission Promise resolves to chrome.permissions.request c
 });
 
 test('#requestPermission returns rejected Promise if chrome.runtime.lastError is set', async t => {
-	const service = t.context.service;
+	const {service} = t.context;
 
 	await pImmediate();
 
@@ -42,13 +42,13 @@ test('#requestPermission returns rejected Promise if chrome.runtime.lastError is
 // --- Mostly same as #requestPermission except for naming ---
 
 test('#queryPermission returns Promise', t => {
-	const service = t.context.service;
+	const {service} = t.context;
 
 	t.true(service.queryPermission('tabs') instanceof Promise);
 });
 
 test.serial('#queryPermission Promise resolves to chrome.permissions.request callback value', async t => {
-	const service = t.context.service;
+	const {service} = t.context;
 
 	browser.permissions.contains = sinon.stub().yieldsAsync(true);
 	const permissionGranted = service.queryPermission('tabs');
@@ -62,7 +62,7 @@ test.serial('#queryPermission Promise resolves to chrome.permissions.request cal
 });
 
 test('#queryPermission returns rejected Promise if chrome.runtime.lastError is set', async t => {
-	const service = t.context.service;
+	const {service} = t.context;
 
 	await pImmediate();
 

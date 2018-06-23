@@ -40,5 +40,5 @@ input[type='text'] {
 
 input[type='url']:invalid,
 input[type='text']:invalid {
-	border-color: #f44336 !important;
+	border-color: #f44336;
 }

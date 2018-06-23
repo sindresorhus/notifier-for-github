@@ -1,5 +1,4 @@
 import OptionsSync from 'webext-options-sync';
-
 import localStore from './lib/local-store';
 import {openTab} from './lib/tabs-service';
 import {queryPermission, requestPermission} from './lib/permissions-service';

@@ -26,7 +26,7 @@ const update = async ({target: input}) => {
 	browser.runtime.sendMessage('update');
 };
 
-// TODO: find better way of doing this
+// TODO: Find better way of doing this
 for (const input of document.querySelectorAll('#options-form [name]')) {
 	input.addEventListener('change', update);
 }

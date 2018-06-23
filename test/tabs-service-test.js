@@ -8,7 +8,7 @@ test.beforeEach(t => {
 });
 
 test.serial('#createTab calls browser.tabs.create and returns promise', async t => {
-	const service = t.context.service;
+	const {service} = t.context;
 	const url = 'https://api.github.com/resource';
 
 	browser.tabs.create = sinon.stub().resolves({id: 1, url});
@@ -19,7 +19,7 @@ test.serial('#createTab calls browser.tabs.create and returns promise', async t 
 });
 
 test.serial('#updateTab calls browser.tabs.update and returns promise', async t => {
-	const service = t.context.service;
+	const {service} = t.context;
 	const url = 'https://api.github.com/resource';
 
 	browser.tabs.update = sinon.stub().resolves({id: 1, url});
@@ -31,7 +31,7 @@ test.serial('#updateTab calls browser.tabs.update and returns promise', async t 
 });
 
 test.serial('#queryTabs calls browser.tabs.query and returns promise', async t => {
-	const service = t.context.service;
+	const {service} = t.context;
 	const url = 'https://api.github.com/resource';
 	const tabs = [{id: 1, url}, {id: 2, url}];
 
@@ -43,7 +43,7 @@ test.serial('#queryTabs calls browser.tabs.query and returns promise', async t =
 });
 
 test.serial('#openTab updates with first matched tab', async t => {
-	const service = t.context.service;
+	const {service} = t.context;
 	const url = 'https://api.github.com/resource';
 	const firstTab = {id: 1, url};
 	const tabs = [firstTab, {id: 2, url}];
@@ -61,7 +61,7 @@ test.serial('#openTab updates with first matched tab', async t => {
 });
 
 test.serial('#openTab updates empty tab if provided', async t => {
-	const service = t.context.service;
+	const {service} = t.context;
 	const url = 'https://api.github.com/resource';
 	const emptyTab = {id: 0, url: 'chrome://newtab/'};
 

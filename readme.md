@@ -48,11 +48,6 @@ If you want to receive (useful) desktop notifications for any private repositori
 You can opt-in to receive desktop notifications for new notifications on GitHub. The extension checks for new notifications every minute, and displays notifications that arrived after the last check if there are any. Clicking on the notification opens it on GitHub.
 
 
-## Related
-
-Also available for [Safari](https://github.com/sindresorhus/notifier-for-github-safari).
-
-
 ## Maintainers
 
 - [Yury Solovyov](https://github.com/YurySolovyov)

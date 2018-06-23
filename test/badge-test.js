@@ -76,7 +76,7 @@ test('#renderError uses proper messages for errors', t => {
 
 	for (const message of messages) {
 		renderError({message});
-		const title = browser.browserAction.setTitle.lastCall.args[0].title; // 'title' arg is 1st
+		const {title} = browser.browserAction.setTitle.lastCall.args[0]; // 'title' arg is 1st
 
 		t.is(title, defaults.getErrorTitle({message}));
 	}

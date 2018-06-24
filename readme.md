@@ -51,6 +51,7 @@ You can opt-in to receive desktop notifications for new notifications on GitHub.
 ## Maintainers
 
 - [Yury Solovyov](https://github.com/YurySolovyov)
+- [Laxman Damera](https://github.com/notlmn)
 
 
 ## License

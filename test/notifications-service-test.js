@@ -13,6 +13,15 @@ test.beforeEach(t => {
 	t.context.notificationsUrl = 'https://github.com/user/notifications';
 	t.context.notificationHtmlUrl = `https://github.com/user/repo/issues/${t.context.notificationId}`;
 
+	t.context.defaultOptions = {
+		options: {
+			token: 'a1b2c3d4e5f6g7h8i9j0a1b2c3d4e5f6g7h8i9j0',
+			rootUrl: 'https://api.github.com/',
+			playNotifSound: true,
+			showDesktopNotif: true
+		}
+	};
+
 	t.context.defaultResponse = {
 		body: {
 			// eslint-disable-next-line camelcase
@@ -22,28 +31,25 @@ test.beforeEach(t => {
 
 	global.fetch = fakeFetch(t.context.defaultResponse);
 
-	browser.storage.local.get = sinon.stub().resolves({});
-	browser.storage.local.remove = sinon.spy();
+	browser.flush();
+
+	browser.storage.local.get.resolves({});
 	browser.storage.local.get.withArgs(t.context.notificationId)
 		.resolves({
 			[t.context.notificationId]: t.context.notificationsUrl
 		});
 
-	browser.tabs.query = sinon.stub().resolves([]);
-	browser.tabs.create = sinon.stub().resolves(true);
+	browser.tabs.query.resolves([]);
+	browser.tabs.create.resolves(true);
+	browser.tabs.update.resolves(true);
 
-	browser.notifications.create = sinon.stub().resolves(t.context.notificationId);
-	browser.notifications.clear = sinon.stub().resolves(true);
+	browser.notifications.create.resolves(t.context.notificationId);
+	browser.notifications.clear.resolves(true);
 
-	browser.permissions.contains = sinon.stub().yieldsAsync(true);
+	browser.permissions.contains.callsFake((p, cb) => cb(true));
 
-	browser.storage.sync.set({
-		options: {
-			token: 'a1b2c3d4e5f6g7h8i9j0a1b2c3d4e5f6g7h8i9j0',
-			rootUrl: 'https://api.github.com/',
-			playNotifSound: true,
-			showDesktopNotif: true
-		}
+	browser.storage.sync.get.callsFake((key, cb) => {
+		cb(t.context.defaultOptions);
 	});
 });
 

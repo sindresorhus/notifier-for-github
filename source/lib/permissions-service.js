@@ -6,7 +6,7 @@ export const queryPermission = async permission => {
 			permissions: [permission]
 		}, granted => {
 			if (browser.runtime.lastError) {
-				return reject(browser.runtime.lastError);
+				return reject(new Error(browser.runtime.lastError));
 			}
 
 			resolve(granted);
@@ -20,7 +20,7 @@ export const requestPermission = async permission => {
 			permissions: [permission]
 		}, granted => {
 			if (browser.runtime.lastError) {
-				return reject(browser.runtime.lastError);
+				return reject(new Error(browser.runtime.lastError));
 			}
 
 			// TODO: Are permissions sync?

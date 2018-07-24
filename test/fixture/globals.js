@@ -2,14 +2,11 @@
 // Instead of polluting node global scope with all possible properties from JSDOM, only required properties are added
 
 import {URLSearchParams} from 'url';
-import chromeStub from 'chrome-stub';
+import sinonChrome from 'sinon-chrome';
 
 global.URLSearchParams = URLSearchParams;
 
-global.browser = Object.assign({}, {
-	runtime: {},
-	notifications: {}
-}, chromeStub);
+global.browser = sinonChrome;
 
 // Required for `webext-options-sync`
 global.chrome = global.browser;

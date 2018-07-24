@@ -1,26 +1,27 @@
 import test from 'ava';
-import sinon from 'sinon';
 import pImmediate from 'p-immediate';
 
 import * as permissions from '../source/lib/permissions-service';
 
 test.beforeEach(t => {
 	t.context.service = Object.assign({}, permissions);
+
+	browser.runtime.lastError = null;
 });
 
-test('#requestPermission returns Promise', t => {
+test.serial('#requestPermission returns Promise', t => {
 	const {service} = t.context;
 
 	t.true(service.requestPermission('tabs') instanceof Promise);
 });
 
-test.serial('#requestPermission Promise resolves to chrome.permissions.request callback value', async t => {
+test.serial('#requestPermission Promise resolves to browser.permissions.request callback value', async t => {
 	const {service} = t.context;
 
-	browser.permissions.request = sinon.stub().yieldsAsync(true);
+	browser.permissions.request.callsFake((p, cb) => cb(true));
 	const permissionGranted = service.requestPermission('tabs');
 
-	browser.permissions.request = sinon.stub().yieldsAsync(false);
+	browser.permissions.request.callsFake((p, cb) => cb(false));
 	const permissionDenied = service.requestPermission('tabs');
 
 	const response = await Promise.all([permissionGranted, permissionDenied]);
@@ -28,32 +29,37 @@ test.serial('#requestPermission Promise resolves to chrome.permissions.request c
 	t.deepEqual(response, [true, false]);
 });
 
-test('#requestPermission returns rejected Promise if chrome.runtime.lastError is set', async t => {
+test.serial('#requestPermission returns rejected Promise if browser.runtime.lastError is set', async t => {
 	const {service} = t.context;
 
 	await pImmediate();
 
-	browser.permissions.request = sinon.stub().yieldsAsync();
-	browser.runtime.lastError = new Error('#requestPermission failed');
+	browser.permissions.request.callsFake((p, cb) => cb());
+	browser.runtime.lastError = '#requestPermission failed';
 
-	await t.throws(service.requestPermission('tabs'));
+	try {
+		await service.requestPermission('tabs');
+		t.fail();
+	} catch (error) {
+		t.pass();
+	}
 });
 
 // --- Mostly same as #requestPermission except for naming ---
 
-test('#queryPermission returns Promise', t => {
+test.serial('#queryPermission returns Promise', t => {
 	const {service} = t.context;
 
 	t.true(service.queryPermission('tabs') instanceof Promise);
 });
 
-test.serial('#queryPermission Promise resolves to chrome.permissions.request callback value', async t => {
+test.serial('#queryPermission Promise resolves to browser.permissions.request callback value', async t => {
 	const {service} = t.context;
 
-	browser.permissions.contains = sinon.stub().yieldsAsync(true);
+	browser.permissions.contains.callsFake((p, cb) => cb(true));
 	const permissionGranted = service.queryPermission('tabs');
 
-	browser.permissions.contains = sinon.stub().yieldsAsync(false);
+	browser.permissions.contains.callsFake((p, cb) => cb(false));
 	const permissionDenied = service.queryPermission('tabs');
 
 	const response = await Promise.all([permissionGranted, permissionDenied]);
@@ -61,13 +67,18 @@ test.serial('#queryPermission Promise resolves to chrome.permissions.request cal
 	t.deepEqual(response, [true, false]);
 });
 
-test('#queryPermission returns rejected Promise if chrome.runtime.lastError is set', async t => {
+test.serial('#queryPermission returns rejected Promise if browser.runtime.lastError is set', async t => {
 	const {service} = t.context;
 
 	await pImmediate();
 
-	browser.permissions.contains = sinon.stub().yieldsAsync();
-	browser.runtime.lastError = new Error('#queryPermission failed');
+	browser.permissions.contains.callsFake((p, cb) => cb());
+	browser.runtime.lastError = '#queryPermission failed';
 
-	await t.throws(service.queryPermission('tabs'));
+	try {
+		await service.queryPermission('tabs');
+		t.fail();
+	} catch (error) {
+		t.pass();
+	}
 });

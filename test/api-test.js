@@ -4,23 +4,30 @@ import {fakeFetch} from './util';
 
 test.beforeEach(t => {
 	t.context.service = Object.assign({}, api);
-
-	browser.storage.sync.set({
+	t.context.defaultOptions = {
 		options: {
 			token: 'a1b2c3d4e5f6g7h8i9j0a1b2c3d4e5f6g7h8i9j0',
 			rootUrl: 'https://api.github.com/',
 			onlyParticipating: false
 		}
+	};
+
+	browser.flush();
+
+	browser.storage.sync.get.callsFake((key, cb) => {
+		cb(t.context.defaultOptions);
 	});
 });
 
 test.serial('#getApiUrl uses default endpoint if rootUrl matches GitHub', async t => {
 	const {service} = t.context;
 
-	browser.storage.sync.set({
-		options: {
-			rootUrl: 'https://api.github.com/'
-		}
+	browser.storage.sync.get.callsFake((key, cb) => {
+		cb({
+			options: {
+				rootUrl: 'https://api.github.com/'
+			}
+		});
 	});
 
 	t.is(await service.getApiUrl(), 'https://api.github.com/');
@@ -29,10 +36,12 @@ test.serial('#getApiUrl uses default endpoint if rootUrl matches GitHub', async 
 test.serial('#getApiUrl uses custom endpoint if rootUrl is something other than GitHub', async t => {
 	const {service} = t.context;
 
-	browser.storage.sync.set({
-		options: {
-			rootUrl: 'https://something.com/'
-		}
+	browser.storage.sync.get.callsFake((storageName, callback) => {
+		callback({
+			options: {
+				rootUrl: 'https://something.com/'
+			}
+		});
 	});
 
 	t.is(await service.getApiUrl(), 'https://something.com/api/v3/');
@@ -41,11 +50,13 @@ test.serial('#getApiUrl uses custom endpoint if rootUrl is something other than 
 test.serial('#getTabUrl uses default page if rootUrl matches GitHub', async t => {
 	const {service} = t.context;
 
-	browser.storage.sync.set({
-		options: {
-			rootUrl: 'https://api.github.com/',
-			onlyParticipating: false
-		}
+	browser.storage.sync.get.callsFake((storageName, callback) => {
+		callback({
+			options: {
+				rootUrl: 'https://api.github.com/',
+				onlyParticipating: false
+			}
+		});
 	});
 
 	t.is(await service.getTabUrl(), 'https://github.com/notifications');
@@ -54,11 +65,13 @@ test.serial('#getTabUrl uses default page if rootUrl matches GitHub', async t =>
 test.serial('#getTabUrl uses uses custom page if rootUrl is something other than GitHub', async t => {
 	const {service} = t.context;
 
-	browser.storage.sync.set({
-		options: {
-			rootUrl: 'https://something.com/',
-			onlyParticipating: false
-		}
+	browser.storage.sync.get.callsFake((storageName, callback) => {
+		callback({
+			options: {
+				rootUrl: 'https://something.com/',
+				onlyParticipating: false
+			}
+		});
 	});
 
 	t.is(await service.getTabUrl(), 'https://something.com/notifications');
@@ -67,11 +80,13 @@ test.serial('#getTabUrl uses uses custom page if rootUrl is something other than
 test.serial('#getTabUrl respects useParticipatingCount setting', async t => {
 	const {service} = t.context;
 
-	browser.storage.sync.set({
-		options: {
-			rootUrl: 'https://api.github.com/',
-			onlyParticipating: true
-		}
+	browser.storage.sync.get.callsFake((storageName, callback) => {
+		callback({
+			options: {
+				rootUrl: 'https://api.github.com/',
+				onlyParticipating: true
+			}
+		});
 	});
 
 	t.is(await service.getTabUrl(), 'https://github.com/notifications/participating');

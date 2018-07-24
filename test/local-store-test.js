@@ -1,15 +1,16 @@
 import test from 'ava';
-import sinon from 'sinon';
 import localStore from '../source/lib/local-store';
 
 test.beforeEach(t => {
+	browser.flush();
+
 	t.context.service = Object.assign({}, localStore);
 });
 
 test.serial('#set calls StorageArea#set', async t => {
 	const {service} = t.context;
 
-	browser.storage.local.set = sinon.stub().resolves(true);
+	browser.storage.local.set.resolves(true);
 
 	await service.set('name', 'notifier-for-github');
 
@@ -19,7 +20,7 @@ test.serial('#set calls StorageArea#set', async t => {
 test.serial('#get calls StorageArea#get', async t => {
 	const {service} = t.context;
 
-	browser.storage.local.get = sinon.stub().resolves({});
+	browser.storage.local.get.resolves({});
 
 	await service.get('name');
 
@@ -29,8 +30,6 @@ test.serial('#get calls StorageArea#get', async t => {
 test.serial('#remove calls StorageArea#remove', async t => {
 	const {service} = t.context;
 
-	browser.storage.local.remove = sinon.spy();
-
 	await service.remove('name');
 
 	t.true(browser.storage.local.remove.calledWith('name'));
@@ -38,8 +37,6 @@ test.serial('#remove calls StorageArea#remove', async t => {
 
 test.serial('#clear calls StorageArea#clear', async t => {
 	const {service} = t.context;
-
-	browser.storage.local.clear = sinon.spy();
 
 	await service.clear('name');
 

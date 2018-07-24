@@ -1,16 +1,13 @@
 import test from 'ava';
-import sinon from 'sinon';
 
 import * as defaults from '../source/lib/defaults';
 import {renderCount, renderError} from '../source/lib/badge';
 
 test.beforeEach(() => {
-	browser.browserAction.setBadgeText = sinon.spy();
-	browser.browserAction.setBadgeBackgroundColor = sinon.spy();
-	browser.browserAction.setTitle = sinon.spy();
+	browser.flush();
 });
 
-test('#renderCount uses default badge color', t => {
+test.serial('#renderCount uses default badge color', t => {
 	const count = 42;
 	const color = defaults.getBadgeDefaultColor();
 
@@ -24,7 +21,7 @@ test('#renderCount uses default badge color', t => {
 	t.true(browser.browserAction.setTitle.calledWith({title}));
 });
 
-test('#renderCount renders empty string when notifications count is 0', t => {
+test.serial('#renderCount renders empty string when notifications count is 0', t => {
 	const count = 0;
 	const color = defaults.getBadgeDefaultColor();
 
@@ -38,7 +35,7 @@ test('#renderCount renders empty string when notifications count is 0', t => {
 	t.true(browser.browserAction.setTitle.calledWith({title}));
 });
 
-test('#renderCount renders infinity ("∞") string when notifications count > 9999', t => {
+test.serial('#renderCount renders infinity ("∞") string when notifications count > 9999', t => {
 	const count = 10000;
 	const color = defaults.getBadgeDefaultColor();
 
@@ -52,7 +49,7 @@ test('#renderCount renders infinity ("∞") string when notifications count > 99
 	t.true(browser.browserAction.setTitle.calledWith({title}));
 });
 
-test('#renderError uses error badge color', t => {
+test.serial('#renderError uses error badge color', t => {
 	const color = defaults.getBadgeErrorColor();
 
 	renderError({});
@@ -65,7 +62,7 @@ test('#renderError uses error badge color', t => {
 	t.true(browser.browserAction.setTitle.calledWith({title}));
 });
 
-test('#renderError uses proper messages for errors', t => {
+test.serial('#renderError uses proper messages for errors', t => {
 	const messages = [
 		'missing token',
 		'server error',
@@ -82,7 +79,7 @@ test('#renderError uses proper messages for errors', t => {
 	}
 });
 
-test('#renderError uses proper symbols for errors', t => {
+test.serial('#renderError uses proper symbols for errors', t => {
 	const crossMarkSymbolMessages = [
 		'missing token'
 	];

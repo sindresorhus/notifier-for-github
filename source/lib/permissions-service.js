@@ -1,5 +1,3 @@
-import localStore from './local-store';
-
 export const queryPermission = async permission => {
 	const granted = await browser.permissions.contains({permissions: [permission]});
 

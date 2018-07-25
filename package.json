@@ -1,11 +1,12 @@
 {
 	"private": true,
 	"scripts": {
-		"release": "npm run build && webstore upload --source=extension --auto-publish",
 		"lint": "xo && stylelint --fix source/*.css",
 		"test": "npm run lint && cross-env BABEL_ENV=testing ava --verbose && npm run build",
 		"build": "webpack --mode=production",
-		"watch": "webpack --mode=development --watch"
+		"watch": "webpack --mode=development --watch",
+		"release": "npm run build && npm run update-version && webstore upload --source=distribution --auto-publish",
+		"update-version": "VERSION=$(utc-version); echo $VERSION; dot-json distribution/manifest.json version $VERSION"
 	},
 	"devDependencies": {
 		"ava": "^0.25.0",
@@ -15,6 +16,7 @@
 		"chrome-webstore-upload-cli": "^1.1.1",
 		"copy-webpack-plugin": "^4.5.2",
 		"cross-env": "^5.2.0",
+		"dot-json": "^1.0.4",
 		"esm": "^3.0.72",
 		"lodash.merge": "^4.6.1",
 		"moment": "^2.22.2",
@@ -24,6 +26,7 @@
 		"stylelint": "^9.3.0",
 		"stylelint-config-xo": "^0.9.0",
 		"uglifyjs-webpack-plugin": "^1.2.7",
+		"utc-version": "^1.1.0",
 		"webext-options-sync": "^0.15.2",
 		"webextension-polyfill": "^0.3.0",
 		"webpack": "^4.16.2",

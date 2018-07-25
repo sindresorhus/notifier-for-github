@@ -27,7 +27,7 @@
 		]
 	},
 	"browser_action": {
-		"default_icon": "icon.png"
+		"default_icon": "icon-toolbar.png"
 	},
 	"options_ui": {
 		"page": "options.html",

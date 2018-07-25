@@ -47,7 +47,7 @@ test.serial('#openTab updates with first matched tab', async t => {
 	const firstTab = {id: 1, url};
 	const tabs = [firstTab, {id: 2, url}];
 
-	browser.permissions.contains.callsFake((p, cb) => cb(true));
+	browser.permissions.contains.resolves(true);
 	browser.tabs.query.resolves(tabs);
 
 	await service.openTab(url);
@@ -63,7 +63,7 @@ test.serial('#openTab updates empty tab if provided', async t => {
 	const url = 'https://api.github.com/resource';
 	const emptyTab = {id: 0, url: 'chrome://newtab/'};
 
-	browser.permissions.contains.callsFake((p, cb) => cb(true));
+	browser.permissions.contains.resolves(true);
 	browser.tabs.query.resolves([]);
 
 	await service.openTab(url, emptyTab);

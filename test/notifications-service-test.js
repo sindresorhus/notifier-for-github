@@ -46,7 +46,7 @@ test.beforeEach(t => {
 	browser.notifications.create.resolves(t.context.notificationId);
 	browser.notifications.clear.resolves(true);
 
-	browser.permissions.contains.callsFake((p, cb) => cb(true));
+	browser.permissions.contains.resolves(true);
 
 	browser.storage.sync.get.callsFake((key, cb) => {
 		cb(t.context.defaultOptions);

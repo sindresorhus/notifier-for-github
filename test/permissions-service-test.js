@@ -18,10 +18,10 @@ test.serial('#requestPermission returns Promise', t => {
 test.serial('#requestPermission Promise resolves to browser.permissions.request callback value', async t => {
 	const {service} = t.context;
 
-	browser.permissions.request.callsFake((p, cb) => cb(true));
+	browser.permissions.request.resolves(true);
 	const permissionGranted = service.requestPermission('tabs');
 
-	browser.permissions.request.callsFake((p, cb) => cb(false));
+	browser.permissions.request.resolves(false);
 	const permissionDenied = service.requestPermission('tabs');
 
 	const response = await Promise.all([permissionGranted, permissionDenied]);
@@ -34,7 +34,7 @@ test.serial('#requestPermission returns rejected Promise if browser.runtime.last
 
 	await pImmediate();
 
-	browser.permissions.request.callsFake((p, cb) => cb());
+	browser.permissions.request.resolves();
 	browser.runtime.lastError = '#requestPermission failed';
 
 	try {
@@ -56,10 +56,10 @@ test.serial('#queryPermission returns Promise', t => {
 test.serial('#queryPermission Promise resolves to browser.permissions.request callback value', async t => {
 	const {service} = t.context;
 
-	browser.permissions.contains.callsFake((p, cb) => cb(true));
+	browser.permissions.contains.resolves(true);
 	const permissionGranted = service.queryPermission('tabs');
 
-	browser.permissions.contains.callsFake((p, cb) => cb(false));
+	browser.permissions.contains.resolves(false);
 	const permissionDenied = service.queryPermission('tabs');
 
 	const response = await Promise.all([permissionGranted, permissionDenied]);
@@ -72,7 +72,7 @@ test.serial('#queryPermission returns rejected Promise if browser.runtime.lastEr
 
 	await pImmediate();
 
-	browser.permissions.contains.callsFake((p, cb) => cb());
+	browser.permissions.contains.resolves();
 	browser.runtime.lastError = '#queryPermission failed';
 
 	try {

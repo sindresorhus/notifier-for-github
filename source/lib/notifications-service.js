@@ -67,7 +67,7 @@ export const playNotification = async (notifications = [], lastModified) => {
 };
 
 export const checkNotifications = async lastModified => {
-	const {notifications = []} = await getNotifications(100);
+	const notifications = await getNotifications(100) || [];
 	const {showDesktopNotif, playNotifSound} = await syncStore.getAll();
 
 	if (showDesktopNotif) {

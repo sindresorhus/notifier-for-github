@@ -10,14 +10,11 @@
 	},
 	"permissions": [
 		"alarms",
-		"storage",
-		"contextMenus"
+		"storage"
 	],
 	"optional_permissions": [
 		"tabs",
-		"notifications",
-		"http://*/*",
-		"https://*/*"
+		"notifications"
 	],
 	"background": {
 		"persistent": false,

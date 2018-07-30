@@ -4,6 +4,16 @@ import * as tabs from '../source/lib/tabs-service';
 
 test.beforeEach(t => {
 	t.context.service = Object.assign({}, tabs);
+
+	t.context.defaultOptions = {
+		options: {
+			newTabAlways: false
+		}
+	};
+
+	browser.storage.sync.get.callsFake((key, cb) => {
+		cb(t.context.defaultOptions);
+	});
 });
 
 test.serial('#createTab calls browser.tabs.create and returns promise', async t => {
@@ -67,6 +77,28 @@ test.serial('#openTab updates empty tab if provided', async t => {
 	browser.tabs.query.resolves([]);
 
 	await service.openTab(url, emptyTab);
+
+	t.deepEqual(browser.tabs.update.lastCall.args, [null, {
+		url,
+		active: false
+	}]);
+});
+
+test.serial('#openTab opens new tab even if matching tab exists', async t => {
+	const {service} = t.context;
+	const url = 'https://api.github.com/resource';
+	const tabs = [{id: 1, url}];
+
+	browser.permissions.contains.resolves(true);
+	browser.tabs.query.resolves(tabs);
+
+	t.context.defaultOptions = {
+		options: {
+			newTabAlways: true
+		}
+	};
+
+	await service.openTab(url);
 
 	t.deepEqual(browser.tabs.update.lastCall.args, [null, {
 		url,

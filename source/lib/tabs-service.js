@@ -1,4 +1,7 @@
+import OptionsSync from 'webext-options-sync';
 import {queryPermission} from './permissions-service';
+
+const syncStore = new OptionsSync();
 
 export const createTab = async url => {
 	if (browser.runtime.lastError) {
@@ -26,6 +29,10 @@ export const queryTabs = async url => {
 };
 
 export const openTab = async (url, tab) => {
+	const {newTabAlways} = await syncStore.getAll();
+	if (newTabAlways === true) {
+		return createTab(url);
+	}
 	if (await queryPermission('tabs')) {
 		const tabs = await queryTabs(url);
 

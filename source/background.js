@@ -14,7 +14,8 @@ new OptionsSync().define({
 		rootUrl: 'https://api.github.com/',
 		playNotifSound: false,
 		showDesktopNotif: false,
-		onlyParticipating: false
+		onlyParticipating: false,
+		newTabAlways: false
 	},
 	migrations: [
 		OptionsSync.migrations.removeUnused
@@ -79,16 +80,19 @@ async function update() {
 }
 
 const handleBrowserActionClick = async () => {
-	const alreadyGranted = await queryPermission('tabs');
+	const {newTabAlways} = await syncStore.getAll();
+	if (!newTabAlways) {
+		const alreadyGranted = await queryPermission('tabs');
 
-	if (!alreadyGranted) {
-		try {
-			const granted = await requestPermission('tabs');
-			if (!granted) {
+		if (!alreadyGranted) {
+			try {
+				const granted = await requestPermission('tabs');
+				if (!granted) {
+					return;
+				}
+			} catch (error) {
 				return;
 			}
-		} catch (error) {
-			return;
 		}
 	}
 

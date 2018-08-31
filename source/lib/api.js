@@ -79,6 +79,7 @@ export const getNotificationResponse = async (maxItems = 100) => {
 			per_page: maxItems // eslint-disable-line camelcase
 		});
 	}
+	
 	return makeApiRequest('notifications', {
 		per_page: maxItems // eslint-disable-line camelcase
 	});
@@ -118,6 +119,7 @@ export const getNotificationCount = async () => {
 	});
 
 	const count = Number(lastlink.slice(lastlink.lastIndexOf('page=') + 5, lastlink.lastIndexOf('>')));
+
 	return {
 		count,
 		interval,

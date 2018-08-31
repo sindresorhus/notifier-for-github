@@ -1,4 +1,5 @@
 import OptionsSync from 'webext-options-sync';
+import localStore from './local-store';
 
 const syncStore = new OptionsSync();
 
@@ -78,7 +79,7 @@ export const getNotificationResponse = async (maxItems = 100) => {
 			per_page: maxItems // eslint-disable-line camelcase
 		});
 	}
-
+	
 	return makeApiRequest('notifications', {
 		per_page: maxItems // eslint-disable-line camelcase
 	});
@@ -90,7 +91,16 @@ export const getNotifications = async maxItems => {
 };
 
 export const getNotificationCount = async () => {
-	const {headers, json: notifications} = await getNotificationResponse(1);
+	const {headers, json: notifications} = await getNotificationResponse(100);
+
+	// store notification urls
+	for (let n of notifications.values()) {
+		var pullIdParts = n.subject.url.split('/').slice(-4)
+		pullIdParts.splice(2, 1, 'pull')  // hack to get url to match the links clicked in /notifications
+		let pullId = pullIdParts.join('/')
+		console.log(`pushing to local storage: ${pullId}`)
+		localStore.set(pullId, true)
+	}
 
 	const interval = Number(headers.get('X-Poll-Interval'));
 	const lastModified = headers.get('Last-Modified');

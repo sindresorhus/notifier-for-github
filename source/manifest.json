@@ -1,5 +1,5 @@
 {
-	"name": "Notifier for GitHub",
+	"name": "Notifier for GitHub Custom",
 	"version": "3.0.5",
 	"description": "Displays your GitHub notifications unread count",
 	"homepage_url": "https://github.com/sindresorhus/notifier-for-github",

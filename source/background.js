@@ -3,7 +3,7 @@ import localStore from './lib/local-store';
 import {openTab} from './lib/tabs-service';
 import {queryPermission, requestPermission} from './lib/permissions-service';
 import {getNotificationCount, getTabUrl} from './lib/api';
-import {renderCount, renderError, renderWarning} from './lib/badge';
+import {renderCount, renderError, renderWarning, getCurrentCount} from './lib/badge';
 import {checkNotifications, openNotification, removeNotification} from './lib/notifications-service';
 
 const syncStore = new OptionsSync();
@@ -49,6 +49,7 @@ const handleLastModified = async date => {
 };
 
 const handleNotificationsResponse = response => {
+	console.log(response)
 	const {count, interval, lastModified} = response;
 
 	scheduleAlaram(interval);
@@ -115,6 +116,23 @@ function handleConnectionStatus(event) {
 
 window.addEventListener('online', handleConnectionStatus);
 window.addEventListener('offline', handleConnectionStatus);
+
+function handlePageShow(tabId, changeInfo, tab) {
+	if (changeInfo.status === 'complete') {
+		if (tab.url.slice(0, 19) === 'https://github.com/') {
+			let pullId = tab.url.split('/').slice(-4).join('/')
+			let notificationState = localStore.get(pullId);
+			notificationState.then(state => {
+				if (state) {
+					getCurrentCount().then(count => renderCount(count - 1))
+					localStore.remove(pullId)
+				}
+			})
+		}
+	}
+}
+
+browser.tabs.onUpdated.addListener(handlePageShow)
 
 browser.alarms.create({when: Date.now() + 2000});
 browser.alarms.onAlarm.addListener(update);

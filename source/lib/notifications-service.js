@@ -28,7 +28,9 @@ export const openNotification = async notificationId => {
 	return false;
 };
 
-export const removeNotification = async notificationId => localStore.remove(notificationId);
+export const removeNotification = async notificationId => {
+	localStore.remove(notificationId);
+}
 
 export const getNotificationObject = notificationInfo => {
 	return {

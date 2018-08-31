@@ -24,6 +24,10 @@ const getErrorData = error => {
 	return {symbol, title};
 };
 
+export const getCurrentCount = () => {
+	return browser.browserAction.getBadgeText({})
+}
+
 export const renderCount = count => {
 	const color = defaults.getBadgeDefaultColor();
 	const title = defaults.defaultTitle;

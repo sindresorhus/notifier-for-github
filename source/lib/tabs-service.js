@@ -1,5 +1,5 @@
 import OptionsSync from 'webext-options-sync';
-import {queryPermission} from './permissions-service';
+import {queryPermission, requestPermission} from './permissions-service';
 
 const syncStore = new OptionsSync();
 
@@ -30,10 +30,15 @@ export const queryTabs = async url => {
 
 export const openTab = async (url, tab) => {
 	const {newTabAlways} = await syncStore.getAll();
-	if (newTabAlways === true) {
-		return createTab(url);
-	}
-	if (await queryPermission('tabs')) {
+	if (!newTabAlways) {
+		const alreadyGranted = await queryPermission('tabs');
+		if (!alreadyGranted) {
+			const granted = await requestPermission('tabs');
+			if (!granted) {
+				return;
+			}
+		}
+
 		const tabs = await queryTabs(url);
 
 		if (tabs && tabs.length > 0) {
@@ -43,9 +48,7 @@ export const openTab = async (url, tab) => {
 		if (tab && (tab.url === 'chrome://newtab/' || tab.href === 'about:home')) {
 			return updateTab(null, {url, active: false});
 		}
-
-		return createTab(url);
 	}
 
-	return false;
+	return createTab(url);
 };

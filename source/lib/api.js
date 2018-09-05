@@ -17,10 +17,10 @@ export const getApiUrl = async () => {
 	const {rootUrl} = await syncStore.getAll();
 
 	if (/(^(https:\/\/)?(api\.)?github\.com)/.test(rootUrl)) {
-		return 'https://api.github.com/';
+		return 'https://api.github.com';
 	}
 
-	return `${rootUrl}api/v3/`;
+	return `${rootUrl}api/v3`;
 };
 
 export const getParsedUrl = async (endpoint, params) => {
@@ -73,13 +73,13 @@ export const getNotificationResponse = async (maxItems = 100) => {
 	const {onlyParticipating} = await syncStore.getAll();
 
 	if (onlyParticipating) {
-		return makeApiRequest('notifications', {
+		return makeApiRequest('/notifications', {
 			participating: onlyParticipating,
 			per_page: maxItems // eslint-disable-line camelcase
 		});
 	}
 
-	return makeApiRequest('notifications', {
+	return makeApiRequest('/notifications', {
 		per_page: maxItems // eslint-disable-line camelcase
 	});
 };

@@ -17,7 +17,7 @@ export const openNotification = async notificationId => {
 
 	if (url) {
 		try {
-			const {json} = await makeApiRequest(url);
+			const {json} = await makeApiRequest(new URL(url).pathname);
 			const targetUrl = json.message === 'Not Found' ? await getTabUrl() : json.html_url;
 			return openTab(targetUrl);
 		} catch (_) {

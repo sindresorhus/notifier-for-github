@@ -1,7 +1,7 @@
 import OptionsSync from 'webext-options-sync';
 import localStore from './lib/local-store';
 import {openTab} from './lib/tabs-service';
-import {queryPermission, requestPermission} from './lib/permissions-service';
+import {queryPermission} from './lib/permissions-service';
 import {getNotificationCount, getTabUrl} from './lib/api';
 import {renderCount, renderError, renderWarning} from './lib/badge';
 import {checkNotifications, openNotification, removeNotification} from './lib/notifications-service';
@@ -80,22 +80,6 @@ async function update() {
 }
 
 const handleBrowserActionClick = async () => {
-	const {newTabAlways} = await syncStore.getAll();
-	if (!newTabAlways) {
-		const alreadyGranted = await queryPermission('tabs');
-
-		if (!alreadyGranted) {
-			try {
-				const granted = await requestPermission('tabs');
-				if (!granted) {
-					return;
-				}
-			} catch (error) {
-				return;
-			}
-		}
-	}
-
 	await openTab(await getTabUrl());
 };
 
@@ -124,7 +108,7 @@ browser.runtime.onMessage.addListener(message => {
 	}
 });
 
-(async () => {
+async function addNotificationHandler() {
 	if (await queryPermission('notifications')) {
 		browser.notifications.onClicked.addListener(id => {
 			openNotification(id);
@@ -134,8 +118,11 @@ browser.runtime.onMessage.addListener(message => {
 			removeNotification(id);
 		});
 	}
-})();
+}
 
+addNotificationHandler();
+
+browser.permissions.onAdded.addListener(addNotificationHandler);
 browser.runtime.onInstalled.addListener(handleInstalled);
 browser.browserAction.onClicked.addListener(handleBrowserActionClick);
 

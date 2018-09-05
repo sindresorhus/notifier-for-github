@@ -1,7 +1,7 @@
 import OptionsSync from 'webext-options-sync';
 import localStore from './lib/local-store';
 import {openTab} from './lib/tabs-service';
-import {queryPermission, requestPermission} from './lib/permissions-service';
+import {queryPermission} from './lib/permissions-service';
 import {getNotificationCount, getTabUrl} from './lib/api';
 import {renderCount, renderError, renderWarning} from './lib/badge';
 import {checkNotifications, openNotification, removeNotification} from './lib/notifications-service';

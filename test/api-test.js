@@ -7,7 +7,7 @@ test.beforeEach(t => {
 	t.context.defaultOptions = {
 		options: {
 			token: 'a1b2c3d4e5f6g7h8i9j0a1b2c3d4e5f6g7h8i9j0',
-			rootUrl: 'https://api.github.com/',
+			rootUrl: 'https://api.github.com',
 			onlyParticipating: false
 		}
 	};
@@ -30,7 +30,7 @@ test.serial('#getApiUrl uses default endpoint if rootUrl matches GitHub', async 
 		});
 	});
 
-	t.is(await service.getApiUrl(), 'https://api.github.com/');
+	t.is(await service.getApiUrl(), 'https://api.github.com');
 });
 
 test.serial('#getApiUrl uses custom endpoint if rootUrl is something other than GitHub', async t => {
@@ -44,7 +44,7 @@ test.serial('#getApiUrl uses custom endpoint if rootUrl is something other than 
 		});
 	});
 
-	t.is(await service.getApiUrl(), 'https://something.com/api/v3/');
+	t.is(await service.getApiUrl(), 'https://something.com/api/v3');
 });
 
 test.serial('#getTabUrl uses default page if rootUrl matches GitHub', async t => {
@@ -150,25 +150,21 @@ test.serial('#makeApiRequest returns rejected promise for 5xx status codes', asy
 test.serial('#makeApiRequest makes networkRequest for provided url', async t => {
 	const {service} = t.context;
 
-	const url = 'https://api.github.com/resource';
-
 	global.fetch = fakeFetch();
 
-	await service.makeApiRequest('resource');
+	await service.makeApiRequest('/resource');
 
-	t.true(global.fetch.calledWith(url));
+	t.true(global.fetch.calledWith('https://api.github.com/resource'));
 });
 
 test.serial('#makeApiRequest makes networkRequest with provided params', async t => {
 	const {service} = t.context;
 
-	const url = 'https://api.github.com/resource?user=sindre';
-
 	global.fetch = fakeFetch({
 		body: 'Sindre is awesome'
 	});
 
-	await service.makeApiRequest('resource', {user: 'sindre'});
+	await service.makeApiRequest('/resource', {user: 'sindre'});
 
-	t.true(global.fetch.calledWith(url));
+	t.true(global.fetch.calledWith('https://api.github.com/resource?user=sindre'));
 });

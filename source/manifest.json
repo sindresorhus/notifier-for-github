@@ -10,7 +10,8 @@
 	},
 	"permissions": [
 		"alarms",
-		"storage"
+		"storage",
+		"identity"
 	],
 	"optional_permissions": [
 		"tabs",

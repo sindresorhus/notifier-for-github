@@ -14,7 +14,7 @@ It checks for new GitHub notifications every minute.
 *Make sure to add a token in the options.*
 
 ![](media/screenshot.png)
-![](media/screenshot-webstore2.png)
+![](media/screenshot-options.png)
 
 
 ## Install

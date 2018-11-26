@@ -1,3 +1,8 @@
+:root {
+	--github-green: #28a745;
+	--github-red: #cb2431;
+}
+
 body {
 	min-width: 430px;
 }
@@ -18,7 +23,7 @@ h3 {
 }
 
 #notifications-permission-error {
-	color: #f44336;
+	color: var(--github-red);
 }
 
 input[type='checkbox'] {
@@ -38,7 +43,18 @@ input[type='text'] {
 	margin-top: 0.5rem;
 }
 
-input[type='url']:invalid,
-input[type='text']:invalid {
-	border-color: #f44336;
+input:not([type='checkbox']):not(:placeholder-shown):valid {
+	color: var(--github-green);
+	border: 1px solid var(--github-green);
+}
+
+input:not([type='checkbox']):invalid {
+	color: var(--github-red);
+	border: 1px solid;
+}
+
+input[name='token'] {
+	font-family: monospace;
+	font-size: 11px;
+	width: 35ch; /* Show only a part of the token */
 }

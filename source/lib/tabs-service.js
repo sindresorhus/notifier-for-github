@@ -24,8 +24,13 @@ export const queryTabs = async url => {
 		throw new Error(browser.runtime.lastError);
 	}
 
+	const urlList = [url];
+	if (url.endsWith('/notifications')) {
+		urlList.push(url + '?all=1');
+	}
+
 	const currentWindow = true;
-	return browser.tabs.query({currentWindow, url});
+	return browser.tabs.query({currentWindow, url: urlList});
 };
 
 export const openTab = async (url, tab) => {

@@ -23,10 +23,10 @@ test.beforeEach(t => {
 	};
 
 	t.context.defaultResponse = {
-		body: {
+		body: [{
 			// eslint-disable-next-line camelcase
 			html_url: t.context.notificationHtmlUrl
-		}
+		}]
 	};
 
 	global.fetch = fakeFetch(t.context.defaultResponse);
@@ -36,7 +36,14 @@ test.beforeEach(t => {
 	browser.storage.local.get.resolves({});
 	browser.storage.local.get.withArgs(t.context.notificationId)
 		.resolves({
-			[t.context.notificationId]: t.context.notificationsUrl
+			[t.context.notificationId]: {
+				// eslint-disable-next-line camelcase
+				last_read_at: '2019-04-19T14:44:56Z',
+				subject: {
+					type: 'Issue',
+					url: t.context.notificationHtmlUrl
+				}
+			}
 		});
 
 	browser.tabs.query.resolves([]);
@@ -103,10 +110,18 @@ test.serial('#openNotification closes notification on error', async t => {
 	t.true(browser.notifications.clear.calledWith(notificationId));
 });
 
-test.serial('#openNotification opens nofifications tab on error', async t => {
+test.serial('#openNotification opens notifications tab on error', async t => {
 	const {service, notificationId} = t.context;
 
 	global.fetch = sinon.stub().rejects('error');
+	browser.storage.local.get.withArgs(t.context.notificationId)
+		.resolves({
+			[t.context.notificationId]: {
+				subject: {
+					url: ''
+				}
+			}
+		});
 
 	await service.openNotification(notificationId);
 
@@ -150,24 +165,6 @@ test.serial('#getNotificationObject returns Notification object made via options
 	});
 });
 
-test.serial('#filterNotificationsByDate filters latest notifications', t => {
-	const {service} = t.context;
-	/* eslint-disable camelcase */
-	const notifications = [{
-		updated_at: moment().subtract(9, 'days').format()
-	}, {
-		updated_at: moment().subtract(8, 'days').format()
-	}, {
-		updated_at: moment().subtract(5, 'days').format()
-	}];
-	/* eslint-enable camelcase */
-
-	const latestNotifications = service.filterNotificationsByDate(notifications, moment().subtract(7, 'days').format());
-
-	t.is(latestNotifications.length, 1);
-	t.is(moment().subtract(5, 'days').format(), latestNotifications[0].updated_at);
-});
-
 test.serial('#showNotifications shows notifications', t => {
 	const {service} = t.context;
 	/* eslint-disable camelcase */
@@ -175,7 +172,7 @@ test.serial('#showNotifications shows notifications', t => {
 	const repositoryName = 'user/repo';
 	const reason = 'subscribed';
 
-	const oldNotifications = [{
+	const notifications = [{
 		updated_at: moment().subtract(9, 'days').format(),
 		repository: {full_name: repositoryName},
 		title,
@@ -189,9 +186,7 @@ test.serial('#showNotifications shows notifications', t => {
 		subject: {title},
 		iconUrl: 'icon-notif.png',
 		contextMessage: getNotificationReasonText(reason)
-	}];
-
-	const newNotification = [{
+	}, {
 		updated_at: moment().subtract(5, 'days').format(),
 		repository: {full_name: repositoryName},
 		title,
@@ -201,15 +196,13 @@ test.serial('#showNotifications shows notifications', t => {
 	}];
 	/* eslint-enable camelcase */
 
-	const notifications = oldNotifications.concat(newNotification);
-
 	service.showNotifications(notifications, moment().subtract(7, 'days').format());
 
 	t.true(browser.notifications.create.called);
-	t.is(browser.notifications.create.callCount, 1);
+	t.is(browser.notifications.create.callCount, 3);
 });
 
-test.serial('#playNotification plays notification sound', async t => {
+test.serial('#playNotificationSound plays notification sound', async t => {
 	const {service} = t.context;
 
 	/* eslint-disable camelcase */
@@ -224,7 +217,7 @@ test.serial('#playNotification plays notification sound', async t => {
 	global.Audio = sinon.stub();
 	global.Audio.prototype.play = sinon.stub();
 
-	await service.playNotification(notifications, moment().subtract(10, 'days').format());
+	await service.playNotificationSound(notifications, moment().subtract(10, 'days').format());
 
 	t.true(global.Audio.calledOnce);
 	t.true(global.Audio.prototype.play.calledOnce);

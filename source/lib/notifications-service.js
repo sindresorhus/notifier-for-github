@@ -55,10 +55,9 @@ const notificationHandlers = {
 	/* eslint-disable quote-props */
 	'Issue': issueOrPRHandler,
 	'PullRequest': issueOrPRHandler,
-	'RepositoryInvitation': () => {
-		// @TODO implement in the future
+	'RepositoryInvitation': notification => {
+		return `${notification.repository.html_url}/invitations`;
 	}
-	// @TODO: find and implement other notification types
 	/* eslint-enable quote-props */
 };
 

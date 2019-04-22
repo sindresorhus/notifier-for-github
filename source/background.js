@@ -110,11 +110,6 @@ async function addNotificationHandler() {
 		browser.notifications.onClicked.addListener(id => {
 			openNotification(id);
 		});
-
-		// Possbily broken in browser, event listener getting fired if not displayed to user
-		// browser.notifications.onClosed.addListener(id => {
-		// 	removeNotification(id);
-		// });
 	}
 }
 

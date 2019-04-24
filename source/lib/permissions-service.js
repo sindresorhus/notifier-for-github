@@ -1,4 +1,4 @@
-export const queryPermission = async permission => {
+export async function queryPermission(permission) {
 	const granted = await browser.permissions.contains({permissions: [permission]});
 
 	if (browser.runtime.lastError) {
@@ -6,9 +6,9 @@ export const queryPermission = async permission => {
 	}
 
 	return granted;
-};
+}
 
-export const requestPermission = async permission => {
+export async function requestPermission(permission) {
 	const granted = await browser.permissions.request({permissions: [permission]});
 
 	if (browser.runtime.lastError) {
@@ -16,4 +16,4 @@ export const requestPermission = async permission => {
 	}
 
 	return granted;
-};
+}

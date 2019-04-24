@@ -46,36 +46,36 @@ export const colors = new Map([
 	['warning', [245, 159, 0, 255]]
 ]);
 
-export const getBadgeDefaultColor = () => {
+export function getBadgeDefaultColor() {
 	return colors.get('default');
-};
+}
 
-export const getBadgeErrorColor = () => {
+export function getBadgeErrorColor() {
 	return colors.get('error');
-};
+}
 
-export const getBadgeWarningColor = () => {
+export function getBadgeWarningColor() {
 	return colors.get('warning');
-};
+}
 
-export const getWarningTitle = warning => {
+export function getWarningTitle(warning) {
 	return warningTitles.get(warning) || warningTitles.get('default');
-};
+}
 
-export const getWarningSymbol = warning => {
+export function getWarningSymbol(warning) {
 	return warningSymbols.get(warning) || warningSymbols.get('default');
-};
+}
 
-export const getErrorTitle = error => {
+export function getErrorTitle(error) {
 	return errorTitles.get(error.message) || errorTitles.get('default');
-};
+}
 
-export const getErrorSymbol = error => {
+export function getErrorSymbol(error) {
 	return errorSymbols.get(error.message) || errorSymbols.get('default');
-};
+}
 
-export const getNotificationReasonText = reason => {
+export function getNotificationReasonText(reason) {
 	return notificationReasons.get(reason) || '';
-};
+}
 
 export const defaultTitle = defaults.get('title');

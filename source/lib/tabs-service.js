@@ -3,23 +3,23 @@ import {queryPermission, requestPermission} from './permissions-service';
 
 const syncStore = new OptionsSync();
 
-export const createTab = async url => {
+export async function createTab(url) {
 	if (browser.runtime.lastError) {
 		throw new Error(browser.runtime.lastError);
 	}
 
 	return browser.tabs.create({url});
-};
+}
 
-export const updateTab = async (tabId, options) => {
+export async function updateTab(tabId, options) {
 	if (browser.runtime.lastError) {
 		throw new Error(browser.runtime.lastError);
 	}
 
 	return browser.tabs.update(tabId, options);
-};
+}
 
-export const queryTabs = async url => {
+export async function queryTabs(url) {
 	if (browser.runtime.lastError) {
 		throw new Error(browser.runtime.lastError);
 	}
@@ -31,9 +31,9 @@ export const queryTabs = async url => {
 
 	const currentWindow = true;
 	return browser.tabs.query({currentWindow, url: urlList});
-};
+}
 
-export const openTab = async (url, tab) => {
+export async function openTab(url, tab) {
 	const {newTabAlways} = await syncStore.getAll();
 	if (!newTabAlways) {
 		const alreadyGranted = await queryPermission('tabs');
@@ -56,4 +56,4 @@ export const openTab = async (url, tab) => {
 	}
 
 	return createTab(url);
-};
+}

@@ -1,12 +1,12 @@
 import * as defaults from './defaults';
 
-const render = (text, color, title) => {
+function render(text, color, title) {
 	browser.browserAction.setBadgeText({text});
 	browser.browserAction.setBadgeBackgroundColor({color});
 	browser.browserAction.setTitle({title});
-};
+}
 
-const getCountString = count => {
+function getCountString(count) {
 	if (count === 0) {
 		return '';
 	}
@@ -16,29 +16,29 @@ const getCountString = count => {
 	}
 
 	return String(count);
-};
+}
 
-const getErrorData = error => {
+function getErrorData(error) {
 	const title = defaults.getErrorTitle(error);
 	const symbol = defaults.getErrorSymbol(error);
 	return {symbol, title};
-};
+}
 
-export const renderCount = count => {
+export function renderCount(count) {
 	const color = defaults.getBadgeDefaultColor();
 	const title = defaults.defaultTitle;
 	render(getCountString(count), color, title);
-};
+}
 
-export const renderError = error => {
+export function renderError(error) {
 	const color = defaults.getBadgeErrorColor();
 	const {symbol, title} = getErrorData(error);
 	render(symbol, color, title);
-};
+}
 
-export const renderWarning = warning => {
+export function renderWarning(warning) {
 	const color = defaults.getBadgeWarningColor();
 	const title = defaults.getWarningTitle(warning);
 	const symbol = defaults.getWarningSymbol(warning);
 	render(symbol, color, title);
-};
+}

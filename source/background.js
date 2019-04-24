@@ -4,7 +4,7 @@ import {openTab} from './lib/tabs-service';
 import {queryPermission} from './lib/permissions-service';
 import {getNotificationCount, getTabUrl} from './lib/api';
 import {renderCount, renderError, renderWarning} from './lib/badge';
-import {checkNotifications, openNotification, removeNotification} from './lib/notifications-service';
+import {checkNotifications, openNotification} from './lib/notifications-service';
 
 const syncStore = new OptionsSync();
 
@@ -22,7 +22,7 @@ new OptionsSync().define({
 	]
 });
 
-const scheduleAlaram = interval => {
+function scheduleNextAlarm(interval) {
 	const intervalSetting = localStore.get('interval') || 60;
 	const intervalValue = interval || 60;
 
@@ -34,43 +34,45 @@ const scheduleAlaram = interval => {
 	const delayInMinutes = Math.max(Math.ceil(intervalValue / 60), 1);
 
 	browser.alarms.create({delayInMinutes});
-};
+}
 
-const handleLastModified = async date => {
+async function handleLastModified(newLastModified) {
 	const lastModified = await localStore.get('lastModified') || new Date(0);
 
-	if (date !== lastModified) {
-		localStore.set('lastModified', date);
+	// Something has changed since we last accessed, display any new notificaitons
+	if (newLastModified !== lastModified) {
 		const {showDesktopNotif, playNotifSound} = await syncStore.getAll();
 		if (showDesktopNotif === true || playNotifSound === true) {
-			checkNotifications(lastModified);
+			await checkNotifications(lastModified);
 		}
-	}
-};
 
-const handleNotificationsResponse = response => {
+		await localStore.set('lastModified', newLastModified);
+	}
+}
+
+async function updateNotificationCount() {
+	const response = await getNotificationCount();
 	const {count, interval, lastModified} = response;
 
-	scheduleAlaram(interval);
-	handleLastModified(lastModified);
-
 	renderCount(count);
-};
+	scheduleNextAlarm(interval);
+	handleLastModified(lastModified);
+}
 
-const handleError = error => {
-	scheduleAlaram();
+function handleError(error) {
+	scheduleNextAlarm();
 
 	renderError(error);
-};
+}
 
-const handleOfflineStatus = () => {
+function handleOfflineStatus() {
 	renderWarning('offline');
-};
+}
 
 async function update() {
 	if (navigator.onLine) {
 		try {
-			handleNotificationsResponse(await getNotificationCount());
+			updateNotificationCount();
 		} catch (error) {
 			handleError(error);
 		}
@@ -79,9 +81,9 @@ async function update() {
 	}
 }
 
-const handleBrowserActionClick = async () => {
+async function handleBrowserActionClick() {
 	await openTab(await getTabUrl());
-};
+}
 
 function handleInstalled(details) {
 	if (details.reason === 'install') {
@@ -89,41 +91,44 @@ function handleInstalled(details) {
 	}
 }
 
-function handleConnectionStatus(event) {
-	if (event.type === 'online') {
+function handleConnectionStatus() {
+	if (navigator.onLine) {
 		update();
-	} else if (event.type === 'offline') {
+	} else {
 		handleOfflineStatus();
 	}
 }
 
-window.addEventListener('online', handleConnectionStatus);
-window.addEventListener('offline', handleConnectionStatus);
-
-browser.alarms.create({when: Date.now() + 2000});
-browser.alarms.onAlarm.addListener(update);
-browser.runtime.onMessage.addListener(message => {
+function onMessage(message) {
 	if (message === 'update') {
 		update();
 	}
-});
+}
 
 async function addNotificationHandler() {
 	if (await queryPermission('notifications')) {
 		browser.notifications.onClicked.addListener(id => {
 			openNotification(id);
 		});
-
-		browser.notifications.onClosed.addListener(id => {
-			removeNotification(id);
-		});
 	}
 }
 
-addNotificationHandler();
+function init() {
+	window.addEventListener('online', handleConnectionStatus);
+	window.addEventListener('offline', handleConnectionStatus);
 
-browser.permissions.onAdded.addListener(addNotificationHandler);
-browser.runtime.onInstalled.addListener(handleInstalled);
-browser.browserAction.onClicked.addListener(handleBrowserActionClick);
+	browser.alarms.onAlarm.addListener(update);
+	browser.alarms.create({when: Date.now() + 2000});
 
-update();
+	browser.runtime.onMessage.addListener(onMessage);
+	browser.runtime.onInstalled.addListener(handleInstalled);
+
+	browser.permissions.onAdded.addListener(addNotificationHandler);
+
+	browser.browserAction.onClicked.addListener(handleBrowserActionClick);
+
+	addNotificationHandler();
+	update();
+}
+
+init();

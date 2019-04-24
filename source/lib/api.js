@@ -13,7 +13,7 @@ export const getTabUrl = async () => {
 	return `${rootUrl}notifications${useParticipating}`;
 };
 
-export const getApiUrl = async () => {
+export async function getApiUrl() {
 	const {rootUrl} = await syncStore.getAll();
 
 	if (/(^(https:\/\/)?(api\.)?github\.com)/.test(rootUrl)) {
@@ -21,15 +21,15 @@ export const getApiUrl = async () => {
 	}
 
 	return `${rootUrl}api/v3`;
-};
+}
 
-export const getParsedUrl = async (endpoint, params) => {
+export async function getParsedUrl(endpoint, params) {
 	const api = await getApiUrl();
 	const query = params ? '?' + (new URLSearchParams(params)).toString() : '';
 	return `${api}${endpoint}${query}`;
-};
+}
 
-export const getHeaders = async () => {
+export async function getHeaders() {
 	const {token} = await syncStore.getAll();
 
 	if (!(/[a-z\d]{40}/.test(token))) {
@@ -42,16 +42,16 @@ export const getHeaders = async () => {
 		'If-Modified-Since': ''
 		/* eslint-enable quote-props */
 	};
-};
+}
 
-export const makeApiRequest = async (endpoint, params) => {
+export async function makeApiRequest(endpoint, params) {
 	const url = await getParsedUrl(endpoint, params);
 
 	const response = await fetch(url, {
 		headers: await getHeaders()
 	});
 
-	const {status} = response;
+	const {status, headers} = response;
 
 	if (status >= 500) {
 		return Promise.reject(new Error('server error'));
@@ -64,36 +64,38 @@ export const makeApiRequest = async (endpoint, params) => {
 	const json = await response.json();
 
 	return {
-		headers: response.headers,
+		headers,
 		json
 	};
-};
+}
 
-export const getNotificationResponse = async (maxItems = 100) => {
+export async function getNotificationResponse({maxItems = 100, lastModified = ''} = {}) {
 	const {onlyParticipating} = await syncStore.getAll();
+	const params = {
+		per_page: maxItems // eslint-disable-line camelcase
+	};
 
 	if (onlyParticipating) {
-		return makeApiRequest('/notifications', {
-			participating: onlyParticipating,
-			per_page: maxItems // eslint-disable-line camelcase
-		});
+		params.participating = onlyParticipating;
 	}
 
-	return makeApiRequest('/notifications', {
-		per_page: maxItems // eslint-disable-line camelcase
-	});
-};
+	if (lastModified) {
+		params.since = lastModified;
+	}
 
-export const getNotifications = async maxItems => {
-	const {json: notifications} = await getNotificationResponse(maxItems);
-	return notifications;
-};
+	return makeApiRequest('/notifications', params);
+}
 
-export const getNotificationCount = async () => {
-	const {headers, json: notifications} = await getNotificationResponse(1);
+export async function getNotifications({maxItems, lastModified} = {}) {
+	const {json: notifications} = await getNotificationResponse({maxItems, lastModified});
+	return notifications || [];
+}
+
+export async function getNotificationCount() {
+	const {headers, json: notifications} = await getNotificationResponse({maxItems: 1});
 
 	const interval = Number(headers.get('X-Poll-Interval'));
-	const lastModified = headers.get('Last-Modified');
+	const lastModified = (new Date(headers.get('Last-Modified'))).toISOString();
 	const linkHeader = headers.get('Link');
 
 	if (linkHeader === null) {
@@ -108,6 +110,8 @@ export const getNotificationCount = async () => {
 		return link.endsWith('rel="last"');
 	});
 
+	// We get notification count by asking the API to give us only one notificaion
+	// for each page, then the last page number gives us the count
 	const count = Number(lastlink.slice(lastlink.lastIndexOf('page=') + 5, lastlink.lastIndexOf('>')));
 
 	return {
@@ -115,4 +119,4 @@ export const getNotificationCount = async () => {
 		interval,
 		lastModified
 	};
-};
+}

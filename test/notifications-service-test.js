@@ -173,21 +173,21 @@ test.serial('#showNotifications shows notifications', t => {
 	const reason = 'subscribed';
 
 	const notifications = [{
-		updated_at: moment().subtract(9, 'days').format(),
+		updated_at: moment().subtract(9, 'days').toISOString(),
 		repository: {full_name: repositoryName},
 		title,
 		subject: {title},
 		iconUrl: 'icon-notif.png',
 		contextMessage: getNotificationReasonText(reason)
 	}, {
-		updated_at: moment().subtract(8, 'days').format(),
+		updated_at: moment().subtract(8, 'days').toISOString(),
 		repository: {full_name: repositoryName},
 		title,
 		subject: {title},
 		iconUrl: 'icon-notif.png',
 		contextMessage: getNotificationReasonText(reason)
 	}, {
-		updated_at: moment().subtract(5, 'days').format(),
+		updated_at: moment().subtract(5, 'days').toISOString(),
 		repository: {full_name: repositoryName},
 		title,
 		subject: {title},
@@ -196,7 +196,7 @@ test.serial('#showNotifications shows notifications', t => {
 	}];
 	/* eslint-enable camelcase */
 
-	service.showNotifications(notifications, moment().subtract(7, 'days').format());
+	service.showNotifications(notifications, moment().subtract(7, 'days').toISOString());
 
 	t.true(browser.notifications.create.called);
 	t.is(browser.notifications.create.callCount, 3);
@@ -205,19 +205,13 @@ test.serial('#showNotifications shows notifications', t => {
 test.serial('#playNotificationSound plays notification sound', async t => {
 	const {service} = t.context;
 
-	/* eslint-disable camelcase */
-	const notifications = [{
-		updated_at: moment().subtract(9, 'days').format()
-	}];
-	/* eslint-enable camelcase */
-
 	browser.extension = sinon.stub();
 	browser.extension.getURL = sinon.stub();
 
 	global.Audio = sinon.stub();
 	global.Audio.prototype.play = sinon.stub();
 
-	await service.playNotificationSound(notifications, moment().subtract(10, 'days').format());
+	await service.playNotificationSound();
 
 	t.true(global.Audio.calledOnce);
 	t.true(global.Audio.prototype.play.calledOnce);

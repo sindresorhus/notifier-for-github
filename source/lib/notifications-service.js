@@ -113,7 +113,7 @@ export async function checkNotifications(lastModified) {
 	const notifications = await getNotifications({lastModified});
 	const {showDesktopNotif, playNotifSound} = await syncStore.getAll();
 
-	if (playNotifSound) {
+	if (playNotifSound && notifications.length > 1) {
 		await playNotificationSound();
 	}
 

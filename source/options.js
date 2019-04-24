@@ -15,11 +15,11 @@ const update = async ({target: input}) => {
 				const granted = await requestPermission('notifications');
 				input.checked = granted;
 			}
-		} catch (err) {
+		} catch (error) {
 			input.checked = false;
 
 			// Workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1382953
-			document.getElementById('notifications-permission-error').style.display = 'block';
+			document.querySelector('#notifications-permission-error').style.display = 'block';
 		}
 	}
 

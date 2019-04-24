@@ -68,19 +68,20 @@ test.serial('#openTab updates with first matched tab', async t => {
 	}]);
 });
 
-test.serial('#openTab updates empty tab if provided', async t => {
+test.serial('#openTab updates empty tab if one exists', async t => {
 	const {service} = t.context;
 	const url = 'https://api.github.com/resource';
-	const emptyTab = {id: 0, url: 'chrome://newtab/'};
 
 	browser.permissions.contains.resolves(true);
-	browser.tabs.query.resolves([]);
+	browser.tabs.query.withArgs({currentWindow: true, url: [url]}).resolves([]);
+	browser.tabs.query.withArgs({currentWindow: true, url: tabs.emptyTabUrls})
+		.resolves([{id: 1, url: tabs.emptyTabUrls[0]}]);
 
-	await service.openTab(url, emptyTab);
+	await service.openTab(url);
 
-	t.deepEqual(browser.tabs.update.lastCall.args, [null, {
+	t.deepEqual(browser.tabs.update.lastCall.args, [1, {
 		url,
-		active: false
+		active: true
 	}]);
 });
 
@@ -100,8 +101,5 @@ test.serial('#openTab opens new tab even if matching tab exists', async t => {
 
 	await service.openTab(url);
 
-	t.deepEqual(browser.tabs.update.lastCall.args, [null, {
-		url,
-		active: false
-	}]);
+	t.deepEqual(browser.tabs.create.lastCall.args, [{url}]);
 });

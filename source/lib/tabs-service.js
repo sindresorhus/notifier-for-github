@@ -2,6 +2,11 @@ import OptionsSync from 'webext-options-sync';
 import {queryPermission, requestPermission} from './permissions-service';
 
 const syncStore = new OptionsSync();
+export const emptyTabUrls = [
+	'about:home',
+	'chrome://newtab/',
+	'chrome-search://local-ntp/local-ntp.html'
+];
 
 export async function createTab(url) {
 	if (browser.runtime.lastError) {
@@ -19,22 +24,18 @@ export async function updateTab(tabId, options) {
 	return browser.tabs.update(tabId, options);
 }
 
-export async function queryTabs(url) {
+export async function queryTabs(urlList) {
 	if (browser.runtime.lastError) {
 		throw new Error(browser.runtime.lastError);
-	}
-
-	const urlList = [url];
-	if (url.endsWith('/notifications')) {
-		urlList.push(url + '?all=1');
 	}
 
 	const currentWindow = true;
 	return browser.tabs.query({currentWindow, url: urlList});
 }
 
-export async function openTab(url, tab) {
+export async function openTab(url) {
 	const {newTabAlways} = await syncStore.getAll();
+
 	if (!newTabAlways) {
 		const alreadyGranted = await queryPermission('tabs');
 		if (!alreadyGranted) {
@@ -44,14 +45,19 @@ export async function openTab(url, tab) {
 			}
 		}
 
-		const tabs = await queryTabs(url);
-
-		if (tabs && tabs.length > 0) {
-			return updateTab(tabs[0].id, {url, active: true});
+		const matchingUrls = [url];
+		if (url.endsWith('/notifications')) {
+			matchingUrls.push(url + '?all=1');
 		}
 
-		if (tab && (tab.url === 'chrome://newtab/' || tab.href === 'about:home')) {
-			return updateTab(null, {url, active: false});
+		const existingTabs = await queryTabs(matchingUrls);
+		if (existingTabs && existingTabs.length > 0) {
+			return updateTab(existingTabs[0].id, {url, active: true});
+		}
+
+		const emptyTabs = await queryTabs(emptyTabUrls);
+		if (emptyTabs && emptyTabs.length > 0) {
+			return updateTab(emptyTabs[0].id, {url, active: true});
 		}
 	}
 

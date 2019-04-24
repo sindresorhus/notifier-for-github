@@ -1,7 +1,7 @@
 'use strict';
 const path = require('path');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
 
 module.exports = {
 	devtool: 'sourcemap',
@@ -36,8 +36,8 @@ module.exports = {
 	],
 	optimization: {
 		minimizer: [
-			new UglifyJsPlugin({
-				uglifyOptions: {
+			new TerserPlugin({
+				terserOptions: {
 					mangle: false,
 					compress: false,
 					output: {

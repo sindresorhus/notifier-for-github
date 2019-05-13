@@ -6,7 +6,7 @@ export async function getHostname() {
 	const {rootUrl} = await syncStore.getAll();
 
 	if (/(^(https:\/\/)?(api\.)?github\.com)/.test(rootUrl)) {
-		return 'https://github.com/';
+		return 'github.com';
 	}
 
 	return (new URL(rootUrl)).hostname;
@@ -16,7 +16,7 @@ export async function getTabUrl() {
 	const {onlyParticipating} = await syncStore.getAll();
 	const useParticipating = onlyParticipating ? '/participating' : '';
 
-	return `https://${await getHostname()}${useParticipating}`;
+	return `https://${await getHostname()}/notifications${useParticipating}`;
 }
 
 export async function getApiUrl() {

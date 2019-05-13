@@ -2,16 +2,22 @@ import OptionsSync from 'webext-options-sync';
 
 const syncStore = new OptionsSync();
 
-export const getTabUrl = async () => {
-	const {rootUrl, onlyParticipating} = await syncStore.getAll();
-	const useParticipating = onlyParticipating ? '/participating' : '';
+export async function getHostname() {
+	const {rootUrl} = await syncStore.getAll();
 
 	if (/(^(https:\/\/)?(api\.)?github\.com)/.test(rootUrl)) {
-		return `https://github.com/notifications${useParticipating}`;
+		return 'https://github.com/';
 	}
 
-	return `${rootUrl}notifications${useParticipating}`;
-};
+	return (new URL(rootUrl)).hostname;
+}
+
+export async function getTabUrl() {
+	const {onlyParticipating} = await syncStore.getAll();
+	const useParticipating = onlyParticipating ? '/participating' : '';
+
+	return `https://${await getHostname()}${useParticipating}`;
+}
 
 export async function getApiUrl() {
 	const {rootUrl} = await syncStore.getAll();

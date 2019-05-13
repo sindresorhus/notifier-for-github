@@ -1,5 +1,5 @@
 import OptionsSync from 'webext-options-sync';
-import {makeApiRequest, getNotifications, getTabUrl} from './api';
+import {makeApiRequest, getNotifications, getTabUrl, getHostname} from './api';
 import {getNotificationReasonText} from './defaults';
 import {openTab} from './tabs-service';
 import localStore from './local-store';
@@ -24,12 +24,13 @@ async function issueOrPRHandler(notification) {
 	const notificationUrl = notification.subject.url;
 
 	try {
-		const {pathname} = new URL(notificationUrl);
+		// Try to construct a URL object, if that fails, bail to open the notifications URL
+		const url = new URL(notificationUrl);
 		const lastRead = getLastReadForNotification(notification);
 
 		try {
 			// Try to get the latest comment that the user has not read
-			const {json: comments} = await makeApiRequest(pathname + '/comments', {
+			const {json: comments} = await makeApiRequest(`${url.pathname}/comments`, {
 				since: lastRead,
 				per_page: 1 // eslint-disable-line camelcase
 			});
@@ -40,11 +41,15 @@ async function issueOrPRHandler(notification) {
 			}
 
 			// If there are not comments or events, then just open the url
-			const {json: response} = await makeApiRequest(pathname);
+			const {json: response} = await makeApiRequest(url.pathname);
 			const targetUrl = response.message === 'Not Found' ? await getTabUrl() : response.html_url;
 			return targetUrl;
 		} catch (error) {
-			return notificationUrl;
+			// If anything related to querying the API fails, extract the URL to issue/PR from the API url
+			url.hostname = await getHostname();
+			url.pathname = url.pathname.replace('/repos', '');
+
+			return url.href;
 		}
 	} catch (error) {
 		throw error;

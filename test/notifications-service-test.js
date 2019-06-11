@@ -18,7 +18,8 @@ test.beforeEach(t => {
 			token: 'a1b2c3d4e5f6g7h8i9j0a1b2c3d4e5f6g7h8i9j0',
 			rootUrl: 'https://api.github.com/',
 			playNotifSound: true,
-			showDesktopNotif: true
+			showDesktopNotif: true,
+			newTabAlways: true
 		}
 	};
 

@@ -1,3 +1,8 @@
+html {
+	min-width: 550px;
+	overflow-x: hidden;
+}
+
 :root {
 	--github-green: #28a745;
 	--github-red: #cb2431;
@@ -7,7 +12,9 @@ body {
 	min-width: 430px;
 }
 
-h3 {
+h3,
+h4 {
+	width: 100%;
 	margin: 0;
 	margin-bottom: 0.5rem;
 }
@@ -26,21 +33,27 @@ h3 {
 	color: var(--github-red);
 }
 
-input[type='checkbox'] {
-	vertical-align: -0.16em;
-}
-
 label {
-	display: block;
+	display: flex;
 	width: 100%;
 	margin: 0.5rem 0;
+	align-items: center;
+	flex-wrap: wrap;
+}
+
+label input[type='checkbox'] {
+	margin-right: 0.5rem;
+}
+
+input {
+	font-family: inherit;
 }
 
 input[type='url'],
 input[type='text'] {
 	display: block;
 	width: 100%;
-	margin-top: 0.5rem;
+	padding: 0.25rem;
 }
 
 input:not([type='checkbox']):not(:placeholder-shown):valid {
@@ -53,8 +66,9 @@ input:not([type='checkbox']):invalid {
 	border: 1px solid;
 }
 
-input[name='token'] {
-	font-family: monospace;
-	font-size: 11px;
+input[type='text'][name='token'] {
+	font-family: Consolas, monospace;
+	font-size: 12px;
 	width: 35ch; /* Show only a part of the token */
+	box-shadow: none !important;
 }

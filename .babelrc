@@ -1,0 +1,10 @@
+{
+	"presets": [
+		["@babel/preset-env", {
+			"targets": {
+				"chrome": "69",
+				"firefox": "62"
+			}
+		}]
+	]
+}

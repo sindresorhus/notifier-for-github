@@ -123,7 +123,10 @@ function init() {
 	browser.runtime.onMessage.addListener(onMessage);
 	browser.runtime.onInstalled.addListener(handleInstalled);
 
-	browser.permissions.onAdded.addListener(addNotificationHandler);
+	// Chrome specific API
+	if (navigator.userAgent.includes('Chrome')) {
+		browser.permissions.onAdded.addListener(addNotificationHandler);
+	}
 
 	browser.browserAction.onClicked.addListener(handleBrowserActionClick);
 

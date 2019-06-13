@@ -9,7 +9,8 @@ html {
 }
 
 body {
-	min-width: 430px;
+	font-family: system-ui, sans-serif;
+	font-size: 14px;
 }
 
 h3,

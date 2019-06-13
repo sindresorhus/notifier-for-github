@@ -1,19 +1,17 @@
-export async function queryPermission(permission) {
-	const granted = await browser.permissions.contains({permissions: [permission]});
-
-	if (browser.runtime.lastError) {
-		throw new Error(browser.runtime.lastError);
+export function queryPermission(permission) {
+	try {
+		return browser.permissions.contains({permissions: [permission]});
+	} catch (error) {
+		console.log(error);
+		return false;
 	}
-
-	return granted;
 }
 
-export async function requestPermission(permission) {
-	const granted = await browser.permissions.request({permissions: [permission]});
-
-	if (browser.runtime.lastError) {
-		throw new Error(browser.runtime.lastError);
+export function requestPermission(permission) {
+	try {
+		return browser.permissions.request({permissions: [permission]});
+	} catch (error) {
+		console.log(error);
+		return false;
 	}
-
-	return granted;
 }

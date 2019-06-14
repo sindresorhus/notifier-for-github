@@ -1,4 +1,4 @@
-import OptionsSync from 'webext-options-sync';
+import optionsStorage from './options-storage';
 import localStore from './lib/local-store';
 import {openTab} from './lib/tabs-service';
 import {queryPermission} from './lib/permissions-service';
@@ -7,24 +7,8 @@ import {renderCount, renderError, renderWarning} from './lib/badge';
 import {checkNotifications, openNotification} from './lib/notifications-service';
 import {isChrome} from './util';
 
-const syncStore = new OptionsSync();
-
-new OptionsSync().define({
-	defaults: {
-		token: '',
-		rootUrl: 'https://api.github.com/',
-		playNotifSound: false,
-		showDesktopNotif: false,
-		onlyParticipating: false,
-		reuseTabs: false
-	},
-	migrations: [
-		OptionsSync.migrations.removeUnused
-	]
-});
-
-function scheduleNextAlarm(interval) {
-	const intervalSetting = localStore.get('interval') || 60;
+async function scheduleNextAlarm(interval) {
+	const intervalSetting = await localStore.get('interval') || 60;
 	const intervalValue = interval || 60;
 
 	if (intervalSetting !== intervalValue) {
@@ -42,7 +26,7 @@ async function handleLastModified(newLastModified) {
 
 	// Something has changed since we last accessed, display any new notificaitons
 	if (newLastModified !== lastModified) {
-		const {showDesktopNotif, playNotifSound} = await syncStore.getAll();
+		const {showDesktopNotif, playNotifSound} = await optionsStorage.getAll();
 		if (showDesktopNotif === true || playNotifSound === true) {
 			await checkNotifications(lastModified);
 		}

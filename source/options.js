@@ -1,12 +1,14 @@
-import OptionsSync from 'webext-options-sync';
+import optionsStorage from './options-storage';
 import {requestPermission} from './lib/permissions-service';
 
-const syncStore = new OptionsSync();
-syncStore.syncForm('#options-form');
+optionsStorage.syncForm('#options-form');
 
 for (const inputElement of document.querySelectorAll('#options-form [name]')) {
 	inputElement.addEventListener('change', () => {
-		browser.runtime.sendMessage('update');
+		// webext-options-sync debounces syncing to 100ms, so send updates sometime after that
+		setTimeout(() => {
+			browser.runtime.sendMessage('update');
+		}, 200);
 	});
 
 	if (inputElement.dataset.requestPermission) {

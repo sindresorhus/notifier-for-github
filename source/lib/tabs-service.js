@@ -1,7 +1,6 @@
-import OptionsSync from 'webext-options-sync';
+import optionsStorage from '../options-storage';
 import {isChrome} from '../util';
 
-const syncStore = new OptionsSync();
 export const emptyTabUrls = isChrome() ? [
 	'chrome://newtab/',
 	'chrome-search://local-ntp/local-ntp.html'
@@ -21,7 +20,7 @@ export async function queryTabs(urlList) {
 }
 
 export async function openTab(url) {
-	const {reuseTabs} = await syncStore.getAll();
+	const {reuseTabs} = await optionsStorage.getAll();
 
 	if (reuseTabs) {
 		const matchingUrls = [url];

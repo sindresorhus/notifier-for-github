@@ -16,7 +16,7 @@ new OptionsSync().define({
 		playNotifSound: false,
 		showDesktopNotif: false,
 		onlyParticipating: false,
-		newTabAlways: false
+		reuseTabs: false
 	},
 	migrations: [
 		OptionsSync.migrations.removeUnused

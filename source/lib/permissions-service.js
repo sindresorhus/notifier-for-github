@@ -1,4 +1,4 @@
-export function queryPermission(permission) {
+export async function queryPermission(permission) {
 	try {
 		return browser.permissions.contains({permissions: [permission]});
 	} catch (error) {
@@ -7,7 +7,7 @@ export function queryPermission(permission) {
 	}
 }
 
-export function requestPermission(permission) {
+export async function requestPermission(permission) {
 	try {
 		return browser.permissions.request({permissions: [permission]});
 	} catch (error) {

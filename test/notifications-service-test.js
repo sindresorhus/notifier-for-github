@@ -19,7 +19,7 @@ test.beforeEach(t => {
 			rootUrl: 'https://api.github.com/',
 			playNotifSound: true,
 			showDesktopNotif: true,
-			newTabAlways: true
+			reuseTabs: true
 		}
 	};
 

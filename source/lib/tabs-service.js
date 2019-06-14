@@ -1,5 +1,4 @@
 import OptionsSync from 'webext-options-sync';
-import {queryPermission, requestPermission} from './permissions-service';
 import {isChrome} from '../util';
 
 const syncStore = new OptionsSync();
@@ -22,30 +21,23 @@ export async function queryTabs(urlList) {
 }
 
 export async function openTab(url) {
-	const {newTabAlways} = await syncStore.getAll();
+	const {reuseTabs} = await syncStore.getAll();
 
-	if (newTabAlways) {
-		return createTab(url);
-	}
+	if (reuseTabs) {
+		const matchingUrls = [url];
+		if (url.endsWith('/notifications')) {
+			matchingUrls.push(url + '?all=1');
+		}
 
-	const granted = await requestPermission('tabs');
-	if (!granted) {
-		return;
-	}
+		const existingTabs = await queryTabs(matchingUrls);
+		if (existingTabs && existingTabs.length > 0) {
+			return updateTab(existingTabs[0].id, {url, active: true});
+		}
 
-	const matchingUrls = [url];
-	if (url.endsWith('/notifications')) {
-		matchingUrls.push(url + '?all=1');
-	}
-
-	const existingTabs = await queryTabs(matchingUrls);
-	if (existingTabs && existingTabs.length > 0) {
-		return updateTab(existingTabs[0].id, {url, active: true});
-	}
-
-	const emptyTabs = await queryTabs(emptyTabUrls);
-	if (emptyTabs && emptyTabs.length > 0) {
-		return updateTab(emptyTabs[0].id, {url, active: true});
+		const emptyTabs = await queryTabs(emptyTabUrls);
+		if (emptyTabs && emptyTabs.length > 0) {
+			return updateTab(emptyTabs[0].id, {url, active: true});
+		}
 	}
 
 	return createTab(url);

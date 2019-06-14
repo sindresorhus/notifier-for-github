@@ -39,7 +39,7 @@
 	<section>
 		<h3>Notifications</h3>
 		<label>
-			<input type="checkbox" name="showDesktopNotif">
+			<input type="checkbox" name="showDesktopNotif" data-request-permission="notifications">
 			Show desktop notifications
 		</label>
 		<label>
@@ -53,8 +53,8 @@
 	<section>
 		<h3>Tab handling</h3>
 		<label>
-			<input type="checkbox" name="newTabAlways">
-			Always open notification page in new tab
+			<input type="checkbox" name="reuseTabs" data-request-permission="tabs">
+			Reuse notifications tabs when possible
 		</label>
 	</section>
 </form>

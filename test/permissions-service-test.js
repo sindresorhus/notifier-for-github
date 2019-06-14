@@ -1,12 +1,8 @@
 import test from 'ava';
-import pImmediate from 'p-immediate';
-
 import * as permissions from '../source/lib/permissions-service';
 
 test.beforeEach(t => {
 	t.context.service = Object.assign({}, permissions);
-
-	browser.runtime.lastError = null;
 });
 
 test.serial('#requestPermission returns Promise', t => {
@@ -29,22 +25,6 @@ test.serial('#requestPermission Promise resolves to browser.permissions.request 
 	t.deepEqual(response, [true, false]);
 });
 
-test.serial('#requestPermission returns rejected Promise if browser.runtime.lastError is set', async t => {
-	const {service} = t.context;
-
-	await pImmediate();
-
-	browser.permissions.request.resolves();
-	browser.runtime.lastError = '#requestPermission failed';
-
-	try {
-		await service.requestPermission('tabs');
-		t.fail();
-	} catch (error) {
-		t.pass();
-	}
-});
-
 // --- Mostly same as #requestPermission except for naming ---
 
 test.serial('#queryPermission returns Promise', t => {
@@ -65,20 +45,4 @@ test.serial('#queryPermission Promise resolves to browser.permissions.request ca
 	const response = await Promise.all([permissionGranted, permissionDenied]);
 
 	t.deepEqual(response, [true, false]);
-});
-
-test.serial('#queryPermission returns rejected Promise if browser.runtime.lastError is set', async t => {
-	const {service} = t.context;
-
-	await pImmediate();
-
-	browser.permissions.contains.resolves();
-	browser.runtime.lastError = '#queryPermission failed';
-
-	try {
-		await service.queryPermission('tabs');
-		t.fail();
-	} catch (error) {
-		t.pass();
-	}
 });

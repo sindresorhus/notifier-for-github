@@ -7,7 +7,7 @@ test.beforeEach(t => {
 
 	t.context.defaultOptions = {
 		options: {
-			newTabAlways: false
+			reuseTabs: true
 		}
 	};
 
@@ -95,7 +95,7 @@ test.serial('#openTab opens new tab even if matching tab exists', async t => {
 
 	t.context.defaultOptions = {
 		options: {
-			newTabAlways: true
+			reuseTabs: false
 		}
 	};
 

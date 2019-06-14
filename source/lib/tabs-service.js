@@ -1,34 +1,22 @@
 import OptionsSync from 'webext-options-sync';
 import {queryPermission, requestPermission} from './permissions-service';
+import {isChrome} from '../util';
 
 const syncStore = new OptionsSync();
-export const emptyTabUrls = [
-	'about:home',
+export const emptyTabUrls = isChrome() ? [
 	'chrome://newtab/',
 	'chrome-search://local-ntp/local-ntp.html'
-];
+] : [];
 
 export async function createTab(url) {
-	if (browser.runtime.lastError) {
-		throw new Error(browser.runtime.lastError);
-	}
-
 	return browser.tabs.create({url});
 }
 
 export async function updateTab(tabId, options) {
-	if (browser.runtime.lastError) {
-		throw new Error(browser.runtime.lastError);
-	}
-
 	return browser.tabs.update(tabId, options);
 }
 
 export async function queryTabs(urlList) {
-	if (browser.runtime.lastError) {
-		throw new Error(browser.runtime.lastError);
-	}
-
 	const currentWindow = true;
 	return browser.tabs.query({currentWindow, url: urlList});
 }
@@ -40,12 +28,9 @@ export async function openTab(url) {
 		return createTab(url);
 	}
 
-	const alreadyGranted = await queryPermission('tabs');
-	if (!alreadyGranted) {
-		const granted = await requestPermission('tabs');
-		if (!granted) {
-			return;
-		}
+	const granted = await requestPermission('tabs');
+	if (!granted) {
+		return;
 	}
 
 	const matchingUrls = [url];
@@ -62,4 +47,6 @@ export async function openTab(url) {
 	if (emptyTabs && emptyTabs.length > 0) {
 		return updateTab(emptyTabs[0].id, {url, active: true});
 	}
+
+	return createTab(url);
 }

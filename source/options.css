@@ -30,10 +30,6 @@ h4 {
 	font-size: 0.9em;
 }
 
-#notifications-permission-error {
-	color: var(--github-red);
-}
-
 label {
 	display: flex;
 	width: 100%;

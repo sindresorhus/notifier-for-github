@@ -1,32 +1,26 @@
 import OptionsSync from 'webext-options-sync';
-import {queryPermission, requestPermission} from './lib/permissions-service';
+import {requestPermission} from './lib/permissions-service';
 
 const syncStore = new OptionsSync();
 syncStore.syncForm('#options-form');
 
-const update = async ({target: input}) => {
-	console.log(input.name, input.checked);
+for (const input of document.querySelectorAll('#options-form [name]')) {
+	input.addEventListener('change', () => {
+		browser.runtime.sendMessage('update');
+	});
+}
 
-	if (input.name === 'showDesktopNotif' && input.checked) {
-		try {
-			const alreadyGranted = await queryPermission('notifications');
+// For the "Show notifications" options, we request permission on checking the checkbox
+const notificationCheckbox = document.querySelector('#options-form [name="showDesktopNotif"]');
+const labelElement = notificationCheckbox.parentElement;
 
-			if (!alreadyGranted) {
-				const granted = await requestPermission('notifications');
-				input.checked = granted;
-			}
-		} catch (error) {
-			input.checked = false;
-
-			// Workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1382953
-			document.querySelector('#notifications-permission-error').style.display = 'block';
-		}
+labelElement.addEventListener('click', async (event) => {
+	if (event.target !== notificationCheckbox) {
+		return;
 	}
 
-	browser.runtime.sendMessage('update');
-};
-
-// TODO: Find better way of doing this
-for (const input of document.querySelectorAll('#options-form [name]')) {
-	input.addEventListener('change', update);
-}
+	if (notificationCheckbox.checked) {
+		const granted = await requestPermission('notifications');
+		notificationCheckbox.checked = granted;
+	}
+});

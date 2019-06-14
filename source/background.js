@@ -5,6 +5,7 @@ import {queryPermission} from './lib/permissions-service';
 import {getNotificationCount, getTabUrl} from './lib/api';
 import {renderCount, renderError, renderWarning} from './lib/badge';
 import {checkNotifications, openNotification} from './lib/notifications-service';
+import {isChrome} from './util';
 
 const syncStore = new OptionsSync();
 
@@ -124,7 +125,7 @@ function init() {
 	browser.runtime.onInstalled.addListener(handleInstalled);
 
 	// Chrome specific API
-	if (navigator.userAgent.includes('Chrome')) {
+	if (isChrome()) {
 		browser.permissions.onAdded.addListener(addNotificationHandler);
 	}
 

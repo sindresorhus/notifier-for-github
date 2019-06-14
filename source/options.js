@@ -5,7 +5,7 @@ optionsStorage.syncForm('#options-form');
 
 for (const inputElement of document.querySelectorAll('#options-form [name]')) {
 	inputElement.addEventListener('change', () => {
-		// webext-options-sync debounces syncing to 100ms, so send updates sometime after that
+		// `webext-options-sync` debounces syncing to 100ms, so send updates sometime after that
 		setTimeout(() => {
 			browser.runtime.sendMessage('update');
 		}, 200);

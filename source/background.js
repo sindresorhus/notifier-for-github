@@ -57,7 +57,7 @@ function handleOfflineStatus() {
 async function update() {
 	if (navigator.onLine) {
 		try {
-			updateNotificationCount();
+			await updateNotificationCount();
 		} catch (error) {
 			handleError(error);
 		}

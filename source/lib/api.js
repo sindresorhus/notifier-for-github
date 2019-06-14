@@ -62,15 +62,18 @@ export async function makeApiRequest(endpoint, params) {
 	}
 
 	if (status >= 400) {
-		return Promise.reject(new Error(`client error: ${status} ${response.statusText}`));
+		return Promise.reject(new Error('client error'));
 	}
 
-	const json = await response.json();
-
-	return {
-		headers,
-		json
-	};
+	try {
+		const json = await response.json();
+		return {
+			headers,
+			json
+		};
+	} catch (error) {
+		return Promise.reject(new Error('parse error'));
+	}
 }
 
 export async function getNotificationResponse({maxItems = 100, lastModified = ''} = {}) {

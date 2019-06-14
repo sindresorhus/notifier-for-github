@@ -23,7 +23,12 @@ It checks for new GitHub notifications every minute.
 
 *Make sure to add a token in the options.*
 
+## Screenshots
+
+### Notification count
 ![](media/screenshot.png)
+
+### Options
 ![](media/screenshot-options.png)
 
 

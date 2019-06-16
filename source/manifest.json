@@ -1,10 +1,16 @@
 {
 	"name": "Notifier for GitHub",
-	"version": "3.0.5",
+	"version": "0.0.0",
 	"description": "Displays your GitHub notifications unread count",
 	"homepage_url": "https://github.com/sindresorhus/notifier-for-github",
 	"manifest_version": 2,
-	"minimum_chrome_version": "67",
+	"minimum_chrome_version": "74",
+	"applications": {
+		"gecko": {
+			"id": "{8d1582b2-ff2a-42e0-ba40-42f4ebfe921b}",
+			"strict_min_version": "67.0"
+		}
+	},
 	"icons": {
 		"128": "icon.png"
 	},

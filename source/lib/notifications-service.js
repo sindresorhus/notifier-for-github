@@ -1,10 +1,9 @@
-import OptionsSync from 'webext-options-sync';
+import delay from 'delay';
+import optionsStorage from '../options-storage';
 import {makeApiRequest, getNotifications, getTabUrl, getHostname} from './api';
 import {getNotificationReasonText} from './defaults';
 import {openTab} from './tabs-service';
 import localStore from './local-store';
-
-const syncStore = new OptionsSync();
 
 function getLastReadForNotification(notification) {
 	// Extract the specific fragment URL for a notification
@@ -102,9 +101,10 @@ export async function showNotifications(notifications) {
 		const notificationId = `github-notifier-${notification.id}`;
 		const notificationObject = getNotificationObject(notification);
 
-		browser.notifications.create(notificationId, notificationObject);
+		await browser.notifications.create(notificationId, notificationObject);
+		await localStore.set(notificationId, notification);
 
-		localStore.set(notificationId, notification);
+		await delay(50);
 	}
 }
 
@@ -116,7 +116,7 @@ export async function playNotificationSound() {
 
 export async function checkNotifications(lastModified) {
 	const notifications = await getNotifications({lastModified});
-	const {showDesktopNotif, playNotifSound} = await syncStore.getAll();
+	const {showDesktopNotif, playNotifSound} = await optionsStorage.getAll();
 
 	if (playNotifSound && notifications.length > 1) {
 		await playNotificationSound();

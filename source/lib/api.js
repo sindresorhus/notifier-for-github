@@ -1,9 +1,7 @@
-import OptionsSync from 'webext-options-sync';
-
-const syncStore = new OptionsSync();
+import optionsStorage from '../options-storage';
 
 export async function getHostname() {
-	const {rootUrl} = await syncStore.getAll();
+	const {rootUrl} = await optionsStorage.getAll();
 
 	if (/(^(https:\/\/)?(api\.)?github\.com)/.test(rootUrl)) {
 		return 'github.com';
@@ -13,14 +11,14 @@ export async function getHostname() {
 }
 
 export async function getTabUrl() {
-	const {onlyParticipating} = await syncStore.getAll();
+	const {onlyParticipating} = await optionsStorage.getAll();
 	const useParticipating = onlyParticipating ? '/participating' : '';
 
 	return `https://${await getHostname()}/notifications${useParticipating}`;
 }
 
 export async function getApiUrl() {
-	const {rootUrl} = await syncStore.getAll();
+	const {rootUrl} = await optionsStorage.getAll();
 
 	if (/(^(https:\/\/)?(api\.)?github\.com)/.test(rootUrl)) {
 		return 'https://api.github.com';
@@ -36,7 +34,7 @@ export async function getParsedUrl(endpoint, params) {
 }
 
 export async function getHeaders() {
-	const {token} = await syncStore.getAll();
+	const {token} = await optionsStorage.getAll();
 
 	if (!(/[a-z\d]{40}/.test(token))) {
 		throw new Error('missing token');
@@ -64,19 +62,22 @@ export async function makeApiRequest(endpoint, params) {
 	}
 
 	if (status >= 400) {
-		return Promise.reject(new Error(`client error: ${status} ${response.statusText}`));
+		return Promise.reject(new Error('client error'));
 	}
 
-	const json = await response.json();
-
-	return {
-		headers,
-		json
-	};
+	try {
+		const json = await response.json();
+		return {
+			headers,
+			json
+		};
+	} catch (error) {
+		return Promise.reject(new Error('parse error'));
+	}
 }
 
 export async function getNotificationResponse({maxItems = 100, lastModified = ''} = {}) {
-	const {onlyParticipating} = await syncStore.getAll();
+	const {onlyParticipating} = await optionsStorage.getAll();
 	const params = {
 		per_page: maxItems // eslint-disable-line camelcase
 	};

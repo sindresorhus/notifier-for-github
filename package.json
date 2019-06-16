@@ -16,6 +16,7 @@
 		"release:amo": "web-ext-submit --source-dir distribution"
 	},
 	"dependencies": {
+		"delay": "^4.3.0",
 		"webext-options-sync": "^0.16.0",
 		"webextension-polyfill": "^0.4.0"
 	},
@@ -62,7 +63,8 @@
 				{
 					"varsIgnorePattern": "^h$"
 				}
-			]
+			],
+			"no-await-in-loop": 1
 		},
 		"globals": [
 			"browser"

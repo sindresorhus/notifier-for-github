@@ -166,7 +166,7 @@ test.serial('#getNotificationObject returns Notification object made via options
 	});
 });
 
-test.serial('#showNotifications shows notifications', t => {
+test.serial('#showNotifications shows notifications', async t => {
 	const {service} = t.context;
 	/* eslint-disable camelcase */
 	const title = 'notification title';
@@ -197,7 +197,7 @@ test.serial('#showNotifications shows notifications', t => {
 	}];
 	/* eslint-enable camelcase */
 
-	service.showNotifications(notifications, moment().subtract(7, 'days').toISOString());
+	await service.showNotifications(notifications, moment().subtract(7, 'days').toISOString());
 
 	t.true(browser.notifications.create.called);
 	t.is(browser.notifications.create.callCount, 3);

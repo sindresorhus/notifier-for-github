@@ -1,3 +1,4 @@
+import delay from 'delay';
 import optionsStorage from '../options-storage';
 import {makeApiRequest, getNotifications, getTabUrl, getHostname} from './api';
 import {getNotificationReasonText} from './defaults';
@@ -100,9 +101,10 @@ export async function showNotifications(notifications) {
 		const notificationId = `github-notifier-${notification.id}`;
 		const notificationObject = getNotificationObject(notification);
 
-		browser.notifications.create(notificationId, notificationObject);
+		await browser.notifications.create(notificationId, notificationObject);
+		await localStore.set(notificationId, notification);
 
-		localStore.set(notificationId, notification);
+		await delay(50);
 	}
 }
 

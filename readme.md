@@ -3,7 +3,7 @@
 [link-cws]: https://chrome.google.com/webstore/detail/notifier-for-github/lmjdlojahmbbcodnpecnjnmlddbkjhnn "Version published on Chrome Web Store"
 [link-amo]: https://addons.mozilla.org/en-US/firefox/addon/nfg/ "Version published on Mozilla Add-ons"
 
-> Browser extension - Displays your GitHub notifications unread count
+> Browser extension - Get notified about new GitHub notifications
 
 It checks for new GitHub notifications every minute.
 
@@ -17,6 +17,8 @@ It checks for new GitHub notifications every minute.
 
 ## Highlights
 
+- Notification count in the toolbar icon
+- Click the toolbar icon to go to the notifications page
 - Desktop notifications
 - Option to show only unread count for issues you're participating in
 - GitHub Enterprise support
@@ -58,10 +60,6 @@ You can opt-in to receive desktop notifications for new notifications on GitHub.
 
 ## Maintainers
 
+- [Sindre Sorhus](https://github.com/sindresorhus)
 - [Yury Solovyov](https://github.com/YurySolovyov)
 - [Laxman Damera](https://github.com/notlmn)
-
-
-## License
-
-MIT © [Sindre Sorhus](https://sindresorhus.com)

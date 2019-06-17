@@ -1,3 +1,4 @@
+import delay from 'delay';
 import optionsStorage from './options-storage';
 import localStore from './lib/local-store';
 import {openTab} from './lib/tabs-service';
@@ -5,7 +6,7 @@ import {queryPermission} from './lib/permissions-service';
 import {getNotificationCount, getTabUrl} from './lib/api';
 import {renderCount, renderError, renderWarning} from './lib/badge';
 import {checkNotifications, openNotification} from './lib/notifications-service';
-import {isChrome} from './util';
+import {isChrome, isNotificationTargetPage} from './util';
 
 async function scheduleNextAlarm(interval) {
 	const intervalSetting = await localStore.get('interval') || 60;
@@ -84,17 +85,39 @@ function handleConnectionStatus() {
 	}
 }
 
-function onMessage(message) {
+async function onMessage(message) {
 	if (message === 'update') {
-		update();
+		await addHandlers();
+		await update();
 	}
 }
 
-async function addNotificationHandler() {
+async function onTabUpdated(tabId, changeInfo, tab) {
+	if (changeInfo.status !== 'complete') {
+		return;
+	}
+
+	if (await isNotificationTargetPage(tab.url)) {
+		await delay(1000);
+		await update();
+	}
+}
+
+async function addHandlers() {
+	const {updateCountOnNavigation} = await optionsStorage.getAll();
+
 	if (await queryPermission('notifications')) {
 		browser.notifications.onClicked.addListener(id => {
 			openNotification(id);
 		});
+	}
+
+	if (await queryPermission('tabs')) {
+		if (updateCountOnNavigation) {
+			browser.tabs.onUpdated.addListener(onTabUpdated);
+		} else {
+			browser.tabs.onUpdated.removeListener(onTabUpdated);
+		}
 	}
 }
 
@@ -110,12 +133,12 @@ function init() {
 
 	// Chrome specific API
 	if (isChrome()) {
-		browser.permissions.onAdded.addListener(addNotificationHandler);
+		browser.permissions.onAdded.addListener(addHandlers);
 	}
 
 	browser.browserAction.onClicked.addListener(handleBrowserActionClick);
 
-	addNotificationHandler();
+	addHandlers();
 	update();
 }
 

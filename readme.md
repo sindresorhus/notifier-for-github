@@ -60,16 +60,9 @@ You can opt-in to receive desktop notifications for new notifications on GitHub.
 
 ## Maintainers
 
+- [Sindre Sorhus](https://github.com/sindresorhus)
 - [Laxman Damera](https://github.com/notlmn)
 
 ### Former maintainers
 
 - [Yury Solovyov](https://github.com/YurySolovyov)
-
-
-## License
-
-MIT ©
-- [Sindre Sorhus](https://github.com/sindresorhus)
-- [Yury Solovyov](https://github.com/YurySolovyov)
-- [Laxman Damera](https://github.com/notlmn)

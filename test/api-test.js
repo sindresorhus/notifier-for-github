@@ -134,7 +134,7 @@ test.serial('#makeApiRequest returns rejected promise for 4xx status codes', asy
 		statusText: 'Not found'
 	});
 
-	await t.throwsAsync(() => service.makeApiRequest('notifications'), 'client error: 404 Not found');
+	await t.throwsAsync(() => service.makeApiRequest('notifications'), 'client error');
 });
 
 test.serial('#makeApiRequest returns rejected promise for 5xx status codes', async t => {

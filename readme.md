@@ -1,27 +1,37 @@
 # Notifier for GitHub [![Build Status](https://travis-ci.org/sindresorhus/notifier-for-github.svg?branch=master)](https://travis-ci.org/sindresorhus/notifier-for-github)
 
-> Browser extension - Displays your GitHub notifications unread count
+[link-cws]: https://chrome.google.com/webstore/detail/notifier-for-github/lmjdlojahmbbcodnpecnjnmlddbkjhnn "Version published on Chrome Web Store"
+[link-amo]: https://addons.mozilla.org/en-US/firefox/addon/nfg/ "Version published on Mozilla Add-ons"
+
+> Browser extension - Get notified about new GitHub notifications
 
 It checks for new GitHub notifications every minute.
 
 
+## Install
+
+- [**Chrome** extension][link-cws] [<img valign="middle" src="https://img.shields.io/chrome-web-store/v/lmjdlojahmbbcodnpecnjnmlddbkjhnn.svg?label=%20">][link-cws]
+- [**Firefox** add-on][link-amo] [<img valign="middle" src="https://img.shields.io/amo/v/nfg.svg?label=%20">][link-amo]
+- **Opera** extension: Use [this Opera extension](https://addons.opera.com/en/extensions/details/download-chrome-extension-9/) to install the Chrome version.
+
+
 ## Highlights
 
+- Notification count in the toolbar icon
+- Click the toolbar icon to go to the notifications page
 - Desktop notifications
 - Option to show only unread count for issues you're participating in
 - GitHub Enterprise support
 
 *Make sure to add a token in the options.*
 
+## Screenshots
+
+### Notification count
 ![](media/screenshot.png)
+
+### Options
 ![](media/screenshot-options.png)
-
-
-## Install
-
-- [**Chrome** extension](https://chrome.google.com/webstore/detail/notifier-for-github/lmjdlojahmbbcodnpecnjnmlddbkjhnn)
-- **Firefox** add-on: Use [this](https://addons.mozilla.org/en-US/firefox/addon/chrome-store-foxified/) to enable installing Chrome extensions and then install [Notifier for GitHub](https://chrome.google.com/webstore/detail/notifier-for-github/lmjdlojahmbbcodnpecnjnmlddbkjhnn)
-- **Opera** extension: Use [this](https://addons.opera.com/en/extensions/details/download-chrome-extension-9/) to enable installing Chrome extensions and then install [Notifier for GitHub](https://chrome.google.com/webstore/detail/notifier-for-github/lmjdlojahmbbcodnpecnjnmlddbkjhnn)
 
 
 ## Permissions
@@ -59,4 +69,7 @@ You can opt-in to receive desktop notifications for new notifications on GitHub.
 
 ## License
 
-MIT © [Sindre Sorhus](https://sindresorhus.com)
+MIT ©
+- [Sindre Sorhus](https://github.com/sindresorhus)
+- [Yury Solovyov](https://github.com/YurySolovyov)
+- [Laxman Damera](https://github.com/notlmn)

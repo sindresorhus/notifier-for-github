@@ -1,11 +1,3 @@
-export const defaults = new Map([
-	['rootUrl', 'https://api.github.com/'],
-	['oauthToken', ''],
-	['useParticipatingCount', false],
-	['interval', 60],
-	['title', 'Notifier for GitHub']
-]);
-
 export const notificationReasons = new Map([
 	['subscribed', 'You are watching the repository'],
 	['manual', 'You are subscribed to this thread'],
@@ -20,13 +12,14 @@ export const notificationReasons = new Map([
 export const errorTitles = new Map([
 	['missing token', 'Missing access token, please create one and enter it in Options'],
 	['server error', 'You have to be connected to the Internet'],
-	['data format error', 'Unable to find count'],
+	['client error', 'Invalid token, enter a valid one'],
 	['parse error', 'Unable to handle server response'],
 	['default', 'Unknown error']
 ]);
 
 export const errorSymbols = new Map([
 	['missing token', 'X'],
+	['client error', '!'],
 	['default', '?']
 ]);
 
@@ -41,8 +34,8 @@ export const warningSymbols = new Map([
 ]);
 
 export const colors = new Map([
-	['default', [65, 131, 196, 255]],
-	['error', [166, 41, 41, 255]],
+	['default', [3, 102, 214, 255]],
+	['error', [203, 36, 49, 255]],
 	['warning', [245, 159, 0, 255]]
 ]);
 
@@ -78,4 +71,4 @@ export function getNotificationReasonText(reason) {
 	return notificationReasons.get(reason) || '';
 }
 
-export const defaultTitle = defaults.get('title');
+export const defaultTitle = 'Notifier for GitHub';

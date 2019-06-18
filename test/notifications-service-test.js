@@ -18,7 +18,8 @@ test.beforeEach(t => {
 			token: 'a1b2c3d4e5f6g7h8i9j0a1b2c3d4e5f6g7h8i9j0',
 			rootUrl: 'https://api.github.com/',
 			playNotifSound: true,
-			showDesktopNotif: true
+			showDesktopNotif: true,
+			reuseTabs: true
 		}
 	};
 
@@ -165,7 +166,7 @@ test.serial('#getNotificationObject returns Notification object made via options
 	});
 });
 
-test.serial('#showNotifications shows notifications', t => {
+test.serial('#showNotifications shows notifications', async t => {
 	const {service} = t.context;
 	/* eslint-disable camelcase */
 	const title = 'notification title';
@@ -196,7 +197,7 @@ test.serial('#showNotifications shows notifications', t => {
 	}];
 	/* eslint-enable camelcase */
 
-	service.showNotifications(notifications, moment().subtract(7, 'days').toISOString());
+	await service.showNotifications(notifications, moment().subtract(7, 'days').toISOString());
 
 	t.true(browser.notifications.create.called);
 	t.is(browser.notifications.create.callCount, 3);

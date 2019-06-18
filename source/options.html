@@ -2,13 +2,11 @@
 <meta charset="utf-8">
 <title>Notifier for GitHub</title>
 <link rel="stylesheet" href="options.css">
-<link rel="stylesheet" href="chrome://global/skin/in-content/common.css">
-<link rel="stylesheet" href="chrome://mozapps/skin/extensions/extensions.css">
 <form id="options-form">
 	<section>
 		<h3>Custom URL</h3>
 		<label>
-			<strong>Root URL</strong>
+			<h4>Root URL</h4>
 			<input type="url" name="rootUrl" placeholder="e.g. https://github.yourco.com/">
 		</label>
 		<div class="small">Specify the root URL to your GitHub Enterprise</div>
@@ -19,8 +17,8 @@
 	<section>
 		<h3>API access</h3>
 		<label>
-			<strong>Token</strong>
-			<input type="text" name="token" placeholder="a1b2c3d4e5f6g7h8i9j0a1b2c3d4e5f6g7h8i9j0" pattern="[a-z\d]{40}">
+			<h4>Token</h4>
+			<input type="text" name="token" placeholder="a1b2c3d4e5f6g7h8i9j0a1b2c3d4e5f6g7h8i9j0" pattern="[a-z\d]{40}" spellcheck="false">
 		</label>
 		<div class="small">For public repositories, <a id="gh_link" href="https://github.com/settings/tokens/new?scopes=notifications&description=Notifier for GitHub extension" target="gh_target">create a token</a> with the <strong>notifications</strong> permission and specify it.</div>
 		<div class="small">If you want notifications for private repositories, you'll need to <a id="gh_link" href="https://github.com/settings/tokens/new?scopes=notifications,repo&description=Notifier for GitHub extension" target="gh_target">create a token</a> with the <strong>notifications</strong> and <strong>repo</strong> permissions.</div>
@@ -41,10 +39,9 @@
 	<section>
 		<h3>Notifications</h3>
 		<label>
-			<input type="checkbox" name="showDesktopNotif">
+			<input type="checkbox" name="showDesktopNotif" data-request-permission="notifications">
 			Show desktop notifications
 		</label>
-		<p id="notifications-permission-error" style="display: none" role="alert">Could not request notifications permission. If you are using Firefox, open <a href="options.html">this page</a> in a new tab and try again.</p>
 		<label>
 			<input type="checkbox" name="playNotifSound">
 			Enable notification sound
@@ -56,8 +53,8 @@
 	<section>
 		<h3>Tab handling</h3>
 		<label>
-			<input type="checkbox" name="newTabAlways">
-			Always open notification page in new tab
+			<input type="checkbox" name="reuseTabs" data-request-permission="tabs">
+			Reuse notifications tabs when possible
 		</label>
 	</section>
 </form>

@@ -1,32 +1,25 @@
-import OptionsSync from 'webext-options-sync';
-import {queryPermission, requestPermission} from './lib/permissions-service';
+import optionsStorage from './options-storage';
+import {requestPermission} from './lib/permissions-service';
 
-const syncStore = new OptionsSync();
-syncStore.syncForm('#options-form');
+optionsStorage.syncForm('#options-form');
 
-const update = async ({target: input}) => {
-	console.log(input.name, input.checked);
+for (const inputElement of document.querySelectorAll('#options-form [name]')) {
+	inputElement.addEventListener('change', () => {
+		// `webext-options-sync` debounces syncing to 100ms, so send updates sometime after that
+		setTimeout(() => {
+			browser.runtime.sendMessage('update');
+		}, 200);
+	});
 
-	if (input.name === 'showDesktopNotif' && input.checked) {
-		try {
-			const alreadyGranted = await queryPermission('notifications');
-
-			if (!alreadyGranted) {
-				const granted = await requestPermission('notifications');
-				input.checked = granted;
+	if (inputElement.dataset.requestPermission) {
+		inputElement.parentElement.addEventListener('click', async event => {
+			if (event.target !== inputElement) {
+				return;
 			}
-		} catch (error) {
-			input.checked = false;
 
-			// Workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1382953
-			document.querySelector('#notifications-permission-error').style.display = 'block';
-		}
+			if (inputElement.checked) {
+				inputElement.checked = await requestPermission(inputElement.dataset.requestPermission);
+			}
+		});
 	}
-
-	browser.runtime.sendMessage('update');
-};
-
-// TODO: Find better way of doing this
-for (const input of document.querySelectorAll('#options-form [name]')) {
-	input.addEventListener('change', update);
 }

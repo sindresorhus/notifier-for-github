@@ -1,29 +1,14 @@
-import OptionsSync from 'webext-options-sync';
+import optionsStorage from './options-storage';
 import localStore from './lib/local-store';
 import {openTab} from './lib/tabs-service';
 import {queryPermission} from './lib/permissions-service';
 import {getNotificationCount, getTabUrl} from './lib/api';
 import {renderCount, renderError, renderWarning} from './lib/badge';
 import {checkNotifications, openNotification} from './lib/notifications-service';
+import {isChrome} from './util';
 
-const syncStore = new OptionsSync();
-
-new OptionsSync().define({
-	defaults: {
-		token: '',
-		rootUrl: 'https://api.github.com/',
-		playNotifSound: false,
-		showDesktopNotif: false,
-		onlyParticipating: false,
-		newTabAlways: false
-	},
-	migrations: [
-		OptionsSync.migrations.removeUnused
-	]
-});
-
-function scheduleNextAlarm(interval) {
-	const intervalSetting = localStore.get('interval') || 60;
+async function scheduleNextAlarm(interval) {
+	const intervalSetting = await localStore.get('interval') || 60;
 	const intervalValue = interval || 60;
 
 	if (intervalSetting !== intervalValue) {
@@ -41,7 +26,7 @@ async function handleLastModified(newLastModified) {
 
 	// Something has changed since we last accessed, display any new notificaitons
 	if (newLastModified !== lastModified) {
-		const {showDesktopNotif, playNotifSound} = await syncStore.getAll();
+		const {showDesktopNotif, playNotifSound} = await optionsStorage.getAll();
 		if (showDesktopNotif === true || playNotifSound === true) {
 			await checkNotifications(lastModified);
 		}
@@ -72,7 +57,7 @@ function handleOfflineStatus() {
 async function update() {
 	if (navigator.onLine) {
 		try {
-			updateNotificationCount();
+			await updateNotificationCount();
 		} catch (error) {
 			handleError(error);
 		}
@@ -123,7 +108,10 @@ function init() {
 	browser.runtime.onMessage.addListener(onMessage);
 	browser.runtime.onInstalled.addListener(handleInstalled);
 
-	browser.permissions.onAdded.addListener(addNotificationHandler);
+	// Chrome specific API
+	if (isChrome()) {
+		browser.permissions.onAdded.addListener(addNotificationHandler);
+	}
 
 	browser.browserAction.onClicked.addListener(handleBrowserActionClick);
 

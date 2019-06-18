@@ -52,6 +52,10 @@ You can opt-in to receive desktop notifications for new notifications on GitHub.
 
 - [Laxman Damera](https://github.com/notlmn)
 
+### Former maintainers
+
+- [Yury Solovyov](https://github.com/YurySolovyov)
+
 
 ## License
 

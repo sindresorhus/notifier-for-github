@@ -63,6 +63,6 @@ You can opt-in to receive desktop notifications for new notifications on GitHub.
 - [Sindre Sorhus](https://github.com/sindresorhus)
 - [Laxman Damera](https://github.com/notlmn)
 
-### Former maintainers
+###### Former
 
 - [Yury Solovyov](https://github.com/YurySolovyov)

@@ -10,7 +10,7 @@
 		"build": "webpack --mode=production",
 		"watch": "webpack --mode=development --watch",
 		"prerelease:version": "VERSION=$(utc-version); echo $VERSION; dot-json distribution/manifest.json version $VERSION",
-		"prerelease:source-url": "echo https://github.com/sindresorhus/refined-github/tree/\"${TRAVIS_COMMIT:-$VERSION}\" > distribution/SOURCE_URL",
+		"prerelease:source-url": "echo https://github.com/sindresorhus/notifier-for-github/tree/\"${TRAVIS_COMMIT:-$VERSION}\" > distribution/SOURCE_URL",
 		"release": "npm-run-all build prerelease:* release:*",
 		"release:cws": "webstore upload --source=distribution --auto-publish",
 		"release:amo": "web-ext-submit --source-dir distribution"

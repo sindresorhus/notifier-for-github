@@ -10,6 +10,6 @@ deploy:
   on:
     # Create a new release
     #   On cron jobs, or
-    #   When triggered via "Trigger build" on https://travis-ci.org/sindresorhus/refined-github/
+    #   When triggered via "Trigger build" on https://travis-ci.org/sindresorhus/notifier-for-github
     branch: master
     condition: (($TRAVIS_EVENT_TYPE = api) || ($TRAVIS_EVENT_TYPE = cron && $(git rev-list -n 1 --since=\"26 hours ago\" master)))

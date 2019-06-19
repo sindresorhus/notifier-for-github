@@ -1,7 +1,7 @@
 # Notifier for GitHub [![Build Status](https://travis-ci.org/sindresorhus/notifier-for-github.svg?branch=master)](https://travis-ci.org/sindresorhus/notifier-for-github)
 
 [link-cws]: https://chrome.google.com/webstore/detail/notifier-for-github/lmjdlojahmbbcodnpecnjnmlddbkjhnn "Version published on Chrome Web Store"
-[link-amo]: https://addons.mozilla.org/en-US/firefox/addon/nfg/ "Version published on Mozilla Add-ons"
+[link-amo]: https://addons.mozilla.org/en-US/firefox/addon/notifier-for-github/ "Version published on Mozilla Add-ons"
 
 > Browser extension - Get notified about new GitHub notifications
 
@@ -11,7 +11,7 @@ It checks for new GitHub notifications every minute.
 ## Install
 
 - [**Chrome** extension][link-cws] [<img valign="middle" src="https://img.shields.io/chrome-web-store/v/lmjdlojahmbbcodnpecnjnmlddbkjhnn.svg?label=%20">][link-cws]
-- [**Firefox** add-on][link-amo] [<img valign="middle" src="https://img.shields.io/amo/v/nfg.svg?label=%20">][link-amo]
+- [**Firefox** add-on][link-amo] [<img valign="middle" src="https://img.shields.io/amo/v/notifier-for-github.svg?label=%20">][link-amo]
 - **Opera** extension: Use [this Opera extension](https://addons.opera.com/en/extensions/details/download-chrome-extension-9/) to install the Chrome version.
 
 

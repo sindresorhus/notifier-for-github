@@ -3,17 +3,6 @@ html {
 	overflow-x: hidden;
 }
 
-/* Firefox only */
-.only-firefox {
-	display: none;
-}
-
-@-moz-document url-prefix('') {
-	.only-firefox {
-		display: block;
-	}
-}
-
 :root {
 	--github-green: #28a745;
 	--github-red: #cb2431;
@@ -24,33 +13,40 @@ body {
 	font-size: 14px;
 }
 
+p {
+	margin-top: 0.25em;
+	margin-bottom: 0;
+	line-height: 1.5;
+}
+
+h2,
 h3,
 h4 {
 	width: 100%;
-	margin: 0;
-	margin-bottom: 0.5rem;
+	margin-top: 0;
+	margin-bottom: 0.25em;
 }
 
-:root hr {
+hr {
 	margin: 1rem -1rem;
 	border: none;
 	border-bottom: solid #d3d3d3 1px;
 }
 
 .small {
-	font-size: 0.9em;
+	font-size: 0.875em;
 }
 
 label {
 	display: flex;
 	width: 100%;
-	margin: 0.5rem 0;
+	margin: 0.5em 0 0;
 	align-items: center;
 	flex-wrap: wrap;
 }
 
 label input[type='checkbox'] {
-	margin-right: 0.5rem;
+	margin-right: 0.5em;
 }
 
 input {
@@ -61,7 +57,7 @@ input[type='url'],
 input[type='text'] {
 	display: block;
 	width: 100%;
-	padding: 0.25rem;
+	padding: 0.25em;
 }
 
 input:not([type='checkbox']):not(:placeholder-shown):valid {
@@ -78,5 +74,15 @@ input[type='text'][name='token'] {
 	font-family: Consolas, monospace;
 	font-size: 12px;
 	width: 35ch; /* Show only a part of the token */
-	box-shadow: none !important;
+}
+
+/* Firefox only */
+.only-firefox {
+	display: none;
+}
+
+@-moz-document url-prefix('') {
+	.only-firefox {
+		display: block;
+	}
 }

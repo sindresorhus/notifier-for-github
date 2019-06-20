@@ -12,8 +12,14 @@ export async function isNotificationTargetPage(url) {
 	}
 
 	const pathname = urlObject.pathname.replace(/^[/]|[/]$/g, ''); // Remove trailing and leading slashes
+
+	// For https://github.com/notifications
+	if (pathname === 'notifications') {
+		return true;
+	}
+
 	const repoPath = pathname.split('/').slice(2).join('/'); // Everything after `user/repo`
 
-	// Issue, PR, commit paths
-	return /^(((issues|pull)\/\d+(\/(commits|files))?)|(commit\/.*))/.test(repoPath);
+	// Issue, PR, commit paths, and per-repo notifications
+	return /^(((issues|pull)\/\d+(\/(commits|files))?)|(commit\/.*)|(notifications$))/.test(repoPath);
 }

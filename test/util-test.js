@@ -35,13 +35,17 @@ test.serial('isNotificationTargetPage returns true for only valid pages', async 
 	t.throwsAsync(() => isNotificationTargetPage(''));
 	t.is(await isNotificationTargetPage('https://github.com'), false);
 	t.is(await isNotificationTargetPage('https://github.com/sindresorhus'), false);
-	t.is(await isNotificationTargetPage('https://github.com/notifications'), false);
+	t.is(await isNotificationTargetPage('https://github.com/notifications/read'), false);
 	t.is(await isNotificationTargetPage('https://github.com/commit'), false);
 	t.is(await isNotificationTargetPage('https://github.com/commits'), false);
 	t.is(await isNotificationTargetPage('https://github.com/sindresorhus/notifier-for-github/commit'), false);
 	t.is(await isNotificationTargetPage('https://github.com/sindresorhus/notifier-for-github/commits'), false);
 
 	// Valid pages
+	t.is(await isNotificationTargetPage('https://github.com/notifications'), true);
+	t.is(await isNotificationTargetPage('https://github.com/notifications?all=1'), true);
+	t.is(await isNotificationTargetPage('https://github.com/sindresorhus/notifier-for-github/notifications'), true);
+	t.is(await isNotificationTargetPage('https://github.com/sindresorhus/notifier-for-github/notifications'), true);
 	t.is(await isNotificationTargetPage('https://github.com/sindresorhus/notifier-for-github/issues/1'), true);
 	t.is(await isNotificationTargetPage('https://github.com/sindresorhus/notifier-for-github/issues/1#issue-comment-12345'), true);
 	t.is(await isNotificationTargetPage('https://github.com/sindresorhus/notifier-for-github/pull/180'), true);

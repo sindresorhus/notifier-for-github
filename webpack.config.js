@@ -2,9 +2,11 @@
 const path = require('path');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
+const SizePlugin = require('size-plugin');
 
 module.exports = {
 	devtool: 'sourcemap',
+	stats: 'errors-only',
 	entry: {
 		background: './source/background',
 		options: './source/options'
@@ -14,6 +16,7 @@ module.exports = {
 		filename: '[name].js'
 	},
 	plugins: [
+		new SizePlugin(),
 		new CopyWebpackPlugin([
 			{
 				from: '**/*',

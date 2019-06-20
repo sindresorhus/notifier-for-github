@@ -3,6 +3,17 @@ html {
 	overflow-x: hidden;
 }
 
+/* Firefox only */
+.only-firefox {
+	display: none;
+}
+
+@-moz-document url-prefix('') {
+	.only-firefox {
+		display: block;
+	}
+}
+
 :root {
 	--github-green: #28a745;
 	--github-red: #cb2431;

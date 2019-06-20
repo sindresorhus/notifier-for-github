@@ -19,6 +19,11 @@ for (const inputElement of document.querySelectorAll('#options-form [name]')) {
 
 			if (inputElement.checked) {
 				inputElement.checked = await requestPermission(inputElement.dataset.requestPermission);
+
+				// Programatically changing input value does not trigger input events, so save options manually
+				optionsStorage.set({
+					[inputElement.name]: inputElement.checked
+				});
 			}
 		});
 	}

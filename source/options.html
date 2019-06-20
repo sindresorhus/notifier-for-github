@@ -3,6 +3,8 @@
 <title>Notifier for GitHub</title>
 <link rel="stylesheet" href="options.css">
 <form id="options-form">
+	<h2 class="only-firefox">Options</h2>
+
 	<section>
 		<h3>Custom URL</h3>
 		<label>
@@ -55,6 +57,10 @@
 		<label>
 			<input type="checkbox" name="reuseTabs" data-request-permission="tabs">
 			Reuse notifications tabs when possible
+		</label>
+		<label>
+			<input type="checkbox" name="updateCountOnNavigation" data-request-permission="tabs">
+			Update notification count after opening a notification
 		</label>
 	</section>
 </form>

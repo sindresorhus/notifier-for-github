@@ -37,23 +37,23 @@ Checks for new GitHub notifications every minute, shows the number of notificati
 
 ## Permissions
 
-The extension requests a couple of permissions which are completely optional, and the extension works as intended anyway even if you ignore these. Some features of the extension work only when you grant these permissions, mentioned below.
+The extension requests a couple of optional permissions. It works as intended even if you disallow these. Some features work only when you grant these permissions as mentioned below.
 
 ### Tabs permission
 
-When you click on the extension icon, the GitHub notifications page is opened in a new tab. The tabs permission lets us switch to an existing notifications tab if you already have one opened instead of opening a new one each time you click it.
+When you click on the extension icon, the GitHub notifications page is opened in a new tab. The `tabs` permission lets us switch to an existing notifications tab if you already have one opened instead of opening a new one each time you click it.
 
-This permission also lets us update notification count immediately after opening a notification. You can find both of these options under the "Tab handling" section in the extensions options page.
+This permission also lets us update the notification count immediately after opening a notification. You can find both of these options under the "Tab handling" section in the extension's options page.
 
 ### Notifications permission
 
-If you want to receive desktop notifications for public repositories, you can enable them on extension options page. You will then be asked for the notifications permission.
+If you want to receive desktop notifications for public repositories, you can enable them on extension options page. You will then be asked for the `notifications` permission.
 
 ### Repos permission
 
-If you want to receive (useful) desktop notifications for any private repositories you have, you will have to create a token that has access to the `repo` scope as well. This is due to GitHub's current permission scheme, as the only way we can read anything about your private repos is if we have full control over repositories.
+If you want to receive (useful) desktop notifications for any private repositories you have, you will have to create a GitHub personal access token that has access to the `repo` scope as well. This is due to GitHub's current permission scheme, as the only way we can read anything about your private repos is if we have full control over repositories.
 
-If you're concerned with your security in this manner please feel free ignore this scope, just be aware that if you do not grant this scope, clicking on the notification will take you to the notifications home page since we can't get any information about the repo you got the notification for.
+If you're concerned with your security in this manner, please feel free to ignore this scope. Just be aware that if you do not grant this scope, clicking on the notification will take you to the notifications home page, since we can't get any information about the repo you got the notification for.
 
 
 ## Configuration

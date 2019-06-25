@@ -129,6 +129,27 @@ test.serial('#openNotification opens notifications tab on error', async t => {
 	t.true(browser.tabs.create.calledWith({url: 'https://github.com/notifications'}));
 });
 
+test.serial('#openNotification opens API URL when querying the API fails', async t => {
+	const {service, notificationId} = t.context;
+
+	global.fetch = sinon.stub().rejects('error');
+	browser.storage.local.get.withArgs(notificationId)
+		.resolves({
+			[notificationId]: {
+				// eslint-disable-next-line camelcase
+				last_read_at: '2019-04-19T14:44:56Z',
+				subject: {
+					type: 'PullRequest',
+					url: `https://api.github.com/user/repo/pulls/${notificationId}`
+				}
+			}
+		});
+
+	await service.openNotification(notificationId);
+
+	t.true(browser.tabs.create.calledWith({url: `https://github.com/user/repo/pull/${notificationId}`}));
+});
+
 test.serial('#closeNotification returns promise and clears notifications by id', async t => {
 	const {service, notificationId} = t.context;
 

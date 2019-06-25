@@ -46,7 +46,7 @@ async function issueOrPRHandler(notification) {
 		} catch (error) {
 			// If anything related to querying the API fails, extract the URL to issue/PR from the API url
 			url.hostname = await getHostname();
-			url.pathname = url.pathname.replace('/repos', '');
+			url.pathname = url.pathname.replace('/repos', '').replace('/pulls/', '/pull/');
 
 			return url.href;
 		}

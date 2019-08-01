@@ -7,7 +7,7 @@ import localStore from './local-store';
 
 function getLastReadForNotification(notification) {
 	// Extract the specific fragment URL for a notification
-	// This allows you to directly jump to a specif comment as if you were using
+	// This allows you to directly jump to a specific comment as if you were using
 	// the notifications page
 	const lastReadTime = notification.last_read_at;
 	const lastRead = new Date(lastReadTime || notification.updated_at);
@@ -46,7 +46,14 @@ async function issueOrPRHandler(notification) {
 		} catch (error) {
 			// If anything related to querying the API fails, extract the URL to issue/PR from the API url
 			url.hostname = await getHostname();
-			url.pathname = url.pathname.replace('/repos', '').replace('/pulls/', '/pull/');
+
+			// On GitHub Enterprise, the pathname is preceeded with `/api/v3`
+			url.pathname = url.pathname.replace('/api/v3', '');
+
+			// Pathname is generally of the form `/repos/user/reponame/pulls/2294`
+			// we only need the last part of the path (adjusted for frontend use)
+			url.pathname = url.pathname.replace('/repos', '');
+			url.pathname = url.pathname.replace('/pulls/', '/pull/');
 
 			return url.href;
 		}

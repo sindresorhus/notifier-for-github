@@ -1,8 +1,6 @@
 import OptionsSync from 'webext-options-sync';
 
-const optionsStorage = new OptionsSync();
-
-new OptionsSync().define({
+const optionsStorage = new OptionsSync({
 	defaults: {
 		token: '',
 		rootUrl: 'https://api.github.com/',

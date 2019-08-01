@@ -1,15 +1,14 @@
 language: node_js
 node_js:
-  - '12'
+  - stable
 env:
-  - EXTENSION_ID=lmjdlojahmbbcodnpecnjnmlddbkjhnn
+  - EXTENSION_ID='lmjdlojahmbbcodnpecnjnmlddbkjhnn'
 deploy:
-  provider: script
-  skip_cleanup: true
-  script: npm run release
-  on:
-    # Create a new release
-    #   On cron jobs, or
-    #   When triggered via "Trigger build" on https://travis-ci.org/sindresorhus/notifier-for-github
-    branch: master
-    condition: (($TRAVIS_EVENT_TYPE = api) || ($TRAVIS_EVENT_TYPE = cron && $(git rev-list -n 1 --since="26 hours ago" master)))
+  - provider: script
+    skip_cleanup: true
+    script: npm run release
+    on:
+      # On cron jobs https://docs.travis-ci.com/user/cron-jobs/
+      # When clicking "Trigger build" https://blog.travis-ci.com/2017-08-24-trigger-custom-build
+      branch: master
+      condition: (($TRAVIS_EVENT_TYPE = api) || ($TRAVIS_EVENT_TYPE = cron && $(git rev-list --since=yesterday HEAD)))

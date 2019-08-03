@@ -17,7 +17,7 @@
 	},
 	"dependencies": {
 		"delay": "^4.3.0",
-		"webext-options-sync": "^0.21.2",
+		"webext-options-sync": "^1.0.0-8",
 		"webextension-polyfill": "^0.4.0"
 	},
 	"devDependencies": {

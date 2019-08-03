@@ -75,14 +75,3 @@ input[type='text'][name='token'] {
 	font-size: 12px;
 	width: 35ch; /* Show only a part of the token */
 }
-
-/* Firefox only */
-.only-firefox {
-	display: none;
-}
-
-@-moz-document url-prefix('') {
-	.only-firefox {
-		display: block;
-	}
-}

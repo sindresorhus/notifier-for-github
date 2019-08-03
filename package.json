@@ -10,7 +10,7 @@
 		"build": "webpack --mode=production",
 		"watch": "webpack --mode=development --watch",
 		"prerelease:version": "VERSION=$(utc-version); echo $VERSION; dot-json distribution/manifest.json version $VERSION",
-		"prerelease:source-url": "if [[ $TRAVIS_REPO_SLUG ]]; then echo https://github.com/$TRAVIS_REPO_SLUG/tree/\"${TRAVIS_TAG:-$TRAVIS_COMMIT}\" > distribution/SOURCE_URL; fi",
+		"prerelease:source-url": "if [ ! -z \"${TRAVIS_REPO_SLUG}\" ]; then echo https://github.com/$TRAVIS_REPO_SLUG/tree/\"${TRAVIS_TAG:-$TRAVIS_COMMIT}\" > distribution/SOURCE_URL; fi",
 		"release": "npm-run-all build prerelease:* release:*",
 		"release:cws": "webstore upload --source=distribution --auto-publish",
 		"release:amo": "web-ext-submit --source-dir distribution"

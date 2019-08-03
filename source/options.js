@@ -1,16 +1,14 @@
 import optionsStorage from './options-storage';
 import {requestPermission} from './lib/permissions-service';
 
-optionsStorage.syncForm('#options-form');
+const form = document.querySelector('#options-form');
+optionsStorage.syncForm(form);
 
-for (const inputElement of document.querySelectorAll('#options-form [name]')) {
-	inputElement.addEventListener('change', () => {
-		// `webext-options-sync` debounces syncing to 100ms, so send updates sometime after that
-		setTimeout(() => {
-			browser.runtime.sendMessage('update');
-		}, 200);
-	});
+form.addEventListener('options-sync:form-synced', () => {
+	browser.runtime.sendMessage('update');
+});
 
+for (const inputElement of form.querySelectorAll('[name]')) {
 	if (inputElement.dataset.requestPermission) {
 		inputElement.parentElement.addEventListener('click', async event => {
 			if (event.target !== inputElement) {

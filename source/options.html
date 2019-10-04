@@ -1,61 +1,89 @@
-<!doctype html>
-<meta charset="utf-8">
+<!DOCTYPE html>
+<meta charset="utf-8" />
 <title>Notifier for GitHub</title>
-<link rel="stylesheet" href="options.css">
+<link rel="stylesheet" href="options.css" />
 <form id="options-form">
 	<section>
 		<h3>API Access</h3>
 
 		<label>
 			<h4>Root URL</h4>
-			<input type="url" name="rootUrl" placeholder="e.g. https://github.yourco.com/">
+			<input type="url" name="rootUrl" placeholder="e.g. https://github.yourco.com/" />
 		</label>
 		<p class="small">Specify the root URL to your GitHub Enterprise.</p>
 
 		<label>
 			<h4>Token</h4>
-			<input type="text" name="token" placeholder="a1b2c3d4e5f6g7h8i9j0a1b2c3d4e5f6g7h8i9j0" pattern="[a-z\d]{40}" spellcheck="false">
+			<input type="text" name="token" placeholder="a1b2c3d4e5f6g7h8i9j0a1b2c3d4e5f6g7h8i9j0" pattern="[a-z\d]{40}" spellcheck="false" />
 		</label>
-		<p class="small">For public repositories, <a href="https://github.com/settings/tokens/new?scopes=notifications&description=Notifier for GitHub extension">create a token</a> with the <strong>notifications</strong> permission and specify it.</p>
-		<p class="small">If you want notifications for private repositories, you'll need to <a href="https://github.com/settings/tokens/new?scopes=notifications,repo&description=Notifier for GitHub extension">create a token</a> with the <strong>notifications</strong> and <strong>repo</strong> permissions.</p>
+		<p class="small">
+			For public repositories,
+			<a href="https://github.com/settings/tokens/new?scopes=notifications&description=Notifier for GitHub extension">create a token</a> with the
+			<strong>notifications</strong> permission and specify it.
+		</p>
+		<p class="small">
+			If you want notifications for private repositories, you'll need to
+			<a href="https://github.com/settings/tokens/new?scopes=notifications,repo&description=Notifier for GitHub extension">create a token</a> with the
+			<strong>notifications</strong> and <strong>repo</strong> permissions.
+		</p>
 	</section>
 
-	<hr>
+	<hr />
 
 	<section>
 		<h3>Participating Count</h3>
 		<label>
-			<input type="checkbox" name="onlyParticipating">
+			<input type="checkbox" name="onlyParticipating" />
 			Only show unread count for issues I'm participating in
 		</label>
 	</section>
 
-	<hr>
+	<hr />
 
 	<section>
 		<h3>Notifications</h3>
 		<label>
-			<input type="checkbox" name="showDesktopNotif" data-request-permission="notifications">
+			<input type="checkbox" name="showDesktopNotif" data-request-permission="notifications" />
 			Show desktop notifications
 		</label>
 		<label>
-			<input type="checkbox" name="playNotifSound">
+			<input type="checkbox" name="playNotifSound" />
 			Enable notification sound
 		</label>
 	</section>
 
-	<hr>
+	<hr />
 
 	<section>
 		<h3>Tab Handling</h3>
 		<label>
-			<input type="checkbox" name="reuseTabs" data-request-permission="tabs">
+			<input type="checkbox" name="reuseTabs" data-request-permission="tabs" />
 			Reuse notifications tabs when possible
 		</label>
 		<label>
-			<input type="checkbox" name="updateCountOnNavigation" data-request-permission="tabs">
+			<input type="checkbox" name="updateCountOnNavigation" data-request-permission="tabs" />
 			Update notification count after opening a notification
 		</label>
+	</section>
+</form>
+
+<form id="repositories-form">
+	<hr />
+	<section>
+		<div class="header-wrapper">
+			<h3>Filter repositories</h3>
+			<span class="loader loading"></span>
+		</div>
+		<label>
+			<input type="checkbox" name="filterRepositories" />
+			Filter by repository or repository owner
+		</label>
+		<div class="filter-repositories">
+			<p class="small">
+				Select the repositories you want to receive notifications for.
+			</p>
+			<div class="repo-wrapper"></div>
+		</div>
 	</section>
 </form>
 

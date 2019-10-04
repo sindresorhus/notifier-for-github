@@ -75,3 +75,102 @@ input[type='text'][name='token'] {
 	font-size: 12px;
 	width: 35ch; /* Show only a part of the token */
 }
+
+.hidden,
+[id^='toggleList'],                        /* HIDE CHECKBOX */
+[id^='toggleList'] ~ .list,                /* HIDE LIST */
+[id^='toggleList'] + label span + span,   /* HIDE "Collapse" */
+[id^='toggleList']:checked + label span {
+	/* HIDE "Expand" (IF CHECKED) */
+	display: none;
+}
+
+[id^='toggleList'] + label > span {
+	margin-right: 0.5em;
+	width: 0.5em;
+	cursor: pointer;
+}
+
+[id^='toggleList'] + label > label {
+	display: inline-block;
+	margin-top: 0;
+	width: auto;
+}
+
+[id^='toggleList']:checked + label span + span {
+	display: inline-block; /* SHOW "Collapse" (IF CHECKED) */
+}
+
+[id^='toggleList']:checked ~ .list {
+	display: block; /* SHOW LIST (IF CHECKED) */
+}
+
+/* TODO different styling? */
+/* input[type='checkbox']:indeterminate { */
+/* } */
+
+.filter-repositories {
+	margin-top: 0.75em;
+}
+
+.repo-wrapper ul {
+	margin: 0;
+}
+
+.repo-wrapper ul > li {
+	list-style-type: none;
+}
+
+.header-wrapper {
+	display: flex;
+	align-items: center;
+}
+
+.header-wrapper > h3 {
+	width: auto;
+}
+
+.loading {
+	animation: rotate 1.5s linear infinite;
+}
+
+.loader {
+	height: 2em;
+	padding: 0.25em;
+	width: 2em;
+	cursor: pointer;
+	transform: scale(0.5);
+}
+
+.loader::before,
+.loader::after {
+	content: '';
+	display: block;
+}
+
+.loader::before {
+	border-color: transparent rgb(133, 133, 133) rgb(133, 133, 133);
+	border-radius: 50%;
+	border-style: solid;
+	border-width: 0.2em;
+	height: 1.5em;
+	width: 1.5em;
+	transform: rotate(45deg);
+}
+
+.loader::after {
+	border-color: transparent transparent transparent rgb(133, 133, 133);
+	border-style: solid;
+	border-width: 0.35em 0 0.35em 0.7em;
+	height: 0;
+	position: absolute;
+	top: 0;
+	left: 50%;
+	width: 0;
+}
+
+@keyframes rotate {
+	100% {
+		transform: scale(0.5) rotate(360deg);
+	}
+}

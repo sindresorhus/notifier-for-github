@@ -4,10 +4,14 @@ export function isChrome() {
 	return navigator.userAgent.includes('Chrome');
 }
 
+export function getRepoName(fullName) {
+	return fullName.replace(/^.+\//, '');
+}
+
 export async function isNotificationTargetPage(url) {
 	const urlObject = new URL(url);
 
-	if (urlObject.hostname !== await getHostname()) {
+	if (urlObject.hostname !== (await getHostname())) {
 		return false;
 	}
 
@@ -22,4 +26,9 @@ export async function isNotificationTargetPage(url) {
 
 	// Issue, PR, commit paths, and per-repo notifications
 	return /^(((issues|pull)\/\d+(\/(commits|files))?)|(commit\/.*)|(notifications$))/.test(repoPath);
+}
+
+export function background() {
+	const {log, warn, error, info} = chrome.extension.getBackgroundPage().console; // eslint-disable-line no-undef
+	return {log, warn, error, info};
 }

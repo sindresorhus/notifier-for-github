@@ -1,14 +1,6 @@
+import {parseLinkHeader, parseFullName} from '../util';
+import repositoriesStorage from '../repositories-storage';
 import {makeApiRequest} from './api';
-import localStore from './local-store';
-
-function parseLinkHeader(header) {
-	return header.split(',').reduce((links, part) => {
-		const [sectionUrl, sectionName] = part.split(';');
-		const url = sectionUrl.replace(/<(.+)>/, '$1').trim();
-		const name = sectionName.replace(/rel="(.+)"/, '$1').trim();
-		return Object.assign({}, links, {[name]: url});
-	}, {});
-}
 
 export async function getRepositories(
 	repos = [],
@@ -33,17 +25,22 @@ export async function getRepositories(
 }
 
 export async function listRepositories(update) {
-	let tree = await localStore.get('repositories');
-	if (update || !tree) {
-		const repos = await getRepositories();
+	const stored = await repositoriesStorage.getAll();
+
+	let tree = stored;
+	if (update || !tree || Object.keys(tree).length <= 0) {
+		const fetched = await getRepositories();
 		/* eslint-disable camelcase */
-		tree = repos.reduce((tree, {id, full_name, owner: {login}}) => {
+		tree = fetched.reduce((tree, {full_name}) => {
+			const {owner, repository} = parseFullName(full_name);
 			return Object.assign({}, tree, {
-				[login]: [...(tree[login] || []), {id, full_name}]
+				[owner]: Object.assign(tree[owner] || {}, {
+					[repository]: Boolean(stored && stored[owner] && stored[owner][repository])
+				})
 			});
 		}, {});
 		/* eslint-enable camelcase */
-		await localStore.set('repositories', tree);
+		await repositoriesStorage.set(tree);
 	}
 
 	return tree;

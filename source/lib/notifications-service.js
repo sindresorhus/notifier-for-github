@@ -1,5 +1,7 @@
 import delay from 'delay';
 import optionsStorage from '../options-storage';
+import repositoriesStorage from '../repositories-storage';
+import {parseFullName} from '../util';
 import {makeApiRequest, getNotifications, getTabUrl, getHostname} from './api';
 import {getNotificationReasonText} from './defaults';
 import {openTab} from './tabs-service';
@@ -122,8 +124,18 @@ export async function playNotificationSound() {
 }
 
 export async function checkNotifications(lastModified) {
-	const notifications = await getNotifications({lastModified});
-	const {showDesktopNotif, playNotifSound} = await optionsStorage.getAll();
+	let notifications = await getNotifications({lastModified});
+	const {showDesktopNotif, playNotifSound, filterNotifications} = await optionsStorage.getAll();
+
+	if (filterNotifications) {
+		const repositories = await repositoriesStorage.getAll();
+		/* eslint-disable camelcase */
+		notifications = notifications.filter(({repository: {full_name}}) => {
+			const {owner, repository} = parseFullName(full_name);
+			return repositories[owner][repository];
+		});
+		/* eslint-enable camelcase */
+	}
 
 	if (playNotifSound && notifications.length > 1) {
 		await playNotificationSound();

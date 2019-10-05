@@ -4,8 +4,9 @@ export function isChrome() {
 	return navigator.userAgent.includes('Chrome');
 }
 
-export function getRepoName(fullName) {
-	return fullName.replace(/^.+\//, '');
+export function parseFullName(fullName) {
+	const [, owner, repository] = fullName.match(/^([^/]*)(?:\/(.*))?/);
+	return {owner, repository};
 }
 
 export async function isNotificationTargetPage(url) {
@@ -28,7 +29,20 @@ export async function isNotificationTargetPage(url) {
 	return /^(((issues|pull)\/\d+(\/(commits|files))?)|(commit\/.*)|(notifications$))/.test(repoPath);
 }
 
-export function background() {
-	const {log, warn, error, info} = chrome.extension.getBackgroundPage().console; // eslint-disable-line no-undef
-	return {log, warn, error, info};
+export function parseLinkHeader(header) {
+	return header.split(',').reduce((links, part) => {
+		const [sectionUrl, sectionName] = part.split(';');
+		const url = sectionUrl.replace(/<(.+)>/, '$1').trim();
+		const name = sectionName.replace(/rel="(.+)"/, '$1').trim();
+		return Object.assign({}, links, {[name]: url});
+	}, {});
 }
+
+export const background = {
+	/* eslint-disable no-undef */
+	log: chrome.extension.getBackgroundPage().console.log,
+	warn: chrome.extension.getBackgroundPage().console.warn,
+	error: chrome.extension.getBackgroundPage().console.error,
+	info: chrome.extension.getBackgroundPage().console.info
+	/* eslint-enable no-undef */
+};

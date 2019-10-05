@@ -8,7 +8,8 @@ const optionsStorage = new OptionsSync({
 		showDesktopNotif: false,
 		onlyParticipating: false,
 		reuseTabs: false,
-		updateCountOnNavigation: false
+		updateCountOnNavigation: false,
+		filterNotifications: false
 	},
 	migrations: [
 		OptionsSync.migrations.removeUnused

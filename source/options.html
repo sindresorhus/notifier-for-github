@@ -65,26 +65,25 @@
 			Update notification count after opening a notification
 		</label>
 	</section>
+	<hr />
+	<section>
+		<h3>Filter</h3>
+		<label>
+			<input type="checkbox" name="filterNotifications" />
+			Filter notifications by owner or repository
+		</label>
+	</section>
 </form>
 
 <form id="repositories-form">
-	<hr />
-	<section>
-		<div class="header-wrapper">
-			<h3>Filter repositories</h3>
-			<span class="loader loading"></span>
-		</div>
-		<label>
-			<input type="checkbox" name="filterRepositories" />
-			Filter by repository or repository owner
-		</label>
-		<div class="filter-repositories">
-			<p class="small">
-				Select the repositories you want to receive notifications for.
-			</p>
-			<div class="repo-wrapper"></div>
-		</div>
-	</section>
+	<p class="small">
+		Select the repositories you want to receive notifications for.
+		<span id="reload-repositories" class="loading">
+			<span class="loader"></span>
+			<a>Reload repositories</a>
+		</span>
+	</p>
+	<div class="repo-wrapper"></div>
 </form>
 
 <script src="browser-polyfill.min.js"></script>

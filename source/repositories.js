@@ -1,60 +1,62 @@
 import repositoriesStorage from './repositories-storage';
+import optionsStorage from './options-storage';
 import {listRepositories} from './lib/repositories-service';
 import {getUser} from './lib/user-service';
-import {getRepoName} from './util';
 
 const form = document.querySelector('#repositories-form');
-const wrapper = document.querySelector('.repo-wrapper');
-const loader = document.querySelector('.loader');
-const filterRepositoriesCheckbox = form.querySelector('[name="filterRepositories"]');
-const filterRepositoriesWrapper = form.querySelector('.filter-repositories');
+const button = document.querySelector('#reload-repositories');
+const filterCheckbox = document.querySelector('[name="filterNotifications"]');
 
-loader.addEventListener('click', () => !loader.classList.contains('loading') && init(true));
-filterRepositoriesCheckbox.addEventListener('click', async () => {
-	await repositoriesStorage.set({filterRepositories: filterRepositoriesCheckbox.checked});
+button.addEventListener('click', () => !button.classList.contains('loading') && init(true));
+
+filterCheckbox.addEventListener('click', async () => {
+	await optionsStorage.set({filterNotifications: filterCheckbox.checked});
 	init();
 });
 
 export default async function init(update) {
-	await repositoriesStorage.stopSyncForm();
-	const {filterRepositories} = await repositoriesStorage.getAll();
-	if (!filterRepositories) {
-		loader.classList.remove('loading');
-		filterRepositoriesWrapper.classList.add('hidden');
+	button.classList.add('loading');
+	const {filterNotifications} = await optionsStorage.getAll();
+	if (!filterNotifications) {
+		button.classList.remove('loading');
+		form.classList.add('hidden');
 		return;
 	}
 
-	filterRepositoriesWrapper.classList.remove('hidden');
-	loader.classList.add('loading');
-	await renderCheckboxes(update);
-	await repositoriesStorage.syncForm(form);
+	form.classList.remove('hidden');
 
+	await renderCheckboxes(update);
 	await setupListeners();
-	loader.classList.remove('loading');
+	button.classList.remove('loading');
 }
 
 async function renderCheckboxes(update) {
-	const organizations = await listRepositories(update);
+	const tree = await listRepositories(update);
 	const {login: user} = await getUser(update);
 
-	const html = Object.keys(organizations)
+	const html = Object.keys(tree)
 		.sort((a, b) => (a === user ? -1 : a.localeCompare(b)))
-		.map(org => getListMarkup(org, organizations[org]))
+		.map(org => getListMarkup(org, tree[org]))
 		.join('\n');
 
-	wrapper.innerHTML = html;
+	document.querySelector('.repo-wrapper').innerHTML = html;
 }
 
-function getListMarkup(org, repos) {
+function getListMarkup(owner, repositories) {
+	const repos = Object.keys(repositories);
+
 	const list = repos
-		// eslint-disable-next-line camelcase
-		.map(({full_name}) => {
-			const repo = getRepoName(full_name);
+		.map(repository => {
 			return `
 					<li>
 						<label>
-							<input type="checkbox" name="${repo}" data-organization="${org}"/>
-							${repo}
+							<input
+								type="checkbox"
+								data-owner="${owner}"
+								name="${repository}"
+								${repositories[repository] ? 'checked' : ''}
+							/>
+							${repository}
 						</label>
 					</li>`;
 		})
@@ -62,61 +64,75 @@ function getListMarkup(org, repos) {
 
 	return `
 		<div class="row">
-			<input id="toggleList_${org}" type="checkbox" />
-			<label for="toggleList_${org}">
+			<input id="toggle-list-${owner}" type="checkbox" />
+			<label for="toggle-list-${owner}">
 				<span>&#9657; </span>
 				<span>&#9663; </span>
-				<label>
-					<input type="checkbox" name="${org}"/>
-					${org} <span class="small">(${repos.length})</span>
+				<label class="${owner}">
+					<input type="checkbox" name="${owner}" />
+					${owner} <span class="count small">(${repos.length})</span>
 				</label>
 			</label>
 			<div class="list">
-				<ul>
-					${list}
-				</ul>
+				<ul>${list}</ul>
 			</div>
 		</div>
 	`;
 }
 
+function dispatchEvent() {
+	// Needs to be called manually - due to the incompatible data structure
+	form.dispatchEvent(
+		new CustomEvent('options-sync:form-synced', {
+			bubbles: true
+		})
+	);
+}
+
 async function setupListeners() {
-	for (const organizationCheckbox of wrapper.querySelectorAll('[name]:not([data-organization])')) {
-		const {name: organization} = organizationCheckbox;
+	const wrapper = document.querySelector('.repo-wrapper');
 
-		const qs = `[data-organization="${organization}"]`;
-		checkState(qs, organizationCheckbox);
-
-		organizationCheckbox.addEventListener('click', async evt => {
-			const {name, checked} = evt.target;
-			let options = {[name]: checked};
-			for (const childInput of wrapper.querySelectorAll(qs)) {
+	for (const ownerCheckbox of wrapper.querySelectorAll('[name]:not([data-owner])')) {
+		checkState(ownerCheckbox);
+		ownerCheckbox.addEventListener('click', async evt => {
+			const {name: owner, checked} = evt.target;
+			let options = {};
+			for (const childInput of wrapper.querySelectorAll(`[data-owner="${owner}"]`)) {
 				childInput.checked = checked;
 				options = Object.assign({}, options, {[childInput.name]: checked});
 			}
 
-			repositoriesStorage.set(options);
+			checkState(ownerCheckbox);
+			repositoriesStorage.set({[owner]: options});
+			dispatchEvent();
 		});
 	}
 
-	for (const repositoryCheckbox of wrapper.querySelectorAll('[data-organization]')) {
-		const {
-			dataset: {organization}
-		} = repositoryCheckbox;
-
+	for (const repositoryCheckbox of wrapper.querySelectorAll('[data-owner]')) {
 		repositoryCheckbox.addEventListener('click', async evt => {
-			const {name, checked} = evt.target;
-			const organizationCheckbox = wrapper.querySelector(`[name="${organization}"]`);
-			checkState(`[data-organization="${organization}"]`, organizationCheckbox);
-			repositoriesStorage.set({[name]: checked, [organizationCheckbox.name]: organizationCheckbox.checked});
+			const {
+				name: repository,
+				checked,
+				dataset: {owner}
+			} = evt.target;
+			const stored = await repositoriesStorage.getAll();
+			checkState(wrapper.querySelector(`[name="${owner}"]`));
+			repositoriesStorage.set({
+				[owner]: Object.assign(stored[owner], {
+					[repository]: checked
+				})
+			});
+			dispatchEvent();
 		});
 	}
 }
 
-function checkState(qs, element) {
+function checkState(element) {
+	const qs = `[data-owner="${element.name}"]`;
 	const allCheckboxesCount = document.querySelectorAll(qs).length;
 	const checkedCount = document.querySelectorAll(`${qs}:checked`).length;
 	element.checked = checkedCount === allCheckboxesCount;
 	element.indeterminate = checkedCount > 0 && !element.checked;
+	element.parentElement.querySelector('.count').innerHTML = `(${checkedCount}/${allCheckboxesCount})`;
 	return element;
 }

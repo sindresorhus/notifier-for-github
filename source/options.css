@@ -77,31 +77,31 @@ input[type='text'][name='token'] {
 }
 
 .hidden,
-[id^='toggleList'],                        /* HIDE CHECKBOX */
-[id^='toggleList'] ~ .list,                /* HIDE LIST */
-[id^='toggleList'] + label span + span,   /* HIDE "Collapse" */
-[id^='toggleList']:checked + label span {
+[id^='toggle-list'],                        /* HIDE CHECKBOX */
+[id^='toggle-list'] ~ .list,                /* HIDE LIST */
+[id^='toggle-list'] + label span + span,   /* HIDE "Collapse" */
+[id^='toggle-list']:checked + label > span {
 	/* HIDE "Expand" (IF CHECKED) */
 	display: none;
 }
 
-[id^='toggleList'] + label > span {
+[id^='toggle-list'] + label > span {
 	margin-right: 0.5em;
 	width: 0.5em;
 	cursor: pointer;
 }
 
-[id^='toggleList'] + label > label {
+[id^='toggle-list'] + label > label {
 	display: inline-block;
 	margin-top: 0;
 	width: auto;
 }
 
-[id^='toggleList']:checked + label span + span {
+[id^='toggle-list']:checked + label span + span {
 	display: inline-block; /* SHOW "Collapse" (IF CHECKED) */
 }
 
-[id^='toggleList']:checked ~ .list {
+[id^='toggle-list']:checked ~ .list {
 	display: block; /* SHOW LIST (IF CHECKED) */
 }
 
@@ -109,7 +109,7 @@ input[type='text'][name='token'] {
 /* input[type='checkbox']:indeterminate { */
 /* } */
 
-.filter-repositories {
+#repositories-form {
 	margin-top: 0.75em;
 }
 
@@ -131,13 +131,13 @@ input[type='text'][name='token'] {
 }
 
 .loader {
-	margin: 0.5em;
+	margin: 0 0.25em;
 	cursor: pointer;
 	display: inline-block;
 	position: relative;
 	vertical-align: middle;
-	width: 12px;
-	height: 12px;
+	width: 8px;
+	height: 8px;
 	border: 2px solid transparent;
 	border-top-color: var(--github-green);
 	border-bottom-color: var(--github-green);
@@ -150,31 +150,35 @@ input[type='text'][name='token'] {
 	content: '';
 	width: 0;
 	height: 0;
-	border: 4px solid transparent;
+	border: 3px solid transparent;
 	border-bottom-color: var(--github-green);
 }
 
 .loader::after {
 	top: 0;
-	right: -6px;
+	right: -5px;
 	transform: rotate(135deg);
 }
 
 .loader::before {
-	top: 3.5px;
-	left: -6px;
+	top: 2px;
+	left: -5px;
 	transform: rotate(-45deg);
 }
 
-.loading {
+.loading > .loader {
 	animation: rotate 3s linear infinite;
 	border-top-color: var(--github-red);
 	border-bottom-color: var(--github-red);
 }
 
-.loading::before,
-.loading::after {
+.loading > .loader::before,
+.loading > .loader::after {
 	border-bottom-color: var(--github-red);
+}
+
+.loading > a {
+	display: none;
 }
 
 @keyframes rotate {

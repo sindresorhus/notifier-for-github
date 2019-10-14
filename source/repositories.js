@@ -9,7 +9,7 @@ const filterCheckbox = document.querySelector('[name="filterNotifications"]');
 
 button.addEventListener('click', () => !button.classList.contains('loading') && init(true));
 
-filterCheckbox.addEventListener('click', async () => {
+filterCheckbox.addEventListener('change', async () => {
 	await optionsStorage.set({filterNotifications: filterCheckbox.checked});
 	init();
 });

@@ -30,8 +30,8 @@ export async function isNotificationTargetPage(url) {
 }
 
 export function parseLinkHeader(header) {
-	return header.split(',').reduce((links, part) => {
-		const [sectionUrl, sectionName] = part.split(';');
+	return (header || '').split(',').reduce((links, part) => {
+		const [sectionUrl = '', sectionName = ''] = part.split(';');
 		const url = sectionUrl.replace(/<(.+)>/, '$1').trim();
 		const name = sectionName.replace(/rel="(.+)"/, '$1').trim();
 		return Object.assign({}, links, {[name]: url});

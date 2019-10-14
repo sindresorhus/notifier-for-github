@@ -63,20 +63,17 @@ function getListMarkup(owner, repositories) {
 		.join('\n');
 
 	return `
-		<div class="row">
-			<input id="toggle-list-${owner}" type="checkbox" />
-			<label for="toggle-list-${owner}">
-				<span>&#9657; </span>
-				<span>&#9663; </span>
+		<details>
+			<summary>
 				<label class="${owner}">
 					<input type="checkbox" name="${owner}" />
 					${owner} <span class="count small">(${repos.length})</span>
 				</label>
-			</label>
+			</summary>
 			<div class="list">
 				<ul>${list}</ul>
 			</div>
-		</div>
+		</details>
 	`;
 }
 

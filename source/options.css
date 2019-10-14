@@ -37,14 +37,6 @@ hr {
 	font-size: 0.875em;
 }
 
-label {
-	display: flex;
-	width: 100%;
-	margin: 0.5em 0 0;
-	align-items: center;
-	flex-wrap: wrap;
-}
-
 label input[type='checkbox'] {
 	margin-right: 0.5em;
 }
@@ -76,58 +68,21 @@ input[type='text'][name='token'] {
 	width: 35ch; /* Show only a part of the token */
 }
 
-.hidden,
-[id^='toggle-list'],                        /* HIDE CHECKBOX */
-[id^='toggle-list'] ~ .list,                /* HIDE LIST */
-[id^='toggle-list'] + label span + span,   /* HIDE "Collapse" */
-[id^='toggle-list']:checked + label > span {
-	/* HIDE "Expand" (IF CHECKED) */
+.hidden {
 	display: none;
 }
-
-[id^='toggle-list'] + label > span {
-	margin-right: 0.5em;
-	width: 0.5em;
-	cursor: pointer;
-}
-
-[id^='toggle-list'] + label > label {
-	display: inline-block;
-	margin-top: 0;
-	width: auto;
-}
-
-[id^='toggle-list']:checked + label span + span {
-	display: inline-block; /* SHOW "Collapse" (IF CHECKED) */
-}
-
-[id^='toggle-list']:checked ~ .list {
-	display: block; /* SHOW LIST (IF CHECKED) */
-}
-
-/* TODO different styling? */
-/* input[type='checkbox']:indeterminate { */
-/* } */
 
 #repositories-form {
 	margin-top: 0.75em;
 }
 
+.repo-wrapper,
 .repo-wrapper ul {
-	margin: 0;
+	margin: 0.5em 0;
 }
 
 .repo-wrapper ul > li {
 	list-style-type: none;
-}
-
-.header-wrapper {
-	display: flex;
-	align-items: center;
-}
-
-.header-wrapper > h3 {
-	width: auto;
 }
 
 .loader {

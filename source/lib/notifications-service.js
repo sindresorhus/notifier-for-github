@@ -2,7 +2,7 @@ import delay from 'delay';
 import optionsStorage from '../options-storage';
 import {makeApiRequest, getNotifications, getTabUrl, getHostname} from './api';
 import {getNotificationReasonText} from './defaults';
-import {openTab} from './tabs-service';
+import {openTab, queryTabs} from './tabs-service';
 import localStore from './local-store';
 
 function getLastReadForNotification(notification) {
@@ -103,15 +103,27 @@ export function getNotificationObject(notificationInfo) {
 	};
 }
 
+async function createNotification(notification) {
+	const notificationId = `github-notifier-${notification.id}`;
+	const notificationObject = getNotificationObject(notification);
+
+	await browser.notifications.create(notificationId, notificationObject);
+	await localStore.set(notificationId, notification);
+}
+
 export async function showNotifications(notifications) {
 	for (const notification of notifications) {
-		const notificationId = `github-notifier-${notification.id}`;
-		const notificationObject = getNotificationObject(notification);
-
-		await browser.notifications.create(notificationId, notificationObject);
-		await localStore.set(notificationId, notification);
-
-		await delay(50);
+		try {
+			const urlToOpen = await notificationHandlers[notification.subject.type](notification);
+			const tabs = await queryTabs([urlToOpen]);
+			if (tabs.length === 0) {
+				await createNotification(notification);
+				await delay(50);
+			}
+		} catch (error) {
+			await createNotification(notification);
+			await delay(50);
+		}
 	}
 }
 

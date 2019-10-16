@@ -98,57 +98,28 @@ input[type='text'][name='token'] {
 }
 
 .loader {
-	margin: 0 0.25em;
-	cursor: pointer;
-	display: inline-block;
-	position: relative;
-	vertical-align: middle;
-	width: 8px;
-	height: 8px;
-	border: 2px solid transparent;
-	border-top-color: var(--github-green);
-	border-bottom-color: var(--github-green);
-	border-radius: 50%;
-}
-
-.loader::after,
-.loader::before {
-	position: absolute;
-	content: '';
-	width: 0;
-	height: 0;
-	border: 3px solid transparent;
-	border-bottom-color: var(--github-green);
+	display: none;
+	width: 0.8em;
+	height: 0.8em;
 }
 
 .loader::after {
-	top: 0;
-	right: -5px;
-	transform: rotate(135deg);
-}
-
-.loader::before {
-	top: 2px;
-	left: -5px;
-	transform: rotate(-45deg);
+	content: ' ';
+	display: block;
+	width: 0.7em;
+	height: 0.7em;
+	margin: 0 0.1em;
+	border-radius: 50%;
+	border: 2px solid var(--github-red);
+	border-color: var(--github-red) transparent;
+	animation: spin 1.2s linear infinite;
 }
 
 .loading > .loader {
-	animation: rotate 3s linear infinite;
-	border-top-color: var(--github-red);
-	border-bottom-color: var(--github-red);
+	display: inline-block;
 }
 
-.loading > .loader::before,
-.loading > .loader::after {
-	border-bottom-color: var(--github-red);
-}
-
-.loading > a {
-	display: none;
-}
-
-@keyframes rotate {
+@keyframes spin {
 	to {
 		transform: rotate(360deg);
 	}

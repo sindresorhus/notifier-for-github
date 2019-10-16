@@ -3,13 +3,13 @@ export const notificationReasons = new Map([
 	['manual', 'You are subscribed to this thread'],
 	['author', 'You created this thread'],
 	['comment', 'You commented on this thread'],
-	['mention', 'New updates from thread that you were mentioned'],
-	['team_mention', 'New updates from thread that your team was mentioned'],
+	['mention', 'New updates from thread'],
+	['team_mention', 'New updates from thread'],
 	['state_change', 'Thread status changed'],
 	['assign', 'You were assigned to the thread'],
-	['security_alert', 'New security vulnerability found on this repository'],
-	['invitation', 'You accepted an invitation to contribute to this repository.'],
-	['review_requested', `You, or a team you're a member of, were requested to review a pull request.`]
+	['security_alert', 'New security vulnerability found'],
+	['invitation', 'You accepted an invitation'],
+	['review_requested', 'PR Review Requested']
 ]);
 
 export const errorTitles = new Map([

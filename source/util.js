@@ -39,10 +39,8 @@ export function parseLinkHeader(header) {
 }
 
 export const background = {
-	/* eslint-disable no-undef */
-	log: chrome.extension.getBackgroundPage().console.log,
-	warn: chrome.extension.getBackgroundPage().console.warn,
-	error: chrome.extension.getBackgroundPage().console.error,
-	info: chrome.extension.getBackgroundPage().console.info
-	/* eslint-enable no-undef */
+	log: browser.extension.getBackgroundPage().console.log,
+	warn: browser.extension.getBackgroundPage().console.warn,
+	error: browser.extension.getBackgroundPage().console.error,
+	info: browser.extension.getBackgroundPage().console.info
 };

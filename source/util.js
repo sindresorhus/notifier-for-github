@@ -34,6 +34,10 @@ export function parseLinkHeader(header) {
 		const [sectionUrl = '', sectionName = ''] = part.split(';');
 		const url = sectionUrl.replace(/<(.+)>/, '$1').trim();
 		const name = sectionName.replace(/rel="(.+)"/, '$1').trim();
+		if (!name || !url) {
+			return links;
+		}
+
 		return Object.assign({}, links, {[name]: url});
 	}, {});
 }

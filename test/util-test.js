@@ -1,5 +1,5 @@
 import test from 'ava';
-import {isChrome, isNotificationTargetPage} from '../source/util';
+import {isChrome, isNotificationTargetPage, parseLinkHeader, parseFullName} from '../source/util';
 
 test.beforeEach(t => {
 	t.context.defaultOptions = {
@@ -55,4 +55,66 @@ test.serial('isNotificationTargetPage returns true for only valid pages', async 
 	t.is(await isNotificationTargetPage('https://github.com/sindresorhus/notifier-for-github/pull/180/commits/782fc9132eb515a9b39232893326f3960389918e'), true);
 	t.is(await isNotificationTargetPage('https://github.com/sindresorhus/notifier-for-github/commit/master'), true);
 	t.is(await isNotificationTargetPage('https://github.com/sindresorhus/notifier-for-github/commit/782fc9132eb515a9b39232893326f3960389918e'), true);
+});
+
+test.serial('parsing a link header with next and last', t => {
+	const link =
+		'<https://api.github.com/user/foo/repos?client_id=1&client_secret=2&page=2&per_page=100>; rel="next", ' +
+		'<https://api.github.com/user/foo/repos?client_id=1&client_secret=2&page=3&per_page=100>; rel="last"';
+
+	const parsed = parseLinkHeader(link);
+	t.deepEqual(
+		parsed,
+		{
+			next: 'https://api.github.com/user/foo/repos?client_id=1&client_secret=2&page=2&per_page=100',
+			last: 'https://api.github.com/user/foo/repos?client_id=1&client_secret=2&page=3&per_page=100'
+		},
+		'parses out link for next and last'
+	);
+});
+
+test.serial('parsing a link header with prev and last', t => {
+	const link =
+		'<https://api.github.com/user/foo/repos?client_id=1&client_secret=2&page=2&per_page=100>; rel="prev", ' +
+		'<https://api.github.com/user/foo/repos?client_id=1&client_secret=2&page=3&per_page=100>; rel="last"';
+
+	const parsed = parseLinkHeader(link);
+	t.deepEqual(
+		parsed,
+		{
+			prev: 'https://api.github.com/user/foo/repos?client_id=1&client_secret=2&page=2&per_page=100',
+			last: 'https://api.github.com/user/foo/repos?client_id=1&client_secret=2&page=3&per_page=100'
+		},
+		'parses out link for next and last'
+	);
+});
+
+test('parsing a link header with next, prev and last', t => {
+	const linkHeader =
+		'<https://api.github.com/user/foo/repos?page=3&per_page=100>; rel="next", ' +
+		'<https://api.github.com/user/foo/repos?page=1&per_page=100>; rel="prev", ' +
+		'<https://api.github.com/user/foo/repos?page=5&per_page=100>; rel="last"';
+
+	const parsed = parseLinkHeader(linkHeader);
+
+	t.deepEqual(
+		parsed,
+		{
+			next: 'https://api.github.com/user/foo/repos?page=3&per_page=100',
+			prev: 'https://api.github.com/user/foo/repos?page=1&per_page=100',
+			last: 'https://api.github.com/user/foo/repos?page=5&per_page=100'
+		},
+		'parses out link, page and perPage for next, prev and last'
+	);
+});
+
+test('parsing a falsy link header', t => {
+	t.deepEqual(parseLinkHeader(''), {}, 'returns empty object');
+	t.deepEqual(parseLinkHeader(null), {}, 'returns empty object');
+	t.deepEqual(parseLinkHeader(undefined), {}, 'returns empty object');
+});
+
+test('parse full repository name', t => {
+	t.deepEqual(parseFullName('foo/bar'), {owner: 'foo', repository: 'bar'});
+	t.deepEqual(parseFullName('bar'), {owner: 'bar', repository: undefined});
 });

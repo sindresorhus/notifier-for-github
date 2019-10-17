@@ -1,4 +1,4 @@
-import {parseLinkHeader, parseFullName, background} from '../util';
+import {parseLinkHeader, parseFullName} from '../util';
 import repositoriesStorage from '../repositories-storage';
 import {makeApiRequest} from './api';
 
@@ -9,24 +9,19 @@ export async function getRepositories(
 		per_page: '100' // eslint-disable-line camelcase
 	}
 ) {
-	try {
-		const {headers, json} = await makeApiRequest('/user/repos', params);
-		repos = [...repos, ...json];
+	const {headers, json} = await makeApiRequest('/user/repos', params);
+	repos = [...repos, ...json];
 
-		const {next} = parseLinkHeader(headers.get('Link'));
-		if (!next) {
-			return repos;
-		}
-
-		const {searchParams} = new URL(next);
-		return getRepositories(repos, {
-			page: searchParams.get('page'),
-			per_page: searchParams.get('per_page') // eslint-disable-line camelcase
-		});
-	} catch (error) {
-		background.error(error);
+	const {next} = parseLinkHeader(headers.get('Link'));
+	if (!next) {
 		return repos;
 	}
+
+	const {searchParams} = new URL(next);
+	return getRepositories(repos, {
+		page: searchParams.get('page'),
+		per_page: searchParams.get('per_page') // eslint-disable-line camelcase
+	});
 }
 
 export async function listRepositories(update) {

@@ -84,6 +84,10 @@ input[type='text'][name='token'] {
 	display: none;
 }
 
+#error-message {
+	color: var(--github-red);
+}
+
 #repositories-form {
 	margin-top: 0.75em;
 }

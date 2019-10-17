@@ -2,12 +2,19 @@ import repositoriesStorage from './repositories-storage';
 import optionsStorage from './options-storage';
 import {listRepositories} from './lib/repositories-service';
 import {getUser} from './lib/user-service';
+import {background} from './util';
 
 const form = document.querySelector('#repositories-form');
 const button = document.querySelector('#reload-repositories');
+const errorMessage = document.querySelector('#error-message');
 const filterCheckbox = document.querySelector('[name="filterNotifications"]');
 
-button.addEventListener('click', () => !button.classList.contains('loading') && init(true));
+button.addEventListener('click', () => {
+	errorMessage.classList.add('hidden');
+	if (!button.classList.contains('loading')) {
+		init(true);
+	}
+});
 
 filterCheckbox.addEventListener('change', async () => {
 	await optionsStorage.set({filterNotifications: filterCheckbox.checked});
@@ -25,7 +32,14 @@ export default async function init(update) {
 
 	form.classList.remove('hidden');
 
-	await renderCheckboxes(update);
+	try {
+		await renderCheckboxes(update);
+	} catch (error) {
+		background.error(error);
+		errorMessage.textContent = `Loading repositories failed: "${error.message}"`;
+		errorMessage.classList.remove('hidden');
+	}
+
 	await setupListeners();
 	button.classList.remove('loading');
 }
@@ -39,7 +53,14 @@ async function renderCheckboxes(update) {
 		.map(org => getListMarkup(org, tree[org]))
 		.join('\n');
 
-	document.querySelector('.repo-wrapper').innerHTML = html;
+	const parsed = new DOMParser().parseFromString(html);
+
+	const wrapper = document.querySelector('.repo-wrapper');
+	if (wrapper.firstChild) {
+		wrapper.firstChild.remove();
+	}
+
+	wrapper.append(parsed.firstChild);
 }
 
 function getListMarkup(owner, repositories) {
@@ -130,6 +151,6 @@ function checkState(element) {
 	const checkedCount = document.querySelectorAll(`${qs}:checked`).length;
 	element.checked = checkedCount === allCheckboxesCount;
 	element.indeterminate = checkedCount > 0 && !element.checked;
-	element.parentElement.querySelector('.count').innerHTML = `(${checkedCount}/${allCheckboxesCount})`;
+	element.parentElement.querySelector('.count').textContent = `(${checkedCount}/${allCheckboxesCount})`;
 	return element;
 }

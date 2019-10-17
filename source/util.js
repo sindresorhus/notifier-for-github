@@ -38,9 +38,11 @@ export function parseLinkHeader(header) {
 	}, {});
 }
 
+const backgroundPage = browser.extension.getBackgroundPage() || window;
+
 export const background = {
-	log: browser.extension.getBackgroundPage().console.log,
-	warn: browser.extension.getBackgroundPage().console.warn,
-	error: browser.extension.getBackgroundPage().console.error,
-	info: browser.extension.getBackgroundPage().console.info
+	log: backgroundPage.console.log,
+	warn: backgroundPage.console.warn,
+	error: backgroundPage.console.error,
+	info: backgroundPage.console.info
 };

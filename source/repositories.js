@@ -53,7 +53,7 @@ async function renderCheckboxes(update) {
 		.map(org => getListMarkup(org, tree[org]))
 		.join('\n');
 
-	const parsed = new DOMParser().parseFromString(html);
+	const parsed = new DOMParser().parseFromString(html, 'text/html');
 
 	const wrapper = document.querySelector('.repo-wrapper');
 	if (wrapper.firstChild) {

@@ -14,9 +14,9 @@ export const notificationReasons = new Map([
 
 export const errorTitles = new Map([
 	['missing token', 'Missing access token, please create one and enter it in Options'],
-	['server error', 'You have to be connected to the Internet'],
+	['server error', 'GitHub having issues serving requests'],
 	['client error', 'Invalid token, enter a valid one'],
-	['network error', 'Failed to fetch Github Notification API'],
+	['network error', 'You have to be connected to the Internet'],
 	['parse error', 'Unable to handle server response'],
 	['default', 'Unknown error']
 ]);

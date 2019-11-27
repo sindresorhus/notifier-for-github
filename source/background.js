@@ -53,6 +53,9 @@ function handleError(error) {
 
 function handleOfflineStatus() {
 	renderWarning('offline');
+
+	// Keep schedule for next alarm to keep background active
+	scheduleNextAlarm();
 }
 
 async function update() {

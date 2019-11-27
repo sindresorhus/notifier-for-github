@@ -50,13 +50,13 @@ export async function getHeaders() {
 
 export async function makeApiRequest(endpoint, params) {
 	const url = await getParsedUrl(endpoint, params);
-	let response
+	let response;
 	try {
 		response = await fetch(url, {
 			headers: await getHeaders()
 		});
 	} catch (error) {
-		console.error(error)
+		console.error(error);
 		return Promise.reject(new Error('network error'));
 	}
 

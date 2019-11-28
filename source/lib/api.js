@@ -50,10 +50,15 @@ export async function getHeaders() {
 
 export async function makeApiRequest(endpoint, params) {
 	const url = await getParsedUrl(endpoint, params);
-
-	const response = await fetch(url, {
-		headers: await getHeaders()
-	});
+	let response;
+	try {
+		response = await fetch(url, {
+			headers: await getHeaders()
+		});
+	} catch (error) {
+		console.error(error);
+		return Promise.reject(new Error('network error'));
+	}
 
 	const {status, headers} = response;
 

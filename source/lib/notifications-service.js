@@ -132,7 +132,7 @@ export async function checkNotifications(lastModified) {
 		/* eslint-disable camelcase */
 		notifications = notifications.filter(({repository: {full_name}}) => {
 			const {owner, repository} = parseFullName(full_name);
-			return repositories[owner][repository];
+			return Boolean(repositories[owner] && repositories[owner][repository]);
 		});
 		/* eslint-enable camelcase */
 	}

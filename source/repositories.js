@@ -67,6 +67,7 @@ function getListMarkup(owner, repositories) {
 	const repos = Object.keys(repositories);
 
 	const list = repos
+		.sort((a, b) => a.localeCompare(b))
 		.map(repository => {
 			return `
 					<li>
@@ -91,9 +92,7 @@ function getListMarkup(owner, repositories) {
 					${owner} <span class="count small">(${repos.length})</span>
 				</label>
 			</summary>
-			<div class="list">
-				<ul>${list}</ul>
-			</div>
+			<ul>${list}</ul>
 		</details>
 	`;
 }

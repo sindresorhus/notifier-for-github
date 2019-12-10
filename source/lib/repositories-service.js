@@ -9,7 +9,7 @@ export async function getRepositories(
 		per_page: '100' // eslint-disable-line camelcase
 	}
 ) {
-	const {headers, json} = await makeApiRequest('/user/repos', params);
+	const {headers, json} = await makeApiRequest('/user/subscriptions', params);
 	repos = [...repos, ...json];
 
 	const {next} = parseLinkHeader(headers.get('Link'));

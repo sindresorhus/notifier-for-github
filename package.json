@@ -22,7 +22,7 @@
 	},
 	"dependencies": {
 		"delay": "^4.3.0",
-		"webext-options-sync": "1.0.1-1",
+		"webext-options-sync": "^1.2.0",
 		"webextension-polyfill": "^0.4.0"
 	},
 	"devDependencies": {

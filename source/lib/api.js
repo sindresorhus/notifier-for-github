@@ -1,4 +1,5 @@
 import optionsStorage from '../options-storage';
+import {parseLinkHeader} from '../util';
 
 export async function getHostname() {
 	const {rootUrl} = await optionsStorage.getAll();
@@ -76,9 +77,10 @@ export async function makeApiRequest(endpoint, params) {
 	}
 }
 
-export async function getNotificationResponse({maxItems = 100, lastModified = ''} = {}) {
+export async function getNotificationResponse({maxItems = 100, lastModified = '', page = 1} = {}) {
 	const {onlyParticipating} = await optionsStorage.getAll();
 	const params = {
+		page,
 		per_page: maxItems // eslint-disable-line camelcase
 	};
 
@@ -93,9 +95,21 @@ export async function getNotificationResponse({maxItems = 100, lastModified = ''
 	return makeApiRequest('/notifications', params);
 }
 
-export async function getNotifications({maxItems, lastModified} = {}) {
-	const {json: notifications} = await getNotificationResponse({maxItems, lastModified});
-	return notifications || [];
+export async function getNotifications({maxItems, lastModified} = {}, notifications = []) {
+	const {headers, json} = await getNotificationResponse({maxItems, lastModified});
+	notifications = [...notifications, ...json];
+
+	const {next} = parseLinkHeader(headers.get('Link'));
+	if (!next) {
+		return notifications;
+	}
+
+	const {searchParams} = new URL(next);
+	return getNotifications({
+		lastModified,
+		page: searchParams.get('page'),
+		maxItems: searchParams.get('per_page')
+	});
 }
 
 export async function getNotificationCount() {
@@ -113,13 +127,12 @@ export async function getNotificationCount() {
 		};
 	}
 
-	const lastlink = linkHeader.split(', ').find(link => {
-		return link.endsWith('rel="last"');
-	});
+	const {last} = parseLinkHeader(linkHeader);
+	const {searchParams} = new URL(last);
 
-	// We get notification count by asking the API to give us only one notificaion
+	// We get notification count by asking the API to give us only one notification
 	// for each page, then the last page number gives us the count
-	const count = Number(lastlink.slice(lastlink.lastIndexOf('page=') + 5, lastlink.lastIndexOf('>')));
+	const count = Number(searchParams.get('page'));
 
 	return {
 		count,

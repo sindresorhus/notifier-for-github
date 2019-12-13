@@ -53,6 +53,15 @@ label input[type='checkbox'] {
 	margin-right: 0.5em;
 }
 
+/* Workaround for missing indeterminate icon bug in chrome extension */
+input[type='checkbox']:indeterminate::after {
+	content: '\2212';
+	font-size: 16px;
+	top: -5px;
+	font-weight: bold;
+	position: absolute;
+}
+
 input {
 	font-family: inherit;
 }

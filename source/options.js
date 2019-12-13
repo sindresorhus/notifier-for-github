@@ -5,7 +5,7 @@ import {background} from './util';
 
 document.addEventListener('DOMContentLoaded', async () => {
 	try {
-		initOptionsForm();
+		await initOptionsForm();
 		await initRepositoriesForm();
 		initGlobalSyncListener();
 	} catch (error) {
@@ -19,17 +19,26 @@ function initGlobalSyncListener() {
 	});
 }
 
-function initOptionsForm() {
+function checkRelatedInputStates(inputElement) {
+	if (inputElement.name === 'showDesktopNotif') {
+		const filterCheckbox = document.querySelector('[name="filterNotifications"]');
+		filterCheckbox.disabled = !inputElement.checked;
+	}
+}
+
+async function initOptionsForm() {
 	const form = document.querySelector('#options-form');
-	optionsStorage.syncForm(form);
+	await optionsStorage.syncForm(form);
 
 	for (const inputElement of form.querySelectorAll('[name]')) {
+		checkRelatedInputStates(inputElement);
 		if (inputElement.dataset.requestPermission) {
 			inputElement.parentElement.addEventListener('click', async event => {
 				if (event.target !== inputElement) {
 					return;
 				}
 
+				checkRelatedInputStates(inputElement);
 				if (inputElement.checked) {
 					inputElement.checked = await requestPermission(inputElement.dataset.requestPermission);
 

@@ -43,6 +43,8 @@ test.serial('isNotificationTargetPage returns true for only valid pages', async 
 
 	// Valid pages
 	t.is(await isNotificationTargetPage('https://github.com/notifications'), true);
+	t.is(await isNotificationTargetPage('https://github.com/notifications/beta'), true);
+	t.is(await isNotificationTargetPage('https://github.com/notifications/beta?query=is'), true);
 	t.is(await isNotificationTargetPage('https://github.com/notifications?all=1'), true);
 	t.is(await isNotificationTargetPage('https://github.com/sindresorhus/notifier-for-github/notifications'), true);
 	t.is(await isNotificationTargetPage('https://github.com/sindresorhus/notifier-for-github/notifications'), true);

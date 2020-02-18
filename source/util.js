@@ -13,8 +13,8 @@ export async function isNotificationTargetPage(url) {
 
 	const pathname = urlObject.pathname.replace(/^[/]|[/]$/g, ''); // Remove trailing and leading slashes
 
-	// For https://github.com/notifications
-	if (pathname === 'notifications') {
+	// For https://github.com/notifications and the beta https://github.com/notifications/beta
+	if (pathname === 'notifications' || pathname === 'notifications/beta') {
 		return true;
 	}
 

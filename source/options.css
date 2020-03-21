@@ -3,6 +3,11 @@ html {
 	overflow-x: hidden;
 }
 
+html.is-edgium {
+	width: 100%;
+	min-width: auto;
+}
+
 :root {
 	--github-green: #28a745;
 	--github-red: #cb2431;

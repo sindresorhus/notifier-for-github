@@ -26,3 +26,8 @@ for (const inputElement of form.querySelectorAll('[name]')) {
 		});
 	}
 }
+
+// Detect Chromium based Microsoft Edge for some CSS styling
+if (navigator.userAgent.includes('Edg/')) {
+	document.documentElement.classList.add('is-edgium');
+}

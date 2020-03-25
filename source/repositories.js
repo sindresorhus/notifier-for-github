@@ -53,14 +53,14 @@ async function renderCheckboxes(update) {
 		.map(org => getListMarkup(org, tree[org]))
 		.join('\n');
 
-	const parsed = new DOMParser().parseFromString(html, 'text/html');
+	const parsed = new DOMParser().parseFromString(`<div class="repos">${html}</div>`, 'text/html');
 
 	const wrapper = document.querySelector('.repo-wrapper');
 	if (wrapper.firstChild) {
 		wrapper.firstChild.remove();
 	}
 
-	wrapper.append(parsed.firstChild);
+	wrapper.append(parsed.body.firstChild);
 }
 
 function getListMarkup(owner, repositories) {
@@ -72,12 +72,8 @@ function getListMarkup(owner, repositories) {
 			return `
 					<li>
 						<label>
-							<input
-								type="checkbox"
-								data-owner="${owner}"
-								name="${repository}"
-								${repositories[repository] ? 'checked' : ''}
-							/>
+							<input type="checkbox" data-owner="${owner}" name="${repository}"
+								${repositories[repository] ? 'checked' : ''}>
 							${repository}
 						</label>
 					</li>`;

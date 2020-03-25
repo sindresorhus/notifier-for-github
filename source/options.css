@@ -11,6 +11,8 @@ html {
 body {
 	font-family: system-ui, sans-serif;
 	font-size: 14px;
+	margin: 0;
+	padding: 16px;
 }
 
 p {
@@ -103,11 +105,20 @@ input[type='text'][name='token'] {
 
 .repo-wrapper,
 .repo-wrapper ul {
-	margin: 0.5em 0;
+	margin: 0.25em 0 0.5em;
 }
 
 .repo-wrapper ul > li {
 	list-style-type: none;
+}
+
+.repo-wrapper summary {
+	display: flex;
+	align-items: center;
+}
+
+.repo-wrapper label {
+	margin: 0;
 }
 
 .loader {

@@ -18,7 +18,7 @@ export async function getRepositories(
 	}
 
 	const {searchParams} = new URL(next);
-	return await getRepositories(repos, {
+	return getRepositories(repos, {
 		page: searchParams.get('page'),
 		per_page: searchParams.get('per_page') // eslint-disable-line camelcase
 	});

@@ -19,7 +19,7 @@ Checks for new GitHub notifications every minute, shows the number of notificati
 
 - [Notification count in the toolbar icon.](#notification-count)
 - [Desktop notifications.](#desktop-notifications)
-- [Filter notifications](#filter-notifications) from repositories you wish to see.
+- [Filter notifications](#filtering-notifications) from repositories you wish to see.
 - [GitHub Enterprise support.](#github-enterprise-support)
 - Click the toolbar icon to go to the GitHub notifications page.
 - Option to show only unread count for issues you're participating in.

@@ -16,6 +16,8 @@ html.is-edgium {
 body {
 	font-family: system-ui, sans-serif;
 	font-size: 14px;
+	margin: 0;
+	padding: 16px;
 }
 
 p {
@@ -50,8 +52,21 @@ label {
 	flex-wrap: wrap;
 }
 
+summary label {
+	display: inline;
+}
+
 label input[type='checkbox'] {
 	margin-right: 0.5em;
+}
+
+/* Workaround for missing indeterminate icon bug in chrome extension */
+input[type='checkbox']:indeterminate::after {
+	content: '\2212';
+	font-size: 16px;
+	top: -5px;
+	font-weight: bold;
+	position: absolute;
 }
 
 input {
@@ -79,4 +94,62 @@ input[type='text'][name='token'] {
 	font-family: Consolas, monospace;
 	font-size: 12px;
 	width: 35ch; /* Show only a part of the token */
+}
+
+.hidden {
+	display: none;
+}
+
+#error-message {
+	color: var(--github-red);
+}
+
+#repositories-form {
+	margin: 0.5em 0 0 1.75em;
+}
+
+.repo-wrapper,
+.repo-wrapper ul {
+	margin: 0.25em 0 0.5em;
+}
+
+.repo-wrapper ul > li {
+	list-style-type: none;
+}
+
+.repo-wrapper summary {
+	display: flex;
+	align-items: center;
+}
+
+.repo-wrapper label {
+	margin: 0;
+}
+
+.loader {
+	display: none;
+	width: 0.8em;
+	height: 0.8em;
+}
+
+.loader::after {
+	content: ' ';
+	display: block;
+	width: 0.7em;
+	height: 0.7em;
+	margin: 0 0.1em;
+	border-radius: 50%;
+	border: 2px solid var(--github-red);
+	border-color: var(--github-red) transparent;
+	animation: spin 1.2s linear infinite;
+}
+
+.loading > .loader {
+	display: inline-block;
+}
+
+@keyframes spin {
+	to {
+		transform: rotate(360deg);
+	}
 }

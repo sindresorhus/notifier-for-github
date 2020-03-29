@@ -107,7 +107,7 @@ test.serial('#getNotificationCount promise resolves response of N notifications 
 	global.fetch = fakeFetch({
 		headers: {
 			// eslint-disable-next-line quote-props
-			'Link': `<https://api.github.com/resource?page=1>; rel="next"
+			'Link': `<https://api.github.com/resource?page=1>; rel="next",
 							 <https://api.github.com/resource?page=2>; rel="last"`
 		}
 	});
@@ -117,8 +117,8 @@ test.serial('#getNotificationCount promise resolves response of N notifications 
 	global.fetch = fakeFetch({
 		headers: {
 			// eslint-disable-next-line quote-props
-			'Link': `<https://api.github.com/resource?page=1>; rel="next"
-							 <https://api.github.com/resource?page=2>; rel="next"
+			'Link': `<https://api.github.com/resource?page=1>; rel="next",
+							 <https://api.github.com/resource?page=2>; rel="next",
 							 <https://api.github.com/resource?page=3>; rel="last"`
 		}
 	});

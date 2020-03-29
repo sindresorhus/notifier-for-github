@@ -57,6 +57,25 @@
 			Update notification count after opening a notification
 		</label>
 	</section>
+
+	<hr>
+
+	<section>
+		<h3>Filter Notifications</h3>
+		<label>
+			<input type="checkbox" name="filterNotifications">
+			Filter desktop notifications you receive by owner or repository
+		</label>
+	</section>
+</form>
+
+<form id="repositories-form">
+	<p class="small">
+		<span>Select the repositories you want to receive notifications for.</span>
+		<span id="reload-repositories" class="loading"> <a href="#null">Reload repositories</a> <span class="loader"></span></span>
+	</p>
+	<p id="error-message" class="small hidden"></p>
+	<div class="repo-wrapper"></div>
 </form>
 
 <script src="browser-polyfill.min.js"></script>

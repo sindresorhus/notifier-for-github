@@ -1,29 +1,57 @@
 import optionsStorage from './options-storage';
+import initRepositoriesForm from './repositories';
 import {requestPermission} from './lib/permissions-service';
+import {background} from './util';
 
-const form = document.querySelector('#options-form');
-optionsStorage.syncForm(form);
-
-form.addEventListener('options-sync:form-synced', () => {
-	browser.runtime.sendMessage('update');
+document.addEventListener('DOMContentLoaded', async () => {
+	try {
+		await initOptionsForm();
+		await initRepositoriesForm();
+		initGlobalSyncListener();
+	} catch (error) {
+		console.error(error);
+		background.error(error);
+	}
 });
 
-for (const inputElement of form.querySelectorAll('[name]')) {
-	if (inputElement.dataset.requestPermission) {
-		inputElement.parentElement.addEventListener('click', async event => {
-			if (event.target !== inputElement) {
-				return;
-			}
+function initGlobalSyncListener() {
+	document.addEventListener('options-sync:form-synced', () => {
+		browser.runtime.sendMessage('update');
+	});
+}
 
-			if (inputElement.checked) {
-				inputElement.checked = await requestPermission(inputElement.dataset.requestPermission);
+function checkRelatedInputStates(inputElement) {
+	if (inputElement.name === 'showDesktopNotif') {
+		const filterCheckbox = document.querySelector('[name="filterNotifications"]');
+		filterCheckbox.disabled = !inputElement.checked;
+	}
+}
 
-				// Programatically changing input value does not trigger input events, so save options manually
-				optionsStorage.set({
-					[inputElement.name]: inputElement.checked
-				});
-			}
-		});
+async function initOptionsForm() {
+	const form = document.querySelector('#options-form');
+	await optionsStorage.syncForm(form);
+
+	for (const inputElement of form.querySelectorAll('[name]')) {
+		checkRelatedInputStates(inputElement);
+
+		if (inputElement.dataset.requestPermission) {
+			inputElement.parentElement.addEventListener('click', async event => {
+				if (event.target !== inputElement) {
+					return;
+				}
+
+				checkRelatedInputStates(inputElement);
+
+				if (inputElement.checked) {
+					inputElement.checked = await requestPermission(inputElement.dataset.requestPermission);
+
+					// Programatically changing input value does not trigger input events, so save options manually
+					optionsStorage.set({
+						[inputElement.name]: inputElement.checked
+					});
+				}
+			});
+		}
 	}
 }
 

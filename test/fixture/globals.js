@@ -7,6 +7,9 @@ import sinonChrome from 'sinon-chrome';
 global.URLSearchParams = URLSearchParams;
 
 global.browser = sinonChrome;
+global.window = {
+	console: {}
+};
 
 // Required for `webext-options-sync`
 global.chrome = global.browser;

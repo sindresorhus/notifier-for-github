@@ -77,7 +77,7 @@ export async function makeApiRequest(endpoint, params) {
 	}
 }
 
-export async function getNotificationResponse({maxItems = 100, lastModified = '', page = 1} = {}) {
+export async function getNotificationResponse({page = 1, maxItems = 100, lastModified = ''}) {
 	const {onlyParticipating} = await optionsStorage.getAll();
 	const params = {
 		page,
@@ -95,8 +95,8 @@ export async function getNotificationResponse({maxItems = 100, lastModified = ''
 	return makeApiRequest('/notifications', params);
 }
 
-export async function getNotifications({maxItems, lastModified} = {}, notifications = []) {
-	const {headers, json} = await getNotificationResponse({maxItems, lastModified});
+export async function getNotifications({page, maxItems, lastModified, notifications = []}) {
+	const {headers, json} = await getNotificationResponse({page, maxItems, lastModified});
 	notifications = [...notifications, ...json];
 
 	const {next} = parseLinkHeader(headers.get('Link'));
@@ -106,9 +106,10 @@ export async function getNotifications({maxItems, lastModified} = {}, notificati
 
 	const {searchParams} = new URL(next);
 	return getNotifications({
-		lastModified,
 		page: searchParams.get('page'),
-		maxItems: searchParams.get('per_page')
+		maxItems: searchParams.get('per_page'),
+		lastModified,
+		notifications
 	});
 }
 

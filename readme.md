@@ -19,6 +19,7 @@ Checks for new GitHub notifications every minute, shows the number of notificati
 
 - [Notification count in the toolbar icon.](#notification-count)
 - [Desktop notifications.](#desktop-notifications)
+- [Filter notifications](#filter-notifications) from repositories you wish to see.
 - [GitHub Enterprise support.](#github-enterprise-support)
 - Click the toolbar icon to go to the GitHub notifications page.
 - Option to show only unread count for issues you're participating in.
@@ -28,10 +29,12 @@ Checks for new GitHub notifications every minute, shows the number of notificati
 
 ## Screenshots
 
-### Notification count
+### Notification Count
+
 ![Screenshot of extension should notification count](media/screenshot.png)
 
 ### Options
+
 ![Options page for Notifier for GitHub](media/screenshot-options.png)
 
 
@@ -39,17 +42,17 @@ Checks for new GitHub notifications every minute, shows the number of notificati
 
 The extension requests a couple of optional permissions. It works as intended even if you disallow these. Some features work only when you grant these permissions as mentioned below.
 
-### Tabs permission
+### Tabs Permission
 
 When you click on the extension icon, the GitHub notifications page is opened in a new tab. The `tabs` permission lets us switch to an existing notifications tab if you already have one opened instead of opening a new one each time you click it.
 
 This permission also lets us update the notification count immediately after opening a notification. You can find both of these options under the "Tab handling" section in the extension's options page.
 
-### Notifications permission
+### Notifications Permission
 
 If you want to receive desktop notifications for public repositories, you can enable them on extension options page. You will then be asked for the `notifications` permission.
 
-### Repos permission
+### Repos Permission
 
 If you want to receive (useful) desktop notifications for any private repositories you have, you will have to create a GitHub personal access token that has access to the `repo` scope as well. This is due to GitHub's current permission scheme, as the only way we can read anything about your private repos is if we have full control over repositories.
 
@@ -58,11 +61,17 @@ If you're concerned with your security in this manner, please feel free to ignor
 
 ## Configuration
 
-### Desktop notifications
+### Desktop Notifications
 
 ![Notification from Notifier for GitHub extension](media/screenshot-notification.png)
 
 You can opt-in to receive desktop notifications for new notifications on GitHub. The extension checks for new notifications every minute, and displays notifications that arrived after the last check if there are any. Clicking on the notification opens it on GitHub.
+
+### Filtering Notifications
+
+![Filtering Notifications](media/screenshot-filter.png)
+
+If you have [desktop notifications](#desktop-notifications) enabled as mentioned above, you can also filter which repositories you wish to receive these notifications from. You can do this by only selecting the repositories (that grouped by user/organization) in the options menu.
 
 ### GitHub Enterprise support
 

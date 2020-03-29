@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 		await initRepositoriesForm();
 		initGlobalSyncListener();
 	} catch (error) {
+		console.error(error);
 		background.error(error);
 	}
 });
@@ -32,6 +33,7 @@ async function initOptionsForm() {
 
 	for (const inputElement of form.querySelectorAll('[name]')) {
 		checkRelatedInputStates(inputElement);
+
 		if (inputElement.dataset.requestPermission) {
 			inputElement.parentElement.addEventListener('click', async event => {
 				if (event.target !== inputElement) {
@@ -39,6 +41,7 @@ async function initOptionsForm() {
 				}
 
 				checkRelatedInputStates(inputElement);
+
 				if (inputElement.checked) {
 					inputElement.checked = await requestPermission(inputElement.dataset.requestPermission);
 

@@ -1,0 +1,18 @@
+name: Test
+
+on:
+  pull_request:
+    branches: [master]
+  push:
+    #branches: [master] // Remove before merge
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-node@v1
+      with:
+        node-version: '11.x'
+    - run: npm install
+    - run: npm test

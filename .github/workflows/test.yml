@@ -2,9 +2,13 @@ name: Test
 
 on:
   pull_request:
-    branches: [master]
+    branches:
+      - master
   push:
-    #branches: [master] // Remove before merge
+    branches:
+      - master
+    tags:
+      - "*"
 
 jobs:
   test:

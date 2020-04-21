@@ -47,6 +47,48 @@ test.serial('#getApiUrl uses custom endpoint if rootUrl is something other than 
 	t.is(await service.getApiUrl(), 'https://something.com/api/v3');
 });
 
+test.serial('#getRootUrl uses default endpoint if rootUrl matches GitHub API url', async t => {
+	const {service} = t.context;
+
+	browser.storage.sync.get.callsFake((key, cb) => {
+		cb({
+			options: {
+				rootUrl: 'https://api.github.com/'
+			}
+		});
+	});
+
+	t.is(await service.getRootUrl(), 'https://github.com');
+});
+
+test.serial('#getRootUrl uses custom endpoint if rootUrl is something other than GitHub', async t => {
+	const {service} = t.context;
+
+	browser.storage.sync.get.callsFake((storageName, callback) => {
+		callback({
+			options: {
+				rootUrl: 'https://something.com'
+			}
+		});
+	});
+
+	t.is(await service.getRootUrl(), 'https://something.com');
+});
+
+test.serial('#getRootUrl uses custom endpoint if rootUrl has end slash it is removed', async t => {
+	const {service} = t.context;
+
+	browser.storage.sync.get.callsFake((storageName, callback) => {
+		callback({
+			options: {
+				rootUrl: 'https://something.com/'
+			}
+		});
+	});
+
+	t.is(await service.getRootUrl(), 'https://something.com');
+});
+
 test.serial('#getTabUrl uses default page if rootUrl matches GitHub', async t => {
 	const {service} = t.context;
 

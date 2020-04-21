@@ -15,7 +15,7 @@ export async function getTabUrl() {
 	const {onlyParticipating} = await optionsStorage.getAll();
 	const useParticipating = onlyParticipating ? '/participating' : '';
 
-	return `https://${await getHostname()}/notifications${useParticipating}`;
+	return `${await getRootUrl()}/notifications${useParticipating}`;
 }
 
 export async function getApiUrl() {
@@ -26,6 +26,16 @@ export async function getApiUrl() {
 	}
 
 	return `${rootUrl}api/v3`;
+}
+
+export async function getRootUrl() {
+	const {rootUrl} = await optionsStorage.getAll();
+
+	if (/(^(https:\/\/)?(api\.)?github\.com)/.test(rootUrl)) {
+		return 'https://github.com';
+	}
+
+	return rootUrl.replace(/[/]$/, '');
 }
 
 export async function getParsedUrl(endpoint, params) {

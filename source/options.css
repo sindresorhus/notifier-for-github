@@ -9,8 +9,23 @@ html.is-edgium {
 }
 
 :root {
+	--background-color: #fff;
+	--text-color: #202124;
+	--secondary-text-color: #5f6368;
+	--link-color: #3367d6;
+	--input-border-color: rgba(0, 0, 0, 0.2);
 	--github-green: #28a745;
 	--github-red: #cb2431;
+}
+
+@media (prefers-color-scheme: dark) {
+	:root {
+		--background-color: #292a2d;
+		--text-color: #e8eaed;
+		--secondary-text-color: #9aa0a6;
+		--link-color: #8ab4f8;
+		--input-border-color: rgba(255, 255, 255, 0.3);
+	}
 }
 
 body {
@@ -18,12 +33,14 @@ body {
 	font-size: 14px;
 	margin: 0;
 	padding: 16px;
+	background: var(--background-color);
+	color: var(--text-color);
+	line-height: 1.5;
 }
 
 p {
-	margin-top: 0.25em;
-	margin-bottom: 0;
-	line-height: 1.5;
+	margin-top: 0.5rem;
+	margin-bottom: 0.5rem;
 }
 
 h2,
@@ -31,13 +48,13 @@ h3,
 h4 {
 	width: 100%;
 	margin-top: 0;
-	margin-bottom: 0.25em;
+	margin-bottom: 0.25rem;
 }
 
 hr {
 	margin: 1rem -1rem;
 	border: none;
-	border-bottom: solid #d3d3d3 1px;
+	border-bottom: 1px solid #d3d3d3;
 }
 
 .small {
@@ -46,18 +63,21 @@ hr {
 
 label {
 	display: flex;
-	width: 100%;
-	margin: 0.5em 0 0;
 	align-items: center;
 	flex-wrap: wrap;
-}
-
-summary label {
-	display: inline;
+	width: 100%;
+	margin: 0.5em 0;
 }
 
 label input[type='checkbox'] {
 	margin-right: 0.5em;
+}
+
+input,
+button {
+	color: var(--text-color);
+	background-color: var(--background-color);
+	border: 1px solid var(--input-border-color);
 }
 
 /* Workaround for missing indeterminate icon bug in chrome extension */
@@ -69,15 +89,12 @@ input[type='checkbox']:indeterminate::after {
 	position: absolute;
 }
 
-input {
-	font-family: inherit;
-}
-
-input[type='url'],
-input[type='text'] {
+input:not([type='checkbox']) {
 	display: block;
 	width: 100%;
-	padding: 0.25em;
+	padding: 0.25rem;
+	font-family: SFMono-Regular, Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+	font-size: 12px;
 }
 
 input:not([type='checkbox']):not(:placeholder-shown):valid {
@@ -87,12 +104,10 @@ input:not([type='checkbox']):not(:placeholder-shown):valid {
 
 input:not([type='checkbox']):invalid {
 	color: var(--github-red);
-	border: 1px solid;
+	border: 1px solid var(--github-red);
 }
 
 input[type='text'][name='token'] {
-	font-family: Consolas, monospace;
-	font-size: 12px;
 	width: 35ch; /* Show only a part of the token */
 }
 
@@ -124,6 +139,7 @@ input[type='text'][name='token'] {
 
 .repo-wrapper label {
 	margin: 0;
+	margin-bottom: 0.25rem;
 }
 
 .loader {

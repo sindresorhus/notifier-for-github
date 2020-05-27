@@ -67,7 +67,8 @@
 			"distribution"
 		],
 		"rules": {
-			"no-await-in-loop": "off"
+			"no-await-in-loop": "off",
+			"import/no-unassigned-import": "off"
 		},
 		"globals": [
 			"browser"

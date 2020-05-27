@@ -75,6 +75,9 @@
 		]
 	},
 	"stylelint": {
-		"extends": "stylelint-config-xo"
+		"extends": "stylelint-config-xo",
+		"rules": {
+			"declaration-no-important": null
+		}
 	}
 }

@@ -1,6 +1,9 @@
-html {
+:root {
 	--github-green: #28a745;
 	--github-red: #cb2431;
+}
+
+html {
 	min-width: 550px;
 	overflow-x: hidden;
 }
@@ -11,16 +14,7 @@ html.is-edgium {
 }
 
 body {
-	font-family: system-ui, sans-serif;
-	font-size: 14px;
-	margin: 0;
-	padding: 16px;
 	line-height: 1.5;
-}
-
-p {
-	margin-top: 0.5rem;
-	margin-bottom: 0.5rem;
 }
 
 h2,
@@ -53,21 +47,16 @@ label input[type='checkbox'] {
 	margin-right: 0.5em;
 }
 
-/* Workaround for missing indeterminate icon bug in chrome extension */
-input[type='checkbox']:indeterminate::after {
-	content: '\2212';
-	font-size: 16px;
-	top: -5px;
-	font-weight: bold;
-	position: absolute;
-}
-
+/*
+Monospace all text inputs
+We don't have many text inputs, so this should be fine
+*/
 input:not([type='checkbox']) {
 	display: block;
 	width: 100%;
 	padding: 0.25rem;
 	font-family: SFMono-Regular, Consolas, 'Liberation Mono', Menlo, Courier, monospace;
-	font-size: 12px;
+	font-size: 11px;
 }
 
 input:not([type='checkbox']):not(:placeholder-shown):valid {
@@ -80,8 +69,12 @@ input:not([type='checkbox']):invalid {
 	border: 1px solid var(--github-red);
 }
 
+/*
+Show only a part of the token
+https://github.com/sindresorhus/refined-github/issues/1374#issuecomment-397906701
+*/
 input[type='text'][name='token'] {
-	width: 35ch; /* Show only a part of the token */
+	width: 35ch !important;
 }
 
 .hidden {

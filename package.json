@@ -21,6 +21,7 @@
 	},
 	"dependencies": {
 		"delay": "^4.3.0",
+		"webext-base-css": "^1.1.0",
 		"webext-options-sync": "^1.2.0",
 		"webextension-polyfill": "^0.4.0"
 	},
@@ -29,9 +30,11 @@
 		"ava": "^2.2.0",
 		"chrome-webstore-upload-cli": "^1.2.0",
 		"copy-webpack-plugin": "^5.0.4",
+		"css-loader": "^3.5.3",
 		"dot-json": "^1.1.0",
 		"esm": "^3.2.25",
 		"lodash.merge": "^4.6.2",
+		"mini-css-extract-plugin": "^0.9.0",
 		"moment": "^2.24.0",
 		"npm-run-all": "^4.1.5",
 		"sinon": "^7.3.2",

@@ -1,4 +1,6 @@
 html {
+	--github-green: #28a745;
+	--github-red: #cb2431;
 	min-width: 550px;
 	overflow-x: hidden;
 }
@@ -8,33 +10,11 @@ html.is-edgium {
 	min-width: auto;
 }
 
-:root {
-	--background-color: #fff;
-	--text-color: #202124;
-	--secondary-text-color: #5f6368;
-	--link-color: #3367d6;
-	--input-border-color: rgba(0, 0, 0, 0.2);
-	--github-green: #28a745;
-	--github-red: #cb2431;
-}
-
-@media (prefers-color-scheme: dark) {
-	:root {
-		--background-color: #292a2d;
-		--text-color: #e8eaed;
-		--secondary-text-color: #9aa0a6;
-		--link-color: #8ab4f8;
-		--input-border-color: rgba(255, 255, 255, 0.3);
-	}
-}
-
 body {
 	font-family: system-ui, sans-serif;
 	font-size: 14px;
 	margin: 0;
 	padding: 16px;
-	background: var(--background-color);
-	color: var(--text-color);
 	line-height: 1.5;
 }
 
@@ -71,13 +51,6 @@ label {
 
 label input[type='checkbox'] {
 	margin-right: 0.5em;
-}
-
-input,
-button {
-	color: var(--text-color);
-	background-color: var(--background-color);
-	border: 1px solid var(--input-border-color);
 }
 
 /* Workaround for missing indeterminate icon bug in chrome extension */
@@ -142,13 +115,13 @@ input[type='text'][name='token'] {
 	margin-bottom: 0.25rem;
 }
 
-.loader {
+#reload-repositories .loader {
 	display: none;
 	width: 0.8em;
 	height: 0.8em;
 }
 
-.loader::after {
+#reload-repositories .loader::after {
 	content: ' ';
 	display: block;
 	width: 0.7em;
@@ -160,7 +133,7 @@ input[type='text'][name='token'] {
 	animation: spin 1.2s linear infinite;
 }
 
-.loading > .loader {
+#reload-repositories.loading > .loader {
 	display: inline-block;
 }
 

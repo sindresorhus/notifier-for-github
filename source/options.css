@@ -3,14 +3,9 @@
 	--github-red: #cb2431;
 }
 
-html {
+html:not(.is-edgium) {
 	min-width: 550px;
 	overflow-x: hidden;
-}
-
-html.is-edgium {
-	width: 100%;
-	min-width: auto;
 }
 
 body {
@@ -26,9 +21,7 @@ h4 {
 }
 
 hr {
-	margin: 1rem -1rem;
-	border: none;
-	border-bottom: 1px solid #d3d3d3;
+	margin: 1rem 0;
 }
 
 .small {
@@ -52,8 +45,6 @@ Monospace all text inputs
 We don't have many text inputs, so this should be fine
 */
 input:not([type='checkbox']) {
-	display: block;
-	width: 100%;
 	padding: 0.25rem;
 	font-family: SFMono-Regular, Consolas, 'Liberation Mono', Menlo, Courier, monospace;
 	font-size: 11px;
@@ -61,12 +52,12 @@ input:not([type='checkbox']) {
 
 input:not([type='checkbox']):not(:placeholder-shown):valid {
 	color: var(--github-green);
-	border: 1px solid var(--github-green);
+	border: 1px solid;
 }
 
 input:not([type='checkbox']):invalid {
 	color: var(--github-red);
-	border: 1px solid var(--github-red);
+	border: 1px solid;
 }
 
 /*

@@ -1,6 +1,5 @@
 'use strict';
 const path = require('path');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const SizePlugin = require('size-plugin');
@@ -16,28 +15,19 @@ module.exports = {
 		path: path.join(__dirname, 'distribution'),
 		filename: '[name].js'
 	},
-	module: {
-		rules: [
-			{
-				test: /\.css$/,
-				use: [
-					MiniCssExtractPlugin.loader,
-					'css-loader'
-				]
-			}
-		]
-	},
 	plugins: [
-		new MiniCssExtractPlugin(),
 		new SizePlugin(),
 		new CopyWebpackPlugin([
 			{
 				from: '**/*',
 				context: 'source',
-				ignore: ['*.js', '*.css']
+				ignore: ['*.js']
 			},
 			{
 				from: 'node_modules/webextension-polyfill/dist/browser-polyfill.min.js'
+			},
+			{
+				from: 'node_modules/webext-base-css/webext-base.css'
 			}
 		])
 	],

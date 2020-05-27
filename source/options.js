@@ -1,6 +1,3 @@
-import 'webext-base-css/webext-base.css';
-import './options.css';
-
 import optionsStorage from './options-storage';
 import initRepositoriesForm from './repositories';
 import {requestPermission} from './lib/permissions-service';

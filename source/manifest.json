@@ -33,6 +33,7 @@
 		"default_icon": "icon-toolbar.png"
 	},
 	"options_ui": {
-		"page": "options.html"
+		"page": "options.html",
+		"chrome_style": true
 	}
 }

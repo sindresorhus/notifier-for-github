@@ -8,10 +8,6 @@ html:not(.is-edgium) {
 	overflow-x: hidden;
 }
 
-body {
-	line-height: 1.5;
-}
-
 h2,
 h3,
 h4 {
@@ -40,24 +36,19 @@ label input[type='checkbox'] {
 	margin-right: 0.5em;
 }
 
-/*
-Monospace all text inputs
-We don't have many text inputs, so this should be fine
-*/
 input:not([type='checkbox']) {
-	padding: 0.25rem;
 	font-family: SFMono-Regular, Consolas, 'Liberation Mono', Menlo, Courier, monospace;
 	font-size: 11px;
 }
 
 input:not([type='checkbox']):not(:placeholder-shown):valid {
 	color: var(--github-green);
-	border: 1px solid;
+	border: 1px solid !important;
 }
 
 input:not([type='checkbox']):invalid {
 	color: var(--github-red);
-	border: 1px solid;
+	border: 1px solid !important;
 }
 
 /*

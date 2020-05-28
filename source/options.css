@@ -1,29 +1,11 @@
-html {
-	min-width: 550px;
-	overflow-x: hidden;
-}
-
-html.is-edgium {
-	width: 100%;
-	min-width: auto;
-}
-
 :root {
 	--github-green: #28a745;
 	--github-red: #cb2431;
 }
 
-body {
-	font-family: system-ui, sans-serif;
-	font-size: 14px;
-	margin: 0;
-	padding: 16px;
-}
-
-p {
-	margin-top: 0.25em;
-	margin-bottom: 0;
-	line-height: 1.5;
+html:not(.is-edgium) {
+	min-width: 550px;
+	overflow-x: hidden;
 }
 
 h2,
@@ -31,13 +13,11 @@ h3,
 h4 {
 	width: 100%;
 	margin-top: 0;
-	margin-bottom: 0.25em;
+	margin-bottom: 0.25rem;
 }
 
 hr {
-	margin: 1rem -1rem;
-	border: none;
-	border-bottom: solid #d3d3d3 1px;
+	margin: 1rem 0;
 }
 
 .small {
@@ -46,54 +26,37 @@ hr {
 
 label {
 	display: flex;
-	width: 100%;
-	margin: 0.5em 0 0;
 	align-items: center;
 	flex-wrap: wrap;
-}
-
-summary label {
-	display: inline;
+	width: 100%;
+	margin: 0.5em 0;
 }
 
 label input[type='checkbox'] {
 	margin-right: 0.5em;
 }
 
-/* Workaround for missing indeterminate icon bug in chrome extension */
-input[type='checkbox']:indeterminate::after {
-	content: '\2212';
-	font-size: 16px;
-	top: -5px;
-	font-weight: bold;
-	position: absolute;
-}
-
-input {
-	font-family: inherit;
-}
-
-input[type='url'],
-input[type='text'] {
-	display: block;
-	width: 100%;
-	padding: 0.25em;
+input:not([type='checkbox']) {
+	font-family: SFMono-Regular, Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+	font-size: 11px;
 }
 
 input:not([type='checkbox']):not(:placeholder-shown):valid {
 	color: var(--github-green);
-	border: 1px solid var(--github-green);
+	border: 1px solid !important;
 }
 
 input:not([type='checkbox']):invalid {
 	color: var(--github-red);
-	border: 1px solid;
+	border: 1px solid !important;
 }
 
+/*
+Show only a part of the token
+https://github.com/sindresorhus/refined-github/issues/1374#issuecomment-397906701
+*/
 input[type='text'][name='token'] {
-	font-family: Consolas, monospace;
-	font-size: 12px;
-	width: 35ch; /* Show only a part of the token */
+	width: 35ch !important;
 }
 
 .hidden {
@@ -124,15 +87,16 @@ input[type='text'][name='token'] {
 
 .repo-wrapper label {
 	margin: 0;
+	margin-bottom: 0.25rem;
 }
 
-.loader {
+#reload-repositories .loader {
 	display: none;
 	width: 0.8em;
 	height: 0.8em;
 }
 
-.loader::after {
+#reload-repositories .loader::after {
 	content: ' ';
 	display: block;
 	width: 0.7em;
@@ -144,7 +108,7 @@ input[type='text'][name='token'] {
 	animation: spin 1.2s linear infinite;
 }
 
-.loading > .loader {
+#reload-repositories.loading > .loader {
 	display: inline-block;
 }
 

@@ -70,13 +70,14 @@ function getListMarkup(owner, repositories) {
 		.sort((a, b) => a.localeCompare(b))
 		.map(repository => {
 			return `
-					<li>
-						<label>
-							<input type="checkbox" data-owner="${owner}" name="${repository}"
-								${repositories[repository] ? 'checked' : ''}>
-							${repository}
-						</label>
-					</li>`;
+				<li>
+					<label>
+						<input type="checkbox" data-owner="${owner}" name="${repository}"
+							${repositories[repository] ? 'checked' : ''}>
+						${repository}
+					</label>
+				</li>
+			`;
 		})
 		.join('\n');
 
@@ -88,6 +89,7 @@ function getListMarkup(owner, repositories) {
 					${owner} <span class="count small">(${repos.length})</span>
 				</label>
 			</summary>
+
 			<ul>${list}</ul>
 		</details>
 	`;

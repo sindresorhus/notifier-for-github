@@ -4,12 +4,12 @@ import {makeApiRequest} from './api';
 
 export async function getRepositories(
 	repos = [],
-	params = {
+	parameters = {
 		page: '1',
 		per_page: '100' // eslint-disable-line camelcase
 	}
 ) {
-	const {headers, json} = await makeApiRequest('/user/subscriptions', params);
+	const {headers, json} = await makeApiRequest('/user/subscriptions', parameters);
 	repos = [...repos, ...json];
 
 	const {next} = parseLinkHeader(headers.get('Link'));
@@ -30,16 +30,17 @@ export async function listRepositories(update) {
 	let tree = stored;
 	if (update || !tree || Object.keys(tree).length <= 0) {
 		const fetched = await getRepositories();
-		/* eslint-disable camelcase */
-		tree = fetched.reduce((tree, {full_name}) => {
-			const {owner, repository} = parseFullName(full_name);
+
+		tree = {};
+		for (const repo of fetched) {
+			const {owner, repository} = parseFullName(repo.full_name);
 			return Object.assign({}, tree, {
 				[owner]: Object.assign(tree[owner] || {}, {
 					[repository]: Boolean(stored && stored[owner] && stored[owner][repository])
 				})
 			});
-		}, {});
-		/* eslint-enable camelcase */
+		}
+
 		await repositoriesStorage.set(tree);
 	}
 

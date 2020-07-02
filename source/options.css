@@ -41,13 +41,13 @@ input:not([type='checkbox']) {
 	font-size: 11px;
 }
 
-input:not([type='checkbox']):not(:placeholder-shown):valid {
-	color: var(--github-green);
+input:not([type='checkbox']):invalid {
+	color: var(--github-red);
 	border: 1px solid !important;
 }
 
-input:not([type='checkbox']):invalid {
-	color: var(--github-red);
+input:not([type='checkbox']):not(:placeholder-shown):valid {
+	color: var(--github-green);
 	border: 1px solid !important;
 }
 

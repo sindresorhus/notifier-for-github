@@ -45,7 +45,7 @@ async function issueOrPRHandler(notification) {
 			const {json: response} = await makeApiRequest(url.pathname);
 			const targetUrl = response.message === 'Not Found' ? await getTabUrl() : response.html_url;
 			return targetUrl;
-		} catch (error) {
+		} catch {
 			// If anything related to querying the API fails, extract the URL to issue/PR from the API url
 			url.hostname = await getHostname();
 
@@ -86,7 +86,7 @@ export async function openNotification(notificationId) {
 	try {
 		const urlToOpen = await notificationHandlers[notification.subject.type](notification);
 		return openTab(urlToOpen);
-	} catch (error) {
+	} catch {
 		return openTab(await getTabUrl());
 	}
 }

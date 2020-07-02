@@ -1,4 +1,6 @@
 import test from 'ava';
+
+import './fixture/globals';
 import * as permissions from '../source/lib/permissions-service';
 
 test.beforeEach(t => {

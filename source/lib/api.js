@@ -28,9 +28,9 @@ export async function getApiUrl() {
 	return `${rootUrl}api/v3`;
 }
 
-export async function getParsedUrl(endpoint, params) {
+export async function getParsedUrl(endpoint, parameters) {
 	const api = await getApiUrl();
-	const query = params ? '?' + (new URLSearchParams(params)).toString() : '';
+	const query = parameters ? '?' + (new URLSearchParams(parameters)).toString() : '';
 	return `${api}${endpoint}${query}`;
 }
 
@@ -49,8 +49,8 @@ export async function getHeaders() {
 	};
 }
 
-export async function makeApiRequest(endpoint, params) {
-	const url = await getParsedUrl(endpoint, params);
+export async function makeApiRequest(endpoint, parameters) {
+	const url = await getParsedUrl(endpoint, parameters);
 	let response;
 	try {
 		response = await fetch(url, {
@@ -77,27 +77,27 @@ export async function makeApiRequest(endpoint, params) {
 			headers,
 			json
 		};
-	} catch (error) {
+	} catch {
 		return Promise.reject(new Error('parse error'));
 	}
 }
 
 export async function getNotificationResponse({page = 1, maxItems = 100, lastModified = ''}) {
 	const {onlyParticipating} = await optionsStorage.getAll();
-	const params = {
+	const parameters = {
 		page,
 		per_page: maxItems // eslint-disable-line camelcase
 	};
 
 	if (onlyParticipating) {
-		params.participating = onlyParticipating;
+		parameters.participating = onlyParticipating;
 	}
 
 	if (lastModified) {
-		params.since = lastModified;
+		parameters.since = lastModified;
 	}
 
-	return makeApiRequest('/notifications', params);
+	return makeApiRequest('/notifications', parameters);
 }
 
 export async function getNotifications({page, maxItems, lastModified, notifications = []}) {

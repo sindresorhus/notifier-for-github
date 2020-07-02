@@ -1,4 +1,6 @@
 import test from 'ava';
+
+import './fixture/globals';
 import * as api from '../source/lib/api';
 import {fakeFetch} from './util';
 

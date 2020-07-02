@@ -1,5 +1,6 @@
 import test from 'ava';
 
+import './fixture/globals';
 import * as tabs from '../source/lib/tabs-service';
 
 test.beforeEach(t => {

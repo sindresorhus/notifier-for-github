@@ -1,14 +1,15 @@
 {
 	"private": true,
+	"type": "module",
 	"scripts": {
 		"lint": "run-p lint:*",
-		"lint:js": "xo",
+		"lint:js": "xo source/**/*.js && xo test/**/*.js",
 		"lint:css": "stylelint source/**/*.css",
 		"lint-fix": "run-p 'lint:* -- --fix'",
 		"test": "run-s lint:* test:* build",
-		"test:js": "ava",
-		"build": "webpack --mode=production",
-		"watch": "webpack --mode=development --watch",
+		"test:js": "rollup test/*-test.js --dir .built/test --chunkFileNames _.mjs --entryFileNames [name].mjs && ava",
+		"build": "webpack --config=webpack.config.cjs --mode=production",
+		"watch": "webpack --config=webpack.config.cjs --mode=development --watch",
 		"web-ext:firefox": "web-ext run --source-dir ./distribution/",
 		"web-ext:chrome": "web-ext run --target chromium --source-dir ./distribution/",
 		"dev:firefox": "npm-run-all -p watch web-ext:firefox",
@@ -21,40 +22,37 @@
 	},
 	"dependencies": {
 		"delay": "^4.3.0",
+		"rollup": "^2.18.2",
 		"webext-base-css": "^1.1.0",
-		"webext-options-sync": "^1.2.0",
-		"webextension-polyfill": "^0.4.0"
+		"webext-options-sync": "^1.2.3",
+		"webextension-polyfill": "^0.6.0"
 	},
 	"devDependencies": {
-		"@types/chrome": "0.0.86",
-		"ava": "^2.2.0",
+		"@types/chrome": "0.0.117",
+		"ava": "^3.9.0",
 		"chrome-webstore-upload-cli": "^1.2.0",
-		"copy-webpack-plugin": "^5.0.4",
-		"dot-json": "^1.1.0",
+		"copy-webpack-plugin": "^6.0.3",
+		"dot-json": "^1.2.0",
 		"esm": "^3.2.25",
 		"lodash.merge": "^4.6.2",
-		"moment": "^2.24.0",
+		"moment": "^2.27.0",
 		"npm-run-all": "^4.1.5",
-		"sinon": "^7.3.2",
+		"sinon": "^9.0.2",
 		"sinon-chrome": "^3.0.1",
-		"size-plugin": "^1.2.0",
-		"stylelint": "^10.1.0",
-		"stylelint-config-xo": "^0.15.0",
-		"terser-webpack-plugin": "^1.4.1",
-		"utc-version": "^2.0.1",
-		"web-ext": "^3.2.0",
-		"web-ext-submit": "^3.1.1",
-		"webpack": "^4.38.0",
-		"webpack-cli": "^3.3.6",
-		"xo": "^0.24.0"
+		"size-plugin": "^2.0.1",
+		"stylelint": "^13.6.1",
+		"stylelint-config-xo": "^0.19.0",
+		"terser-webpack-plugin": "^3.0.6",
+		"utc-version": "^2.0.2",
+		"web-ext": "^4.3.0",
+		"web-ext-submit": "^4.3.0",
+		"webpack": "^4.43.0",
+		"webpack-cli": "^3.3.12",
+		"xo": "^0.32.0"
 	},
 	"ava": {
 		"files": [
-			"test/*-test.js"
-		],
-		"require": [
-			"esm",
-			"./test/fixture/globals.js"
+			".built/test/*-test.mjs"
 		]
 	},
 	"xo": {
@@ -66,7 +64,8 @@
 		],
 		"rules": {
 			"no-await-in-loop": "off",
-			"import/no-unassigned-import": "off"
+			"import/no-unassigned-import": "off",
+			"ava/no-ignored-test-files": "off"
 		},
 		"globals": [
 			"browser"

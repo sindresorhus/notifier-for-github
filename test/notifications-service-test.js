@@ -2,6 +2,7 @@ import test from 'ava';
 import sinon from 'sinon';
 import moment from 'moment';
 
+import './fixture/globals';
 import * as notifications from '../source/lib/notifications-service';
 import {getNotificationReasonText} from '../source/lib/defaults';
 import {fakeFetch} from './util';

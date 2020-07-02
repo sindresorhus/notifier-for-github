@@ -1,4 +1,6 @@
 import test from 'ava';
+
+import './fixture/globals';
 import localStore from '../source/lib/local-store';
 
 test.beforeEach(t => {

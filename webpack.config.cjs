@@ -1,4 +1,5 @@
 'use strict';
+
 const path = require('path');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
@@ -17,19 +18,23 @@ module.exports = {
 	},
 	plugins: [
 		new SizePlugin(),
-		new CopyWebpackPlugin([
-			{
-				from: '**/*',
-				context: 'source',
-				ignore: ['*.js']
-			},
-			{
-				from: 'node_modules/webextension-polyfill/dist/browser-polyfill.min.js'
-			},
-			{
-				from: 'node_modules/webext-base-css/webext-base.css'
-			}
-		])
+		new CopyWebpackPlugin({
+			patterns: [
+				{
+					from: '**/*',
+					context: 'source',
+					globOptions: {
+						ignore: ['**/*.js']
+					}
+				},
+				{
+					from: 'node_modules/webextension-polyfill/dist/browser-polyfill.min.js'
+				},
+				{
+					from: 'node_modules/webext-base-css/webext-base.css'
+				}
+			]
+		})
 	],
 	optimization: {
 		minimizer: [

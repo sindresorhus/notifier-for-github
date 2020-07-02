@@ -1,6 +1,8 @@
 import sinon from 'sinon';
 import merge from 'lodash.merge';
 
+import './fixture/globals';
+
 const getNormalizedResponse = overrides => {
 	return merge({
 		status: 200,

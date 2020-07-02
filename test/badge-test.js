@@ -1,5 +1,6 @@
 import test from 'ava';
 
+import './fixture/globals';
 import * as defaults from '../source/lib/defaults';
 import {renderCount, renderError} from '../source/lib/badge';
 

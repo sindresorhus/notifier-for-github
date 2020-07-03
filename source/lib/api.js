@@ -8,9 +8,9 @@ export async function getGitHubOrigin() {
 	// TODO: Drop `api.github.com` check when dropping migrations
 	if (origin === 'https://api.github.com' || origin === 'https://github.com') {
 		return 'https://github.com';
-	} else {
-		return origin;
 	}
+
+	return origin;
 }
 
 export async function getTabUrl() {
@@ -27,9 +27,9 @@ export async function getApiUrl() {
 	// TODO: Drop `api.github.com` check when dropping migrations
 	if (origin === 'https://api.github.com' || origin === 'https://github.com') {
 		return origin;
-	} else {
-		return `${origin}/api/v3`;
 	}
+
+	return `${origin}/api/v3`;
 }
 
 export async function getParsedUrl(endpoint, params) {

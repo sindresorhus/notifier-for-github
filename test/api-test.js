@@ -39,12 +39,12 @@ test.serial('#getApiUrl uses custom endpoint if rootUrl is something other than 
 	browser.storage.sync.get.callsFake((storageName, callback) => {
 		callback({
 			options: {
-				rootUrl: 'https://something.com/'
+				rootUrl: 'https://git.something.com/'
 			}
 		});
 	});
 
-	t.is(await service.getApiUrl(), 'https://something.com/api/v3');
+	t.is(await service.getApiUrl(), 'https://git.something.com/api/v3');
 });
 
 test.serial('#getGitHubOrigin uses default endpoint if rootUrl matches GitHub API url', async t => {
@@ -67,26 +67,40 @@ test.serial('#getGitHubOrigin uses custom endpoint if rootUrl is something other
 	browser.storage.sync.get.callsFake((storageName, callback) => {
 		callback({
 			options: {
-				rootUrl: 'https://something.com'
+				rootUrl: 'http://git.something.com/'
 			}
 		});
 	});
 
-	t.is(await service.getGitHubOrigin(), 'https://something.com');
+	t.is(await service.getGitHubOrigin(), 'http://git.something.com');
 });
 
-test.serial('#getGitHubOrigin uses custom endpoint if rootUrl has end slash it is removed', async t => {
+test.serial('#getGitHubOrigin uses custom endpoint if rootUrl has trailing slash removed', async t => {
 	const {service} = t.context;
 
 	browser.storage.sync.get.callsFake((storageName, callback) => {
 		callback({
 			options: {
-				rootUrl: 'https://something.com/'
+				rootUrl: 'https://git.something.com'
 			}
 		});
 	});
 
-	t.is(await service.getGitHubOrigin(), 'https://something.com');
+	t.is(await service.getGitHubOrigin(), 'https://git.something.com');
+});
+
+test.serial('#getGitHubOrigin respects "http:" protocol on non-GitHub servers', async t => {
+	const {service} = t.context;
+
+	browser.storage.sync.get.callsFake((storageName, callback) => {
+		callback({
+			options: {
+				rootUrl: 'http://git.something.com/'
+			}
+		});
+	});
+
+	t.is(await service.getGitHubOrigin(), 'http://git.something.com');
 });
 
 test.serial('#getTabUrl uses default page if rootUrl matches GitHub', async t => {
@@ -110,13 +124,13 @@ test.serial('#getTabUrl uses uses custom page if rootUrl is something other than
 	browser.storage.sync.get.callsFake((storageName, callback) => {
 		callback({
 			options: {
-				rootUrl: 'https://something.com/',
+				rootUrl: 'https://git.something.com/',
 				onlyParticipating: false
 			}
 		});
 	});
 
-	t.is(await service.getTabUrl(), 'https://something.com/notifications');
+	t.is(await service.getTabUrl(), 'https://git.something.com/notifications');
 });
 
 test.serial('#getTabUrl respects useParticipatingCount setting', async t => {

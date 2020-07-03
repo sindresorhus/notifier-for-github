@@ -1,14 +1,8 @@
 name: Test
 
 on:
-  pull_request:
-    branches:
-      - master
-  push:
-    branches:
-      - master
-    tags:
-      - "*"
+  - pull_request
+  - push
 
 jobs:
   test:

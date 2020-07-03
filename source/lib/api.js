@@ -1,31 +1,35 @@
 import optionsStorage from '../options-storage';
 import {parseLinkHeader} from '../util';
 
-export async function getHostname() {
+export async function getGitHubOrigin() {
 	const {rootUrl} = await optionsStorage.getAll();
+	const {origin} = new URL(rootUrl);
 
-	if (/(^(https:\/\/)?(api\.)?github\.com)/.test(rootUrl)) {
-		return 'github.com';
+	// TODO: Drop `api.github.com` check when dropping migrations
+	if (origin === 'https://api.github.com' || origin === 'https://github.com') {
+		return 'https://github.com';
 	}
 
-	return (new URL(rootUrl)).hostname;
+	return origin;
 }
 
 export async function getTabUrl() {
 	const {onlyParticipating} = await optionsStorage.getAll();
 	const useParticipating = onlyParticipating ? '/participating' : '';
 
-	return `https://${await getHostname()}/notifications${useParticipating}`;
+	return `${await getGitHubOrigin()}/notifications${useParticipating}`;
 }
 
 export async function getApiUrl() {
 	const {rootUrl} = await optionsStorage.getAll();
+	const {origin} = new URL(rootUrl);
 
-	if (/(^(https:\/\/)?(api\.)?github\.com)/.test(rootUrl)) {
-		return 'https://api.github.com';
+	// TODO: Drop `api.github.com` check when dropping migrations
+	if (origin === 'https://api.github.com' || origin === 'https://github.com') {
+		return origin;
 	}
 
-	return `${rootUrl}api/v3`;
+	return `${origin}/api/v3`;
 }
 
 export async function getParsedUrl(endpoint, params) {

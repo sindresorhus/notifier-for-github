@@ -74,7 +74,7 @@ test.serial('#openNotification clears notification from queue by notificationId'
 
 	await service.openNotification(notificationId);
 
-	t.true(browser.notifications.clear.calledWithMatch(notificationId));
+	t.true(browser.notifications.clear.calledWith(notificationId));
 });
 
 test.serial('#openNotification skips network requests if no url returned by local-store', async t => {

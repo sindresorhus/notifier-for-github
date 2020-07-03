@@ -10,10 +10,7 @@ const optionsStorage = new OptionsSync({
 		reuseTabs: false,
 		updateCountOnNavigation: false,
 		filterNotifications: false
-	},
-	migrations: [
-		OptionsSync.migrations.removeUnused
-	]
+	}
 });
 
 export default optionsStorage;

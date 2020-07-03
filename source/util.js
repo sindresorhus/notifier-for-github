@@ -1,4 +1,4 @@
-import {getHostname} from './lib/api';
+import {getGitHubOrigin} from './lib/api';
 
 export function isChrome() {
 	return navigator.userAgent.includes('Chrome');
@@ -12,7 +12,7 @@ export function parseFullName(fullName) {
 export async function isNotificationTargetPage(url) {
 	const urlObject = new URL(url);
 
-	if (urlObject.hostname !== (await getHostname())) {
+	if (urlObject.origin !== (await getGitHubOrigin())) {
 		return false;
 	}
 

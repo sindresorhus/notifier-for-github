@@ -2,7 +2,7 @@ import delay from 'delay';
 import optionsStorage from '../options-storage';
 import repositoriesStorage from '../repositories-storage';
 import {parseFullName} from '../util';
-import {makeApiRequest, getNotifications, getTabUrl, getHostname} from './api';
+import {makeApiRequest, getNotifications, getTabUrl, getGitHubOrigin} from './api';
 import {getNotificationReasonText} from './defaults';
 import {openTab} from './tabs-service';
 import localStore from './local-store';
@@ -27,10 +27,10 @@ async function issueOrPRHandler(notification) {
 	try {
 		// Try to construct a URL object, if that fails, bail to open the notifications URL
 		const url = new URL(notificationUrl);
-		const lastRead = getLastReadForNotification(notification);
 
 		try {
 			// Try to get the latest comment that the user has not read
+			const lastRead = getLastReadForNotification(notification);
 			const {json: comments} = await makeApiRequest(`${url.pathname}/comments`, {
 				since: lastRead,
 				per_page: 1 // eslint-disable-line camelcase
@@ -47,17 +47,17 @@ async function issueOrPRHandler(notification) {
 			return targetUrl;
 		} catch (error) {
 			// If anything related to querying the API fails, extract the URL to issue/PR from the API url
-			url.hostname = await getHostname();
+			const alterateURL = new URL(await getGitHubOrigin() + url.pathname);
 
 			// On GitHub Enterprise, the pathname is preceeded with `/api/v3`
-			url.pathname = url.pathname.replace('/api/v3', '');
+			alterateURL.pathname = alterateURL.pathname.replace('/api/v3', '');
 
 			// Pathname is generally of the form `/repos/user/reponame/pulls/2294`
-			// we only need the last part of the path (adjusted for frontend use)
-			url.pathname = url.pathname.replace('/repos', '');
-			url.pathname = url.pathname.replace('/pulls/', '/pull/');
+			// we only need the last part of the path (adjusted for frontend use) #185
+			alterateURL.pathname = alterateURL.pathname.replace('/repos', '');
+			alterateURL.pathname = alterateURL.pathname.replace('/pulls/', '/pull/');
 
-			return url.href;
+			return alterateURL.href;
 		}
 	} catch (error) {
 		throw error;

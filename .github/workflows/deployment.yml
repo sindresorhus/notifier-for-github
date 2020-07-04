@@ -3,7 +3,7 @@ name: Deployment
 
 on:
   schedule:
-    - cron: '31 13 * * 3'
+    - cron: '21 12 * * *'
   push:
     tags:
       - "20.*"

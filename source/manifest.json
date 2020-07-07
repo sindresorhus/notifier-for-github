@@ -23,7 +23,7 @@
 		"notifications"
 	],
 	"background": {
-		"persistent": false,
+		"persistent": true,
 		"scripts": [
 			"browser-polyfill.min.js",
 			"background.js"

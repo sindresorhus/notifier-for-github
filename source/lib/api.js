@@ -26,7 +26,7 @@ export async function getApiUrl() {
 
 	// TODO: Drop `api.github.com` check when dropping migrations
 	if (origin === 'https://api.github.com' || origin === 'https://github.com') {
-		return origin;
+		return 'https://api.github.com';
 	}
 
 	return `${origin}/api/v3`;

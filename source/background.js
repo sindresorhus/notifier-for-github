@@ -19,7 +19,8 @@ async function scheduleNextAlarm(interval) {
 	// Delay less than 1 minute will cause a warning
 	const delayInMinutes = Math.max(Math.ceil(intervalValue / 60), 1);
 
-	browser.alarms.create({delayInMinutes});
+	browser.alarms.clearAll();
+	browser.alarms.create('update', {delayInMinutes});
 }
 
 async function handleLastModified(newLastModified) {
@@ -47,15 +48,12 @@ async function updateNotificationCount() {
 
 function handleError(error) {
 	scheduleNextAlarm();
-
 	renderError(error);
 }
 
 function handleOfflineStatus() {
-	renderWarning('offline');
-
-	// Keep schedule for next alarm to keep background active
 	scheduleNextAlarm();
+	renderWarning('offline');
 }
 
 async function update() {
@@ -77,14 +75,6 @@ async function handleBrowserActionClick() {
 function handleInstalled(details) {
 	if (details.reason === 'install') {
 		browser.runtime.openOptionsPage();
-	}
-}
-
-function handleConnectionStatus() {
-	if (navigator.onLine) {
-		update();
-	} else {
-		handleOfflineStatus();
 	}
 }
 
@@ -125,11 +115,11 @@ async function addHandlers() {
 }
 
 function init() {
-	window.addEventListener('online', handleConnectionStatus);
-	window.addEventListener('offline', handleConnectionStatus);
+	window.addEventListener('online', update);
+	window.addEventListener('offline', update);
 
 	browser.alarms.onAlarm.addListener(update);
-	browser.alarms.create({when: Date.now() + 2000});
+	scheduleNextAlarm();
 
 	browser.runtime.onMessage.addListener(onMessage);
 	browser.runtime.onInstalled.addListener(handleInstalled);

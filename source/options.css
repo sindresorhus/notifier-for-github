@@ -76,16 +76,14 @@ input[type='text'][name='token'] {
 	margin: 0.25em 0 0.5em;
 }
 
+.repo-wrapper ul,
 .repo-wrapper ul > li {
 	list-style-type: none;
 }
 
-.repo-wrapper summary {
-	display: flex;
-	align-items: center;
-}
-
 .repo-wrapper label {
+	display: inline-block;
+	width: auto;
 	margin: 0;
 	margin-bottom: 0.25rem;
 }

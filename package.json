@@ -17,7 +17,7 @@
 	"dependencies": {
 		"delay": "^4.3.0",
 		"webext-base-css": "^1.1.0",
-		"webext-options-sync": "^1.2.0",
+		"webext-options-sync": "^2.0.0-1",
 		"webextension-polyfill": "^0.4.0"
 	},
 	"devDependencies": {

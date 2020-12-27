@@ -9,10 +9,8 @@
 		"test:js": "ava",
 		"build": "webpack --mode=production",
 		"watch": "webpack --mode=development --watch",
-		"version": "dot-json distribution/manifest.json version $VER",
-		"release:cws": "webstore upload --source=distribution --auto-publish",
-		"release:amo": "web-ext-submit --source-dir distribution",
-		"release": "VER=$(daily-version) run-s build version release:*"
+		"release:firefox": "cd distribution && webstore upload --auto-publish",
+		"release:chrome": "cd distribution && web-ext-submit"
 	},
 	"dependencies": {
 		"delay": "^4.3.0",

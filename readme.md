@@ -1,4 +1,4 @@
-# <img src="source/icon.png" width="45" align="left"> Notifier for GitHub [![Build Status](https://travis-ci.org/sindresorhus/notifier-for-github.svg?branch=master)](https://travis-ci.org/sindresorhus/notifier-for-github)
+# <img src="source/icon.png" width="45" align="left"> Notifier for GitHub
 
 [link-cws]: https://chrome.google.com/webstore/detail/notifier-for-github/lmjdlojahmbbcodnpecnjnmlddbkjhnn "Version published on Chrome Web Store"
 [link-amo]: https://addons.mozilla.org/en-US/firefox/addon/notifier-for-github/ "Version published on Mozilla Add-ons"
@@ -7,13 +7,11 @@
 
 Checks for new GitHub notifications every minute, shows the number of notifications you have, and shows desktop notifications as well.
 
-
 ## Install
 
 - [**Chrome** extension][link-cws] [<img valign="middle" src="https://img.shields.io/chrome-web-store/v/lmjdlojahmbbcodnpecnjnmlddbkjhnn.svg?label=%20">][link-cws]
 - [**Firefox** add-on][link-amo] [<img valign="middle" src="https://img.shields.io/amo/v/notifier-for-github.svg?label=%20">][link-amo]
 - **Opera** extension: Use [this Opera extension](https://addons.opera.com/en/extensions/details/download-chrome-extension-9/) to install the Chrome version.
-
 
 ## Highlights
 
@@ -26,7 +24,6 @@ Checks for new GitHub notifications every minute, shows the number of notificati
 
 *Make sure to add a token in the options.*
 
-
 ## Screenshots
 
 ### Notification Count
@@ -36,7 +33,6 @@ Checks for new GitHub notifications every minute, shows the number of notificati
 ### Options
 
 ![Options page for Notifier for GitHub](media/screenshot-options.png)
-
 
 ## Permissions
 
@@ -58,7 +54,6 @@ If you want to receive (useful) desktop notifications for any private repositori
 
 If you're concerned with your security in this manner, please feel free to ignore this scope. Just be aware that if you do not grant this scope, clicking on the notification will take you to the notifications home page, since we can't get any information about the repo you got the notification for.
 
-
 ## Configuration
 
 ### Desktop Notifications
@@ -76,7 +71,6 @@ If you have [desktop notifications](#desktop-notifications) enabled as mentioned
 ### GitHub Enterprise support
 
 By default, the extension works for the public [GitHub](https://github.com) site. If you want the extension to show notifications from a GitHub Enterprise server, you have to configure the extension to use the API URL for your GitHub Enterprise server (like `https://github.yourco.com/`).
-
 
 ## Maintainers
 

@@ -7,7 +7,7 @@
 		"lint-fix": "run-p 'lint:* -- --fix'",
 		"test": "run-s lint:* test:* build",
 		"test:js": "ava",
-		"build": "parcel build source/manifest.json --no-content-hash --no-source-maps --dist-dir distribution --no-cache --detailed-report 0",
+		"build": "parcel build source/manifest.json --dist-dir distribution --no-cache --no-content-hash --no-source-maps --detailed-report 0",
 		"watch": "parcel watch source/manifest.json --dist-dir distribution --no-cache --no-hmr"
 	},
 	"browserslist": [

@@ -14,6 +14,41 @@
 		"Chrome 74",
 		"Firefox 67"
 	],
+	"xo": {
+		"envs": [
+			"browser"
+		],
+		"ignores": [
+			"distribution"
+		],
+		"overrides": [
+			{
+				"files": "test/*.js",
+				"globals": [
+					"browser"
+				]
+			}
+		],
+		"rules": {
+			"import/no-unassigned-import": "off",
+			"no-await-in-loop": "off"
+		}
+	},
+	"stylelint": {
+		"extends": "stylelint-config-xo",
+		"rules": {
+			"declaration-no-important": null
+		}
+	},
+	"ava": {
+		"files": [
+			"test/*-test.js"
+		],
+		"require": [
+			"esm",
+			"./test/fixture/globals.js"
+		]
+	},
 	"dependencies": {
 		"delay": "^4.3.0",
 		"webext-base-css": "^1.1.0",
@@ -34,41 +69,6 @@
 		"stylelint": "^13.12.0",
 		"stylelint-config-xo": "^0.15.0",
 		"xo": "^0.24.0"
-	},
-	"ava": {
-		"files": [
-			"test/*-test.js"
-		],
-		"require": [
-			"esm",
-			"./test/fixture/globals.js"
-		]
-	},
-	"xo": {
-		"envs": [
-			"browser"
-		],
-		"ignores": [
-			"distribution"
-		],
-		"rules": {
-			"import/no-unassigned-import": "off",
-			"no-await-in-loop": "off"
-		},
-		"overrides": [
-			{
-				"files": "test/*.js",
-				"globals": [
-					"browser"
-				]
-			}
-		]
-	},
-	"stylelint": {
-		"extends": "stylelint-config-xo",
-		"rules": {
-			"declaration-no-important": null
-		}
 	},
 	"webExt": {
 		"sourceDir": "distribution"

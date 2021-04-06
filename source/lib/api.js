@@ -41,10 +41,6 @@ export async function getParsedUrl(endpoint, params) {
 export async function getHeaders() {
 	const {token} = await optionsStorage.getAll();
 
-	if (!(/ghp_\w{36,251}|[a-z\d]{40}/.test(token))) {
-		throw new Error('missing token');
-	}
-
 	return {
 		/* eslint-disable quote-props */
 		'Authorization': `token ${token}`,

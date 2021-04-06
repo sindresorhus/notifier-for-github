@@ -8,9 +8,7 @@
 		"test": "run-s lint:* test:* build",
 		"test:js": "ava",
 		"build": "webpack --mode=production",
-		"watch": "webpack --mode=development --watch",
-		"release:firefox": "cd distribution && webstore upload --auto-publish",
-		"release:chrome": "cd distribution && web-ext-submit"
+		"watch": "webpack --mode=development --watch"
 	},
 	"dependencies": {
 		"delay": "^4.3.0",
@@ -21,10 +19,7 @@
 	"devDependencies": {
 		"@types/chrome": "0.0.86",
 		"ava": "^2.2.0",
-		"chrome-webstore-upload-cli": "^1.2.0",
 		"copy-webpack-plugin": "^5.0.4",
-		"daily-version": "^1.0.0",
-		"dot-json": "^1.1.0",
 		"esm": "^3.2.25",
 		"lodash.merge": "^4.6.2",
 		"moment": "^2.24.0",
@@ -35,8 +30,6 @@
 		"stylelint": "^10.1.0",
 		"stylelint-config-xo": "^0.15.0",
 		"terser-webpack-plugin": "^1.4.1",
-		"web-ext": "^3.2.1",
-		"web-ext-submit": "^3.2.1",
 		"webpack": "^4.38.0",
 		"webpack-cli": "^3.3.6",
 		"xo": "^0.24.0"

@@ -7,9 +7,13 @@
 		"lint-fix": "run-p 'lint:* -- --fix'",
 		"test": "run-s lint:* test:* build",
 		"test:js": "ava",
-		"build": "webpack --mode=production",
-		"watch": "webpack --mode=development --watch"
+		"build": "parcel build source/manifest.json --no-content-hash --no-source-maps --dist-dir distribution --no-cache --detailed-report 0",
+		"watch": "parcel watch source/manifest.json --dist-dir distribution --no-cache --no-hmr"
 	},
+	"browserslist": [
+		"Chrome 74",
+		"Firefox 67"
+	],
 	"dependencies": {
 		"delay": "^4.3.0",
 		"webext-base-css": "^1.1.0",
@@ -17,21 +21,18 @@
 		"webextension-polyfill": "^0.4.0"
 	},
 	"devDependencies": {
+		"@parcel/config-webextension": "^2.0.0-nightly.2258",
 		"@types/chrome": "0.0.86",
 		"ava": "^2.2.0",
-		"copy-webpack-plugin": "^5.0.4",
 		"esm": "^3.2.25",
 		"lodash.merge": "^4.6.2",
 		"moment": "^2.24.0",
 		"npm-run-all": "^4.1.5",
+		"parcel": "^2.0.0-nightly.634",
 		"sinon": "^7.3.2",
 		"sinon-chrome": "^3.0.1",
-		"size-plugin": "^1.2.0",
-		"stylelint": "^10.1.0",
+		"stylelint": "^13.12.0",
 		"stylelint-config-xo": "^0.15.0",
-		"terser-webpack-plugin": "^1.4.1",
-		"webpack": "^4.38.0",
-		"webpack-cli": "^3.3.6",
 		"xo": "^0.24.0"
 	},
 	"ava": {
@@ -51,17 +52,23 @@
 			"distribution"
 		],
 		"rules": {
+			"import/no-unassigned-import": "off",
 			"no-await-in-loop": "off",
-			"import/no-unassigned-import": "off"
-		},
-		"globals": [
-			"browser"
-		]
+			"no-unused-vars": [
+				"error",
+				{
+					"varsIgnorePattern": "browser"
+				}
+			]
+		}
 	},
 	"stylelint": {
 		"extends": "stylelint-config-xo",
 		"rules": {
 			"declaration-no-important": null
 		}
+	},
+	"webExt": {
+		"sourceDir": "distribution"
 	}
 }

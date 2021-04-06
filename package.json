@@ -54,7 +54,15 @@
 		"rules": {
 			"import/no-unassigned-import": "off",
 			"no-await-in-loop": "off"
-		}
+		},
+		"overrides": [
+			{
+				"files": "test/*.js",
+				"globals": [
+					"browser"
+				]
+			}
+		]
 	},
 	"stylelint": {
 		"extends": "stylelint-config-xo",

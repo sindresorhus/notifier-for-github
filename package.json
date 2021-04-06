@@ -53,13 +53,7 @@
 		],
 		"rules": {
 			"import/no-unassigned-import": "off",
-			"no-await-in-loop": "off",
-			"no-unused-vars": [
-				"error",
-				{
-					"varsIgnorePattern": "browser"
-				}
-			]
+			"no-await-in-loop": "off"
 		}
 	},
 	"stylelint": {

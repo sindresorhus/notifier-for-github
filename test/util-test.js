@@ -32,7 +32,7 @@ test.serial('isChrome validates User-Agent string', t => {
 
 test.serial('isNotificationTargetPage returns true for only valid pages', async t => {
 	// Invalid pages
-	await t.throwsAsync(() => isNotificationTargetPage(''));
+	await t.throwsAsync(isNotificationTargetPage(''));
 	t.is(await isNotificationTargetPage('https://github.com'), false);
 	t.is(await isNotificationTargetPage('https://github.com/sindresorhus'), false);
 	t.is(await isNotificationTargetPage('https://github.com/notifications/read'), false);

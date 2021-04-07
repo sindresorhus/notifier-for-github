@@ -23,7 +23,7 @@ test.serial('#getRepositories fetches repositories', async t => {
 
 	try {
 		const response = await repositories.getRepositories();
-		t.log({res: response});
+		t.log({response});
 		t.deepEqual(response, body);
 	} catch (error) {
 		t.log({error});

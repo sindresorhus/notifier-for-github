@@ -36,7 +36,7 @@ export async function listRepositories(update) {
 		for (const {full_name} of fetched) {
 			const {owner, repository} = parseFullName(full_name);
 			tree[owner] = tree[owner] || {};
-			tree[owner][repository] = Boolean(stored?.[owner]?.[repository]);
+			tree[owner][repository] = Boolean(stored && stored[owner] && stored[owner][repository]);
 		}
 
 		/* eslint-enable camelcase */

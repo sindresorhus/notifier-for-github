@@ -1,3 +1,4 @@
+import browser from 'webextension-polyfill';
 import optionsStorage from './options-storage';
 import initRepositoriesForm from './repositories';
 import {requestPermission} from './lib/permissions-service';

@@ -1,4 +1,5 @@
 import delay from 'delay';
+import browser from 'webextension-polyfill';
 import optionsStorage from '../options-storage';
 import repositoriesStorage from '../repositories-storage';
 import {parseFullName} from '../util';

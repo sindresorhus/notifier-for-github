@@ -1,3 +1,5 @@
+import browser from 'webextension-polyfill';
+
 export async function queryPermission(permission) {
 	try {
 		return browser.permissions.contains({permissions: [permission]});

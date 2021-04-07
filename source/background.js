@@ -1,3 +1,4 @@
+import browser from 'webextension-polyfill';
 import delay from 'delay';
 import optionsStorage from './options-storage';
 import localStore from './lib/local-store';

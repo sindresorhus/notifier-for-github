@@ -1,3 +1,5 @@
+import browser from 'webextension-polyfill';
+
 export default {
 	async get(key) {
 		const result = await browser.storage.local.get(key);

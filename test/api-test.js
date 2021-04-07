@@ -190,7 +190,9 @@ test.serial('#makeApiRequest returns rejected promise for 4xx status codes', asy
 		statusText: 'Not found'
 	});
 
-	await t.throwsAsync(() => service.makeApiRequest('notifications'), 'client error');
+	await t.throwsAsync(service.makeApiRequest('notifications'), {
+		message: 'client error'
+	});
 });
 
 test.serial('#makeApiRequest returns rejected promise for 5xx status codes', async t => {
@@ -200,7 +202,9 @@ test.serial('#makeApiRequest returns rejected promise for 5xx status codes', asy
 		status: 501
 	});
 
-	await t.throwsAsync(() => service.makeApiRequest('notifications'), 'server error');
+	await t.throwsAsync(service.makeApiRequest('notifications'), {
+		message: 'server error'
+	});
 });
 
 test.serial('#makeApiRequest makes networkRequest for provided url', async t => {

@@ -1,5 +1,5 @@
 import test from 'ava';
-import localStore from '../source/lib/local-store';
+import localStore from '../source/lib/local-store.js';
 
 test.beforeEach(t => {
 	browser.flush();

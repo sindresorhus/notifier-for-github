@@ -1,5 +1,5 @@
 import browser from 'webextension-polyfill';
-import * as defaults from './defaults';
+import * as defaults from './defaults.js';
 
 function render(text, color, title) {
 	browser.browserAction.setBadgeText({text});

@@ -1,6 +1,6 @@
 import test from 'ava';
-import * as api from '../source/lib/api';
-import {fakeFetch} from './util';
+import * as api from '../source/lib/api.js';
+import {fakeFetch} from './util.js';
 
 test.beforeEach(t => {
 	t.context.service = Object.assign({}, api);

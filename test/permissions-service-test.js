@@ -1,5 +1,5 @@
 import test from 'ava';
-import * as permissions from '../source/lib/permissions-service';
+import * as permissions from '../source/lib/permissions-service.js';
 
 test.beforeEach(t => {
 	t.context.service = Object.assign({}, permissions);

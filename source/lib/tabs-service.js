@@ -1,6 +1,6 @@
 import browser from 'webextension-polyfill';
-import optionsStorage from '../options-storage';
-import {isChrome} from '../util';
+import optionsStorage from '../options-storage.js';
+import {isChrome} from '../util.js';
 
 export const emptyTabUrls = isChrome() ? [
 	'chrome://newtab/',

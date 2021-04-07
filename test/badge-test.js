@@ -1,7 +1,7 @@
 import test from 'ava';
 
-import * as defaults from '../source/lib/defaults';
-import {renderCount, renderError} from '../source/lib/badge';
+import * as defaults from '../source/lib/defaults.js';
+import {renderCount, renderError} from '../source/lib/badge.js';
 
 test.beforeEach(() => {
 	browser.flush();

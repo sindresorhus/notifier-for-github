@@ -1,13 +1,13 @@
 import browser from 'webextension-polyfill';
 import delay from 'delay';
-import optionsStorage from './options-storage';
-import localStore from './lib/local-store';
-import {openTab} from './lib/tabs-service';
-import {queryPermission} from './lib/permissions-service';
-import {getNotificationCount, getTabUrl} from './lib/api';
-import {renderCount, renderError, renderWarning} from './lib/badge';
-import {checkNotifications, openNotification} from './lib/notifications-service';
-import {isChrome, isNotificationTargetPage} from './util';
+import optionsStorage from './options-storage.js';
+import localStore from './lib/local-store.js';
+import {openTab} from './lib/tabs-service.js';
+import {queryPermission} from './lib/permissions-service.js';
+import {getNotificationCount, getTabUrl} from './lib/api.js';
+import {renderCount, renderError, renderWarning} from './lib/badge.js';
+import {checkNotifications, openNotification} from './lib/notifications-service.js';
+import {isChrome, isNotificationTargetPage} from './util.js';
 
 async function scheduleNextAlarm(interval) {
 	const intervalSetting = await localStore.get('interval') || 60;

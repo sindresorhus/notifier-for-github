@@ -1,6 +1,6 @@
 import test from 'ava';
-import * as repositories from '../source/lib/repositories-service';
-import {fakeFetch} from './util';
+import * as repositories from '../source/lib/repositories-service.js';
+import {fakeFetch} from './util.js';
 
 const body = [{full_name: 'foo/repo1'}, {full_name: 'bar/repo1'}, {full_name: 'foo/repo2'}]; // eslint-disable-line camelcase
 global.fetch = fakeFetch({body});
@@ -22,9 +22,9 @@ test.serial('#getRepositories fetches repositories', async t => {
 	const {repositories} = t.context;
 
 	try {
-		const res = await repositories.getRepositories();
-		t.log({res});
-		t.deepEqual(res, body);
+		const response = await repositories.getRepositories();
+		t.log({response});
+		t.deepEqual(response, body);
 	} catch (error) {
 		t.log({error});
 	}
@@ -34,8 +34,8 @@ test.serial('#listRepositories lists repositories as tree', async t => {
 	const {repositories} = t.context;
 
 	try {
-		const res = await repositories.listRepositories();
-		t.deepEqual(res, {
+		const response = await repositories.listRepositories();
+		t.deepEqual(response, {
 			bar: {
 				repo1: false
 			},
@@ -54,8 +54,8 @@ test.serial('#listRepositories doesn\'t update if store has values', async t => 
 	defaultOptions.repositories = {foo: {repo1: true}};
 
 	try {
-		const res = await repositories.listRepositories();
-		t.deepEqual(res, defaultOptions.repositories);
+		const response = await repositories.listRepositories();
+		t.deepEqual(response, defaultOptions.repositories);
 	} catch (error) {
 		t.log({error});
 	}
@@ -66,8 +66,8 @@ test.serial('#listRepositories force updates and keeps previously stored values'
 	defaultOptions.repositories = {foo: {repo1: true}};
 
 	try {
-		const res = await repositories.listRepositories(true);
-		t.deepEqual(res, {
+		const response = await repositories.listRepositories(true);
+		t.deepEqual(response, {
 			bar: {
 				repo1: false
 			},

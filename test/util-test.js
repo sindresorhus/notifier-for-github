@@ -1,5 +1,5 @@
 import test from 'ava';
-import {isChrome, isNotificationTargetPage, parseLinkHeader, parseFullName} from '../source/util';
+import {isChrome, isNotificationTargetPage, parseLinkHeader, parseFullName} from '../source/util.js';
 
 test.beforeEach(t => {
 	t.context.defaultOptions = {
@@ -32,7 +32,7 @@ test.serial('isChrome validates User-Agent string', t => {
 
 test.serial('isNotificationTargetPage returns true for only valid pages', async t => {
 	// Invalid pages
-	t.throwsAsync(() => isNotificationTargetPage(''));
+	await t.throwsAsync(isNotificationTargetPage(''));
 	t.is(await isNotificationTargetPage('https://github.com'), false);
 	t.is(await isNotificationTargetPage('https://github.com/sindresorhus'), false);
 	t.is(await isNotificationTargetPage('https://github.com/notifications/read'), false);

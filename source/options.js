@@ -1,8 +1,8 @@
 import browser from 'webextension-polyfill';
-import optionsStorage from './options-storage';
-import initRepositoriesForm from './repositories';
-import {requestPermission} from './lib/permissions-service';
-import {background} from './util';
+import optionsStorage from './options-storage.js';
+import initRepositoriesForm from './repositories.js';
+import {requestPermission} from './lib/permissions-service.js';
+import {background} from './util.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
 	try {

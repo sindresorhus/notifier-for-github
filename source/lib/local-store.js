@@ -1,6 +1,6 @@
 import browser from 'webextension-polyfill';
 
-export default {
+const localStore = {
 	async get(key) {
 		const result = await browser.storage.local.get(key);
 		return result[key];
@@ -18,3 +18,5 @@ export default {
 		return browser.storage.local.clear();
 	}
 };
+
+export default localStore;

@@ -32,8 +32,8 @@
 		"sinon": "^7.3.2",
 		"sinon-chrome": "^3.0.1",
 		"stylelint": "^13.12.0",
-		"stylelint-config-xo": "^0.15.0",
-		"xo": "^0.24.0"
+		"stylelint-config-xo": "^0.20.0",
+		"xo": "^0.38.2"
 	},
 	"ava": {
 		"files": [

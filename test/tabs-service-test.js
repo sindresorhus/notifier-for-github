@@ -1,6 +1,6 @@
 import test from 'ava';
 
-import * as tabs from '../source/lib/tabs-service';
+import * as tabs from '../source/lib/tabs-service.js';
 
 test.beforeEach(t => {
 	t.context.service = Object.assign({}, tabs);

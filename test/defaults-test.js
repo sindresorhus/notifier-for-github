@@ -1,5 +1,5 @@
 import test from 'ava';
-import * as defaults from '../source/lib/defaults';
+import * as defaults from '../source/lib/defaults.js';
 
 test.serial('#getBadgeDefaultColor return array of 4 numbers between 0 and 255 inclusive', t => {
 	const color = defaults.getBadgeDefaultColor();
@@ -40,7 +40,7 @@ test.serial('#getNotificationReasonText returns notification reasons', t => {
 	const invalidReasons = [
 		'no such reason',
 		undefined,
-		NaN,
+		Number.NaN,
 		{foo: 42}
 	];
 
@@ -59,7 +59,7 @@ test.serial('#getErrorSymbol returns either "X" or "?" strings', t => {
 	const invalidMessages = [
 		'no such thing',
 		undefined,
-		NaN,
+		Number.NaN,
 		{foo: 312}
 	];
 

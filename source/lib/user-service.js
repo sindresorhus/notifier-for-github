@@ -1,5 +1,5 @@
-import {makeApiRequest} from './api';
-import localStore from './local-store';
+import {makeApiRequest} from './api.js';
+import localStore from './local-store.js';
 
 export async function getUser(update) {
 	let user = await localStore.get('user');

@@ -1,5 +1,5 @@
 import browser from 'webextension-polyfill';
-import {getGitHubOrigin} from './lib/api';
+import {getGitHubOrigin} from './lib/api.js';
 
 export function isChrome() {
 	return navigator.userAgent.includes('Chrome');
@@ -17,7 +17,7 @@ export async function isNotificationTargetPage(url) {
 		return false;
 	}
 
-	const pathname = urlObject.pathname.replace(/^[/]|[/]$/g, ''); // Remove trailing and leading slashes
+	const pathname = urlObject.pathname.replace(/^\/|\/$/g, ''); // Remove trailing and leading slashes
 
 	// For https://github.com/notifications and the beta https://github.com/notifications/beta
 	if (pathname === 'notifications' || pathname === 'notifications/beta') {
@@ -31,16 +31,17 @@ export async function isNotificationTargetPage(url) {
 }
 
 export function parseLinkHeader(header) {
-	return (header || '').split(',').reduce((links, part) => {
+	const links = {};
+	for (const part of (header || '').split(',')) {
 		const [sectionUrl = '', sectionName = ''] = part.split(';');
 		const url = sectionUrl.replace(/<(.+)>/, '$1').trim();
 		const name = sectionName.replace(/rel="(.+)"/, '$1').trim();
-		if (!name || !url) {
-			return links;
+		if (name && url) {
+			links[name] = url;
 		}
+	}
 
-		return Object.assign({}, links, {[name]: url});
-	}, {});
+	return links;
 }
 
 const backgroundPage = browser.extension.getBackgroundPage() || window;

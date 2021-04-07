@@ -1,8 +1,8 @@
-import repositoriesStorage from './repositories-storage';
-import optionsStorage from './options-storage';
-import {listRepositories} from './lib/repositories-service';
-import {getUser} from './lib/user-service';
-import {background} from './util';
+import repositoriesStorage from './repositories-storage.js';
+import optionsStorage from './options-storage.js';
+import {listRepositories} from './lib/repositories-service.js';
+import {getUser} from './lib/user-service.js';
+import {background} from './util.js';
 
 const form = document.querySelector('#repositories-form');
 const button = document.querySelector('#reload-repositories');

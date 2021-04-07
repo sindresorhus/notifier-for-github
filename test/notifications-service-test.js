@@ -2,13 +2,13 @@ import test from 'ava';
 import sinon from 'sinon';
 import moment from 'moment';
 
-import * as notifications from '../source/lib/notifications-service';
-import {getNotificationReasonText} from '../source/lib/defaults';
-import {fakeFetch} from './util';
+import * as notifications from '../source/lib/notifications-service.js';
+import {getNotificationReasonText} from '../source/lib/defaults.js';
+import {fakeFetch} from './util.js';
 
 test.beforeEach(t => {
 	t.context.service = Object.assign({}, notifications);
-	t.context.notificationId = (Math.random() * 1000 | 0).toString();
+	t.context.notificationId = Math.trunc(Math.random() * 1000).toString();
 	t.context.notificationUrl = `https://api.github.com/notifications/${t.context.notificationId}`;
 	t.context.notificationsUrl = 'https://github.com/user/notifications';
 	t.context.notificationHtmlUrl = `https://github.com/user/repo/issues/${t.context.notificationId}`;

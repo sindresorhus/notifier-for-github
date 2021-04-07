@@ -1,12 +1,12 @@
 import delay from 'delay';
 import browser from 'webextension-polyfill';
-import optionsStorage from '../options-storage';
-import repositoriesStorage from '../repositories-storage';
-import {parseFullName} from '../util';
-import {makeApiRequest, getNotifications, getTabUrl, getGitHubOrigin} from './api';
-import {getNotificationReasonText} from './defaults';
-import {openTab} from './tabs-service';
-import localStore from './local-store';
+import optionsStorage from '../options-storage.js';
+import repositoriesStorage from '../repositories-storage.js';
+import {parseFullName} from '../util.js';
+import {makeApiRequest, getNotifications, getTabUrl, getGitHubOrigin} from './api.js';
+import {getNotificationReasonText} from './defaults.js';
+import {openTab} from './tabs-service.js';
+import localStore from './local-store.js';
 
 function getLastReadForNotification(notification) {
 	// Extract the specific fragment URL for a notification
@@ -46,7 +46,7 @@ async function issueOrPRHandler(notification) {
 			const {json: response} = await makeApiRequest(url.pathname);
 			const targetUrl = response.message === 'Not Found' ? await getTabUrl() : response.html_url;
 			return targetUrl;
-		} catch (error) {
+		} catch {
 			// If anything related to querying the API fails, extract the URL to issue/PR from the API url
 			const alterateURL = new URL(await getGitHubOrigin() + url.pathname);
 
@@ -87,7 +87,7 @@ export async function openNotification(notificationId) {
 	try {
 		const urlToOpen = await notificationHandlers[notification.subject.type](notification);
 		return openTab(urlToOpen);
-	} catch (error) {
+	} catch {
 		return openTab(await getTabUrl());
 	}
 }

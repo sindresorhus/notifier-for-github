@@ -1,5 +1,6 @@
 {
 	"private": true,
+	"type": "module",
 	"scripts": {
 		"lint": "run-p lint:*",
 		"lint:js": "xo",
@@ -23,7 +24,7 @@
 	"devDependencies": {
 		"@parcel/config-webextension": "^2.0.0-nightly.2258",
 		"@types/chrome": "0.0.134",
-		"ava": "^2.2.0",
+		"ava": "^3.15.0",
 		"esm": "^3.2.25",
 		"lodash.merge": "^4.6.2",
 		"moment": "^2.29.1",

@@ -8,7 +8,7 @@
 		"lint-fix": "run-p 'lint:* -- --fix'",
 		"test": "run-s lint:* test:* build",
 		"test:js": "ava",
-		"build": "parcel build source/manifest.json --dist-dir distribution --no-cache --no-content-hash --no-source-maps --detailed-report 0",
+		"build": "parcel build source/manifest.json --dist-dir distribution --no-cache --no-content-hash --no-source-maps --no-optimize --no-scope-hoist --detailed-report 0",
 		"watch": "parcel watch source/manifest.json --dist-dir distribution --no-cache --no-hmr"
 	},
 	"browserslist": [
@@ -29,7 +29,7 @@
 		"lodash.merge": "^4.6.2",
 		"moment": "^2.29.1",
 		"npm-run-all": "^4.1.5",
-		"parcel": "^2.0.0-nightly.634",
+		"parcel": "^2.0.0-beta.2",
 		"sinon": "^10.0.0",
 		"sinon-chrome": "^3.0.1",
 		"stylelint": "^13.12.0",

@@ -70,7 +70,7 @@ If you have [desktop notifications](#desktop-notifications) enabled as mentioned
 
 ### GitHub Enterprise support
 
-By default, the extension works for the public [GitHub](https://github.com) site. If you want the extension to show notifications from a GitHub Enterprise server, you have to configure the extension to use the API URL for your GitHub Enterprise server (like `https://github.yourco.com/`).
+By default, the extension works for the public [GitHub](https://github.com) site. If the repo of your company runs github on their own servers via Github Enterprise Server, you have to configure the extension to use the API URL. For example `https://github.yourco.com/`.
 
 ## Maintainers
 

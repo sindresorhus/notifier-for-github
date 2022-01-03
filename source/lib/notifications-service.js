@@ -99,7 +99,7 @@ export async function removeNotification(notificationId) {
 export function getNotificationObject(notificationInfo) {
 	return {
 		title: notificationInfo.subject.title,
-		iconUrl: 'icon-notif.png',
+		iconUrl: browser.runtime.getURL('icon-notif.png'),
 		type: 'basic',
 		message: notificationInfo.repository.full_name,
 		contextMessage: getNotificationReasonText(notificationInfo.reason)

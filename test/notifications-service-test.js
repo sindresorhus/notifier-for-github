@@ -59,6 +59,8 @@ test.beforeEach(t => {
 	browser.storage.sync.get.callsFake((key, cb) => {
 		cb(t.context.defaultOptions);
 	});
+
+	browser.runtime.getURL.returns('icon-notif.png');
 });
 
 test.serial('#openNotification gets notification url by notificationId from local-store', async t => {

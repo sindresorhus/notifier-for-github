@@ -98,7 +98,7 @@ async function onTabUpdated(tabId, changeInfo, tab) {
 }
 
 function openNotificationSync(id) {
-    openNotification(id);
+	openNotification(id);
 }
 
 async function addHandlers() {

@@ -97,13 +97,15 @@ async function onTabUpdated(tabId, changeInfo, tab) {
 	}
 }
 
+function onNotificationClick(id) {
+	openNotification(id);
+}
+
 async function addHandlers() {
 	const {updateCountOnNavigation} = await optionsStorage.getAll();
 
 	if (await queryPermission('notifications')) {
-		browser.notifications.onClicked.addListener(id => {
-			openNotification(id);
-		});
+		browser.notifications.onClicked.addListener(onNotificationClick);
 	}
 
 	if (await queryPermission('tabs')) {

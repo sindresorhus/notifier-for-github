@@ -25,6 +25,12 @@ function getErrorData(error) {
 	return {symbol, title};
 }
 
+export function renderText(count, notificationsString) {
+	const color = defaults.getBadgeDefaultColor();
+	const title = defaults.defaultTitle + "\n" + notificationsString;
+	render(getCountString(count), color, title);
+}
+
 export function renderCount(count) {
 	const color = defaults.getBadgeDefaultColor();
 	const title = defaults.defaultTitle;

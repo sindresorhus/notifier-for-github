@@ -133,6 +133,7 @@ export async function getNotificationCount() {
 		return {
 			count: notifications.length,
 			interval,
+			notifications,
 			lastModified
 		};
 	}
@@ -147,6 +148,7 @@ export async function getNotificationCount() {
 	return {
 		count,
 		interval,
+		notifications,
 		lastModified
 	};
 }

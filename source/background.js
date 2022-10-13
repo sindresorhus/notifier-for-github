@@ -5,7 +5,7 @@ import localStore from './lib/local-store.js';
 import {openTab} from './lib/tabs-service.js';
 import {queryPermission} from './lib/permissions-service.js';
 import {getNotificationCount, getTabUrl} from './lib/api.js';
-import {renderCount, renderError, renderWarning} from './lib/badge.js';
+import {renderCount, renderText, renderError, renderWarning} from './lib/badge.js';
 import {checkNotifications, openNotification} from './lib/notifications-service.js';
 import {isChrome, isNotificationTargetPage} from './util.js';
 
@@ -40,9 +40,10 @@ async function handleLastModified(newLastModified) {
 
 async function updateNotificationCount() {
 	const response = await getNotificationCount();
-	const {count, interval, lastModified} = response;
+	const {count, interval, notifications, lastModified} = response;
 
-	renderCount(count);
+	const badgeText = notifications.reduce((text, notification)=> text + notification.reason + '=>' + notification.subject.title + "\n" , "");
+	renderText(count, badgeText);
 	scheduleNextAlarm(interval);
 	handleLastModified(lastModified);
 }

@@ -126,7 +126,7 @@ export async function getNotificationCount() {
 	const {headers, json: notifications} = await getNotificationResponse({maxItems: 1});
 
 	const interval = Number(headers.get('X-Poll-Interval'));
-	const lastModified = (new Date(headers.get('Last-Modified'))).toISOString();
+	const lastModified = (new Date(headers.get('Last-Modified'))).toGMTString();
 	const linkHeader = headers.get('Link');
 
 	if (linkHeader === null) {

@@ -118,9 +118,9 @@ export async function showNotifications(notifications) {
 	}
 }
 
-export async function playNotificationSound() {
+export function playNotificationSound() {
 	const audio = new Audio();
-	audio.src = await browser.extension.getURL('/sounds/bell.ogg');
+	audio.src = browser.runtime.getURL('sounds/bell.ogg');
 	audio.play();
 }
 
@@ -138,8 +138,8 @@ export async function checkNotifications(lastModified) {
 		/* eslint-enable camelcase */
 	}
 
-	if (playNotifSound && notifications.length > 1) {
-		await playNotificationSound();
+	if (playNotifSound && notifications.length > 0) {
+		playNotificationSound();
 	}
 
 	if (showDesktopNotif) {

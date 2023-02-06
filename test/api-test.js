@@ -154,7 +154,7 @@ test.serial('#getNotificationCount promise resolves response of 0 notifications 
 	global.fetch = fakeFetch();
 
 	const response = await service.getNotificationCount();
-	t.deepEqual(response, {count: 0, interval: 60, lastModified: '1970-01-01T00:00:00.000Z'});
+	t.deepEqual(response, {count: 0, interval: 60, lastModified: 'Thu, 01 Jan 1970 00:00:00 GMT'});
 });
 
 test.serial('#getNotificationCount promise resolves response of N notifications according to Link header', async t => {
@@ -168,7 +168,7 @@ test.serial('#getNotificationCount promise resolves response of N notifications 
 		}
 	});
 
-	t.deepEqual(await service.getNotificationCount(), {count: 2, interval: 60, lastModified: '1970-01-01T00:00:00.000Z'});
+	t.deepEqual(await service.getNotificationCount(), {count: 2, interval: 60, lastModified: 'Thu, 01 Jan 1970 00:00:00 GMT'});
 
 	global.fetch = fakeFetch({
 		headers: {
@@ -179,7 +179,7 @@ test.serial('#getNotificationCount promise resolves response of N notifications 
 		}
 	});
 
-	t.deepEqual(await service.getNotificationCount(), {count: 3, interval: 60, lastModified: '1970-01-01T00:00:00.000Z'});
+	t.deepEqual(await service.getNotificationCount(), {count: 3, interval: 60, lastModified: 'Thu, 01 Jan 1970 00:00:00 GMT'});
 });
 
 test.serial('#makeApiRequest returns rejected promise for 4xx status codes', async t => {

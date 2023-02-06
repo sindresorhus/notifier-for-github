@@ -125,7 +125,7 @@ export function playNotificationSound() {
 }
 
 export async function checkNotifications(lastModified) {
-	let notifications = await getNotifications({lastModified});
+	let notifications = await getNotifications({lastModified: lastModified.toGMTString()});
 	const {showDesktopNotif, playNotifSound, filterNotifications} = await optionsStorage.getAll();
 
 	if (filterNotifications) {

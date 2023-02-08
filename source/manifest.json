@@ -37,6 +37,6 @@
 	},
 	"web_accessible_resources": [
 		"icon-notif.png",
-    "sounds/bell.ogg"
+		"sounds/bell.ogg"
 	]
 }

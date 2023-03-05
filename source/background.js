@@ -25,9 +25,9 @@ async function scheduleNextAlarm(interval) {
 }
 
 async function handleLastModified(newLastModified) {
-	const lastModified = await localStore.get('lastModified') || new Date(0);
+	const lastModified = await localStore.get('lastModified') || new Date(0).toUTCString();
 
-	// Something has changed since we last accessed, display any new notificaitons
+	// Something has changed since we last accessed, display any new notifications
 	if (newLastModified !== lastModified) {
 		const {showDesktopNotif, playNotifSound} = await optionsStorage.getAll();
 		if (showDesktopNotif === true || playNotifSound === true) {

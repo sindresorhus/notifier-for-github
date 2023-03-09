@@ -1,6 +1,7 @@
 import browser from 'webextension-polyfill';
 import optionsStorage from '../options-storage.js';
 import {isChrome} from '../util.js';
+import {queryPermission} from './permissions-service.js';
 
 export const emptyTabUrls = isChrome() ? [
 	'chrome://newtab/',
@@ -22,8 +23,8 @@ export async function queryTabs(urlList) {
 
 export async function openTab(url) {
 	const {reuseTabs} = await optionsStorage.getAll();
-
-	if (reuseTabs) {
+	const permissionGranted = await queryPermission('tabs');
+	if (reuseTabs && permissionGranted) {
 		const matchingUrls = [url];
 		if (url.endsWith('/notifications')) {
 			matchingUrls.push(url + '?query=is%3Aunread');

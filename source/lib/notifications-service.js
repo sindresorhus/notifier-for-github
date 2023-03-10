@@ -7,6 +7,7 @@ import {makeApiRequest, getNotifications, getTabUrl, getGitHubOrigin} from './ap
 import {getNotificationReasonText} from './defaults.js';
 import {openTab} from './tabs-service.js';
 import localStore from './local-store.js';
+import {queryPermission} from './permissions-service.js';
 
 function getLastReadForNotification(notification) {
 	// Extract the specific fragment URL for a notification
@@ -107,6 +108,11 @@ export function getNotificationObject(notificationInfo) {
 }
 
 export async function showNotifications(notifications) {
+	const permissionGranted = await queryPermission('notifications');
+	if (!permissionGranted) {
+		return;
+	}
+
 	for (const notification of notifications) {
 		const notificationId = `github-notifier-${notification.id}`;
 		const notificationObject = getNotificationObject(notification);

@@ -47,7 +47,7 @@ export async function getHeaders() {
 
 	return {
 		/* eslint-disable quote-props */
-		'Authorization': `token ${token}`,
+		'Authorization': `Bearer ${token}`,
 		'If-Modified-Since': ''
 		/* eslint-enable quote-props */
 	};

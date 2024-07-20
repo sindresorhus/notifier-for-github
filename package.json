@@ -55,7 +55,8 @@
 		],
 		"rules": {
 			"import/no-unassigned-import": "off",
-			"no-await-in-loop": "off"
+			"no-await-in-loop": "off",
+			"ava/no-ignored-test-files": "off"
 		},
 		"overrides": [
 			{

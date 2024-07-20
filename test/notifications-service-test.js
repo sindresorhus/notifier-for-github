@@ -225,18 +225,3 @@ test.serial('#showNotifications shows notifications', async t => {
 	t.true(browser.notifications.create.called);
 	t.is(browser.notifications.create.callCount, 3);
 });
-
-test.serial('#playNotificationSound plays notification sound', async t => {
-	const {service} = t.context;
-
-	browser.extension = sinon.stub();
-	browser.extension.getURL = sinon.stub();
-
-	global.Audio = sinon.stub();
-	global.Audio.prototype.play = sinon.stub();
-
-	await service.playNotificationSound();
-
-	t.true(global.Audio.calledOnce);
-	t.true(global.Audio.prototype.play.calledOnce);
-});

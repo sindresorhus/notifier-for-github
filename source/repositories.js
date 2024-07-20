@@ -2,7 +2,6 @@ import repositoriesStorage from './repositories-storage.js';
 import optionsStorage from './options-storage.js';
 import {listRepositories} from './lib/repositories-service.js';
 import {getUser} from './lib/user-service.js';
-import {background} from './util.js';
 
 const form = document.querySelector('#repositories-form');
 const button = document.querySelector('#reload-repositories');
@@ -35,7 +34,6 @@ export default async function init(update) {
 	try {
 		await renderCheckboxes(update);
 	} catch (error) {
-		background.error(error);
 		errorMessage.textContent = `Loading repositories failed: "${error.message}"`;
 		errorMessage.classList.remove('hidden');
 	}

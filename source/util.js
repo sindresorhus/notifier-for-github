@@ -1,8 +1,7 @@
-import browser from 'webextension-polyfill';
 import {getGitHubOrigin} from './lib/api.js';
 
-export function isChrome() {
-	return navigator.userAgent.includes('Chrome');
+export function isChrome(agentString = navigator.userAgent) {
+	return agentString.includes('Chrome');
 }
 
 export function parseFullName(fullName) {
@@ -43,12 +42,3 @@ export function parseLinkHeader(header) {
 
 	return links;
 }
-
-const backgroundPage = browser.extension.getBackgroundPage() || window;
-
-export const background = {
-	log: backgroundPage.console.log,
-	warn: backgroundPage.console.warn,
-	error: backgroundPage.console.error,
-	info: backgroundPage.console.info
-};

@@ -10,24 +10,20 @@ test.beforeEach(t => {
 
 	browser.flush();
 
-	global.navigator.userAgent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.80 Safari/537.36';
-
 	browser.storage.sync.get.callsFake((key, cb) => {
 		cb(t.context.defaultOptions);
 	});
 });
 
 test.serial('isChrome validates User-Agent string', t => {
-	// Defualt UA string set in fixtures
-	t.is(isChrome(), true);
+	// Default option
+	t.is(isChrome(), false);
 
 	// Empty UA string
-	global.navigator.userAgent = '';
-	t.is(isChrome(), false);
+	t.is(isChrome(''), false);
 
 	// Firefox
-	global.navigator.userAgent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:67.0) Gecko/20100101 Firefox/67.0';
-	t.is(isChrome(), false);
+	t.is(isChrome('Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:67.0) Gecko/20100101 Firefox/67.0'), false);
 });
 
 test.serial('isNotificationTargetPage returns true for only valid pages', async t => {

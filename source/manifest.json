@@ -3,12 +3,12 @@
 	"version": "0.0.0",
 	"description": "Displays your GitHub notifications unread count",
 	"homepage_url": "https://github.com/sindresorhus/notifier-for-github",
-	"manifest_version": 2,
-	"minimum_chrome_version": "74",
-	"applications": {
+	"manifest_version": 3,
+	"minimum_chrome_version": "88",
+	"browser_specific_settings": {
 		"gecko": {
 			"id": "{8d1582b2-ff2a-42e0-ba40-42f4ebfe921b}",
-			"strict_min_version": "67.0"
+			"strict_min_version": "106.0"
 		}
 	},
 	"icons": {
@@ -16,27 +16,30 @@
 	},
 	"permissions": [
 		"alarms",
-		"storage"
+		"storage",
+		"offscreen"
 	],
 	"optional_permissions": [
 		"tabs",
 		"notifications"
 	],
 	"background": {
-		"persistent": true,
-		"scripts": [
-			"background.js"
-		]
+		"service_worker": "background.js",
+		"type": "module"
 	},
-	"browser_action": {
+	"action": {
 		"default_icon": "icon-toolbar.png"
 	},
 	"options_ui": {
-		"page": "options.html",
-		"chrome_style": true
+		"page": "options.html"
 	},
 	"web_accessible_resources": [
-		"icon-notif.png",
-		"sounds/bell.ogg"
+		{
+			"resources": [
+				"icon-notif.png",
+				"sounds/bell.ogg"
+			],
+			"matches": []
+		}
 	]
 }

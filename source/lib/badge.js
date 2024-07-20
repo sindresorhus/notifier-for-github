@@ -2,9 +2,9 @@ import browser from 'webextension-polyfill';
 import * as defaults from './defaults.js';
 
 function render(text, color, title) {
-	browser.browserAction.setBadgeText({text});
-	browser.browserAction.setBadgeBackgroundColor({color});
-	browser.browserAction.setTitle({title});
+	browser.action.setBadgeText({text});
+	browser.action.setBadgeBackgroundColor({color});
+	browser.action.setTitle({title});
 }
 
 function getCountString(count) {

@@ -124,31 +124,39 @@ export async function showNotifications(notifications) {
 	}
 }
 
-export function playNotificationSound() {
-	const audio = new Audio();
-	audio.src = browser.runtime.getURL('sounds/bell.ogg');
-	audio.play();
+export async function playNotificationSound() {
+	await browser.runtime.sendMessage({
+		action: 'play',
+		options: {
+			source: 'sounds/bell.ogg',
+			volume: 1
+		}
+	});
 }
 
 export async function checkNotifications(lastModified) {
-	let notifications = await getNotifications({lastModified});
-	const {showDesktopNotif, playNotifSound, filterNotifications} = await optionsStorage.getAll();
+	try {
+		let notifications = await getNotifications({lastModified});
+		const {showDesktopNotif, playNotifSound, filterNotifications} = await optionsStorage.getAll();
 
-	if (filterNotifications) {
-		const repositories = await repositoriesStorage.getAll();
-		/* eslint-disable camelcase */
-		notifications = notifications.filter(({repository: {full_name}}) => {
-			const {owner, repository} = parseFullName(full_name);
-			return Boolean(repositories[owner] && repositories[owner][repository]);
-		});
-		/* eslint-enable camelcase */
-	}
+		if (filterNotifications) {
+			const repositories = await repositoriesStorage.getAll();
+			/* eslint-disable camelcase */
+			notifications = notifications.filter(({repository: {full_name}}) => {
+				const {owner, repository} = parseFullName(full_name);
+				return Boolean(repositories[owner] && repositories[owner][repository]);
+			});
+			/* eslint-enable camelcase */
+		}
 
-	if (playNotifSound && notifications.length > 0) {
-		playNotificationSound();
-	}
+		if (playNotifSound && notifications.length > 0) {
+			await playNotificationSound();
+		}
 
-	if (showDesktopNotif) {
-		await showNotifications(notifications);
+		if (showDesktopNotif) {
+			await showNotifications(notifications);
+		}
+	} catch (error) {
+		console.error(error);
 	}
 }

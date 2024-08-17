@@ -80,7 +80,7 @@ function handleInstalled(details) {
 }
 
 async function onMessage(message) {
-	if (message === 'update') {
+	if (message.action === 'update') {
 		await addHandlers();
 		await update();
 	}
@@ -101,6 +101,18 @@ function onNotificationClick(id) {
 	openNotification(id);
 }
 
+async function createOffscreenDocument() {
+	if (await browser.offscreen.hasDocument()) {
+		return;
+	}
+
+	await browser.offscreen.createDocument({
+		url: 'offscreen.html',
+		reasons: ['AUDIO_PLAYBACK'],
+		justification: 'To play an audio chime indicating notifications'
+	});
+}
+
 async function addHandlers() {
 	const {updateCountOnNavigation} = await optionsStorage.getAll();
 
@@ -117,10 +129,7 @@ async function addHandlers() {
 	}
 }
 
-function init() {
-	window.addEventListener('online', update);
-	window.addEventListener('offline', update);
-
+async function init() {
 	browser.alarms.onAlarm.addListener(update);
 	scheduleNextAlarm();
 
@@ -128,12 +137,13 @@ function init() {
 	browser.runtime.onInstalled.addListener(handleInstalled);
 
 	// Chrome specific API
-	if (isChrome()) {
+	if (isChrome(navigator.userAgent)) {
 		browser.permissions.onAdded.addListener(addHandlers);
 	}
 
-	browser.browserAction.onClicked.addListener(handleBrowserActionClick);
+	browser.action.onClicked.addListener(handleBrowserActionClick);
 
+	await createOffscreenDocument();
 	addHandlers();
 	update();
 }

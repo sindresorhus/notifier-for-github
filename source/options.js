@@ -2,7 +2,6 @@ import browser from 'webextension-polyfill';
 import optionsStorage from './options-storage.js';
 import initRepositoriesForm from './repositories.js';
 import {requestPermission} from './lib/permissions-service.js';
-import {background} from './util.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
 	try {
@@ -11,13 +10,12 @@ document.addEventListener('DOMContentLoaded', async () => {
 		initGlobalSyncListener();
 	} catch (error) {
 		console.error(error);
-		background.error(error);
 	}
 });
 
 function initGlobalSyncListener() {
 	document.addEventListener('options-sync:form-synced', () => {
-		browser.runtime.sendMessage('update');
+		browser.runtime.sendMessage({action: 'update'});
 	});
 }
 

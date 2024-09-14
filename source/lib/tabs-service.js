@@ -26,8 +26,9 @@ export async function openTab(url) {
 	const permissionGranted = await queryPermission('tabs');
 	if (reuseTabs && permissionGranted) {
 		const matchingUrls = [url];
-		if (new URL(url).pathname.endsWith('/notifications')) {
-			matchingUrls.push(url + '?query=*');
+		if (url.endsWith('/notifications')) {
+			matchingUrls.push(url + '?query=');
+			matchingUrls.push(url + '?query=is%3Aunread');
 		}
 
 		const existingTabs = await queryTabs(matchingUrls);

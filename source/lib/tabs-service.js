@@ -27,7 +27,7 @@ export async function openTab(url) {
 	if (reuseTabs && permissionGranted) {
 		const matchingUrls = [url];
 		if (url.endsWith('/notifications')) {
-			matchingUrls.push(url + '?query=is%3Aunread');
+			matchingUrls.push(url + '?query=', url + '?query=is%3Aunread');
 		}
 
 		const existingTabs = await queryTabs(matchingUrls);

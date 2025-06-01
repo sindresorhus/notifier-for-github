@@ -3,7 +3,7 @@ import OptionsSync from 'webext-options-sync';
 const optionsStorage = new OptionsSync({
 	defaults: {
 		token: '',
-		rootUrl: 'https://api.github.com/',
+		rootUrl: 'https://github.com/',
 		playNotifSound: false,
 		showDesktopNotif: false,
 		onlyParticipating: false,

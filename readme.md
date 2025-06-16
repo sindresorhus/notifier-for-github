@@ -26,15 +26,38 @@ Checks for new GitHub notifications every minute, shows the number of notificati
 
 ## Screenshots
 
-### Notification Count
-
-![Screenshot of extension should notification count](media/screenshot.png)
-
 ### Options
 
 ![Options page for Notifier for GitHub](media/screenshot-options.png)
 
-## Permissions
+### Notification Count
+
+![Screenshot of extension should notification count](media/screenshot.png)
+## GitHub Token Setup
+
+### Token Types Supported
+
+This extension requires a GitHub personal access token to function properly. You can follow instructions from GitHub to create a personal access token in your account.
+
+**Important:** Only classic personal access tokens are currently supported. Fine-grained personal access tokens cannot be used at this time. This limitation is tracked in an [open issue](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens).
+
+### Repository Permissions
+
+#### For Private Repository Notifications
+
+To receive desktop notifications for private repositories, you must create a personal access token with the `repo` scope. This requirement exists because of GitHub's current permission structure - accessing any information about private repositories requires full repository control permissions.
+
+#### Security Considerations
+
+If you have security concerns about granting the `repo` scope, you can skip this permission. However, be aware of the following tradeoff:
+
+- **Without `repo` scope:** Clicking on notifications will redirect you to the general notifications homepage instead of the specific repository or issue
+- **With `repo` scope:** Clicking on notifications will take you directly to the relevant repository content
+
+The choice between security and functionality is yours based on your comfort level with the permissions required.
+
+
+## Extension Permissions
 
 The extension requests a couple of optional permissions. It works as intended even if you disallow these. Some features work only when you grant these permissions as mentioned below.
 
@@ -47,12 +70,6 @@ This permission also lets us update the notification count immediately after ope
 ### Notifications Permission
 
 If you want to receive desktop notifications for public repositories, you can enable them on extension options page. You will then be asked for the `notifications` permission.
-
-### Repos Permission
-
-If you want to receive (useful) desktop notifications for any private repositories you have, you will have to create a GitHub personal access token that has access to the `repo` scope as well. This is due to GitHub's current permission scheme, as the only way we can read anything about your private repos is if we have full control over repositories.
-
-If you're concerned with your security in this manner, please feel free to ignore this scope. Just be aware that if you do not grant this scope, clicking on the notification will take you to the notifications home page, since we can't get any information about the repo you got the notification for.
 
 ## Configuration
 

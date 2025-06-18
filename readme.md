@@ -39,7 +39,7 @@ Checks for new GitHub notifications every minute, shows the number of notificati
 
 This extension requires a GitHub personal access token to function properly. You can follow instructions from GitHub to create a personal access token in your account.
 
-**Important:** Only classic personal access tokens are currently supported. Fine-grained personal access tokens cannot be used at this time. This limitation is tracked in an [open issue](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens).
+**Important:** Only classic personal access tokens are currently supported. Fine-grained personal access tokens cannot be used at this time. This limitation is tracked in an [open issue](https://github.com/sindresorhus/notifier-for-github/issues/283).
 
 ### Repository Permissions
 

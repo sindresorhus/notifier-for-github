@@ -22,40 +22,43 @@ Checks for new GitHub notifications every minute, shows the number of notificati
 - Click the toolbar icon to go to the GitHub notifications page.
 - Option to show only unread count for issues you're participating in.
 
-*Make sure to add a token in the options.*
+*Make sure to [add a token](#github-token-setup) in the options.*
+
+## GitHub Token Setup
+
+The extension requires a GitHub **Classic** Personal Access Token (PAT) to access your notifications.
+
+1. Go to [GitHub → Settings → Developer settings → Personal access tokens → Tokens (classic)](https://github.com/settings/tokens)
+2. Click **"Generate new token (classic)"**
+3. Give it a descriptive name (e.g., "Notifier for GitHub")
+4. Select the required scopes:
+
+| Scope | Required | Purpose |
+|-------|----------|---------|
+| `notifications` | ✅ Yes | Read your notifications (works for both public and private repos) |
+| `repo` | Optional | Enables desktop notifications for private repos to link directly to the issue/PR |
+
+> **Note:** With only the `notifications` scope, the notification count badge works for all repos. Adding `repo` scope allows desktop notifications for private repos to open the specific issue/PR instead of the notifications home page. If you're concerned about granting full repository access, you can skip this scope.
+
+5. Click **"Generate token"** and copy it to the extension options
+
+### Fine-grained Tokens (Not Yet Supported)
+
+The extension accepts fine-grained PAT format, but **they won't work yet** due to a GitHub limitation.
+
+This extension requires access to the [`GET /notifications`](https://docs.github.com/en/rest/activity/notifications#list-notifications-for-the-authenticated-user) API endpoint, which needs an account-level **Notifications** permission. As of December 2025, GitHub's fine-grained PATs don't offer a Notifications permission—it simply doesn't exist in their permission list.
+
+Once GitHub adds Notifications permission to fine-grained PATs, they should work with this extension. Until then, use a **Classic token**.
 
 ## Screenshots
-
-### Options
-
-![Options page for Notifier for GitHub](media/screenshot-options.png)
 
 ### Notification Count
 
 ![Screenshot of extension should notification count](media/screenshot.png)
-## GitHub Token Setup
 
-### Token Types Supported
+### Options
 
-This extension requires a GitHub personal access token to function properly. You can follow instructions from GitHub to create a personal access token in your account.
-
-**Important:** Only classic personal access tokens are currently supported. Fine-grained personal access tokens cannot be used at this time. This limitation is tracked in an [open issue](https://github.com/sindresorhus/notifier-for-github/issues/283).
-
-### Repository Permissions
-
-#### For Private Repository Notifications
-
-To receive desktop notifications for private repositories, you must create a personal access token with the `repo` scope. This requirement exists because of GitHub's current permission structure - accessing any information about private repositories requires full repository control permissions.
-
-#### Security Considerations
-
-If you have security concerns about granting the `repo` scope, you can skip this permission. However, be aware of the following tradeoff:
-
-- **Without `repo` scope:** Clicking on notifications will redirect you to the general notifications homepage instead of the specific repository or issue
-- **With `repo` scope:** Clicking on notifications will take you directly to the relevant repository content
-
-The choice between security and functionality is yours based on your comfort level with the permissions required.
-
+![Options page for Notifier for GitHub](media/screenshot-options.png)
 
 ## Extension Permissions
 
@@ -69,7 +72,7 @@ This permission also lets us update the notification count immediately after ope
 
 ### Notifications Permission
 
-If you want to receive desktop notifications for public repositories, you can enable them on extension options page. You will then be asked for the `notifications` permission.
+If you want to receive desktop notifications, you can enable them on the extension options page. You will then be asked for the browser's `notifications` permission.
 
 ## Configuration
 
@@ -85,9 +88,60 @@ You can opt-in to receive desktop notifications for new notifications on GitHub.
 
 If you have [desktop notifications](#desktop-notifications) enabled as mentioned above, you can also filter which repositories you wish to receive these notifications from. You can do this by only selecting the repositories (that grouped by user/organization) in the options menu.
 
-### GitHub Enterprise support
+### GitHub Enterprise Support
 
-By default, the extension works for the public [GitHub](https://github.com) site. If the repo of your company runs GitHub on their own servers via GitHub Enterprise Server, you have to configure the extension to use the API URL. For example `https://github.yourco.com/`.
+By default, the extension works for the public [GitHub](https://github.com) site. For GitHub Enterprise Server, configure the extension to use your instance URL:
+
+1. Create a token on your enterprise instance (e.g., `https://github.yourco.com/settings/tokens`)
+2. In the extension options, set the **Root URL** to your instance (e.g., `https://github.yourco.com/`)
+3. Enter your token and save
+
+## Development
+
+### Setup
+
+```sh
+npm install
+```
+
+### Testing Your Setup
+
+To verify the extension is working, watch a busy public repository like [microsoft/vscode](https://github.com/microsoft/vscode) and wait for new activity. The extension checks for notifications every minute, and the badge will update when you have unread notifications.
+
+### Build and Watch
+
+Build the extension to the `distribution/` folder and watch for changes:
+
+```sh
+npm run watch
+```
+
+### Load Extension in Browser
+
+**Chrome/Edge/Brave:**
+1. Go to `chrome://extensions/`
+2. Enable "Developer mode" (toggle in top right)
+3. Click "Load unpacked"
+4. Select the `distribution/` folder
+
+**Firefox:**
+1. Go to `about:debugging#/runtime/this-firefox`
+2. Click "Load Temporary Add-on"
+3. Select any file in the `distribution/` folder
+
+### Testing
+
+Run linting and unit tests:
+
+```sh
+npm test
+```
+
+Run only unit tests:
+
+```sh
+npm run test:js
+```
 
 ## Maintainers
 

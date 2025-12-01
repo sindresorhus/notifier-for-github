@@ -19,6 +19,9 @@
 		"storage",
 		"offscreen"
 	],
+	"host_permissions": [
+		"https://api.github.com/*"
+	],
 	"optional_permissions": [
 		"tabs",
 		"notifications"

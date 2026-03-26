@@ -23,20 +23,29 @@
 		"tabs",
 		"notifications"
 	],
+	"host_permissions": [
+		"https://api.github.com/*",
+		"https://github.com/*"
+	],
+	"optional_host_permissions": [
+		"https://*/*"
+	],
 	"background": {
-		"service_worker": "background.js",
+		"service_worker": "background-multi.js",
 		"type": "module"
 	},
 	"action": {
-		"default_icon": "icon-toolbar.png"
+		"default_icon": "icon-toolbar.png",
+		"default_popup": "popup.html"
 	},
 	"options_ui": {
-		"page": "options.html"
+		"page": "options-multi.html"
 	},
 	"web_accessible_resources": [
 		{
 			"resources": [
 				"icon-notif.png",
+				"icon-toolbar.png",
 				"sounds/bell.ogg"
 			],
 			"matches": []

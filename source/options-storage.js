@@ -2,13 +2,15 @@ import OptionsSync from 'webext-options-sync';
 
 const optionsStorage = new OptionsSync({
 	defaults: {
+		// Global settings that apply to all instances
+		reuseTabs: false,
+		updateCountOnNavigation: false,
+		// Legacy single-instance settings (for migration)
 		token: '',
 		rootUrl: 'https://github.com/',
 		playNotifSound: false,
 		showDesktopNotif: false,
 		onlyParticipating: false,
-		reuseTabs: false,
-		updateCountOnNavigation: false,
 		filterNotifications: false
 	},
 	migrations: [

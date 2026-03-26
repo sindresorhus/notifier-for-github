@@ -1,0 +1,176 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Notifier for GitHub</title>
+<link rel="stylesheet" href="chrome://global/skin/in-content/common.css">
+<link rel="stylesheet" href="../node_modules/webext-base-css/webext-base.css">
+<link rel="stylesheet" href="options-multi.css">
+
+<!-- Single instance view (looks like the original options page) -->
+<div id="single-view" class="hidden">
+	<section>
+		<h3>API Access</h3>
+		<input type="hidden" id="single-id">
+
+		<label>
+			<h4>Root URL</h4>
+			<input type="url" id="single-url" placeholder="e.g. https://github.yourco.com/">
+		</label>
+		<p class="small">Specify the root URL to your GitHub Enterprise. For public GitHub instance this should be <code>https://github.com</code></p>
+
+		<label>
+			<h4>Token</h4>
+			<input type="text" id="single-token" placeholder="ghp_a1b2c3d4e5f6g7h8i9j0a1b2c3d4e5f6g7h8" pattern="[\da-f]{40}|ghp_\w{36,251}" spellcheck="false">
+		</label>
+		<p class="small">For public repositories, <a href="https://github.com/settings/tokens/new?scopes=notifications&description=Notifier for GitHub extension" id="single-token-link" target="_blank">create a token</a> with the <strong>notifications</strong> permission.</p>
+		<p class="small">If you want notifications for private repositories, you'll need to <a href="https://github.com/settings/tokens/new?scopes=notifications,repo&description=Notifier for GitHub extension" id="single-token-link-private" target="_blank">create a token</a> with the <strong>notifications</strong> and <strong>repo</strong> permissions.</p>
+		<p id="single-status" class="status-message hidden"></p>
+	</section>
+
+	<hr>
+
+	<section>
+		<h3>Participating Count</h3>
+		<label>
+			<input type="checkbox" id="single-participating">
+			Only show unread count for issues I'm participating in
+		</label>
+	</section>
+
+	<hr>
+
+	<section>
+		<h3>Notifications</h3>
+		<label>
+			<input type="checkbox" id="single-desktop-notif" data-request-permission="notifications">
+			Show desktop notifications
+		</label>
+		<label>
+			<input type="checkbox" id="single-notif-sound">
+			Enable notification sound
+		</label>
+	</section>
+
+	<hr>
+
+	<section>
+		<h3>Filter Notifications</h3>
+		<label>
+			<input type="checkbox" id="single-filter-notif">
+			Filter desktop notifications you receive by owner or repository
+		</label>
+	</section>
+
+	<hr>
+
+	<p class="small"><a href="#" id="add-another-instance">+ Add another GitHub instance</a></p>
+</div>
+
+<!-- Multi instance view -->
+<div id="multi-view" class="hidden">
+	<section>
+		<h3>GitHub Instances</h3>
+		<p class="small">Instances with notifications are shown on the toolbar icon badge, sorted by count.</p>
+
+		<div id="instances-list" class="instances-list"></div>
+		<button type="button" id="add-instance" class="button primary">+ Add GitHub Instance</button>
+	</section>
+
+	<div id="instance-editor" class="hidden">
+		<hr>
+
+		<section>
+			<div class="editor-header">
+				<h3 id="editor-title">GitHub Instance</h3>
+				<label class="toggle-label">
+					<input type="checkbox" id="instance-enabled" checked>
+					<span class="toggle-text">Enabled</span>
+				</label>
+			</div>
+
+			<input type="hidden" id="instance-id">
+
+			<h4>API Access</h4>
+
+			<label>
+				Instance Name
+				<input type="text" id="instance-name" placeholder="e.g. GitHub Enterprise">
+			</label>
+			<p class="small">A friendly name to identify this instance</p>
+
+			<label>
+				Root URL
+				<input type="url" id="instance-url" placeholder="e.g. https://github.com/">
+			</label>
+			<p class="small">The base URL of your GitHub instance. For public GitHub this should be <code>https://github.com</code></p>
+
+			<label>
+				Token
+				<input type="text" id="instance-token" placeholder="ghp_a1b2c3d4e5f6g7h8i9j0a1b2c3d4e5f6g7h8" pattern="[\da-f]{40}|ghp_\w{36,251}" spellcheck="false">
+			</label>
+			<p class="small">For public repositories, <a href="#" id="token-link" target="_blank">create a token</a> with the <strong>notifications</strong> permission.</p>
+			<p class="small">For private repositories, add the <strong>repo</strong> permission as well.</p>
+
+			<hr>
+
+			<h4>Participating Count</h4>
+			<label>
+				<input type="checkbox" id="instance-participating">
+				Only show unread count for issues I'm participating in
+			</label>
+
+			<hr>
+
+			<h4>Notifications</h4>
+			<label>
+				<input type="checkbox" id="instance-desktop-notif" data-request-permission="notifications">
+				Show desktop notifications
+			</label>
+			<label>
+				<input type="checkbox" id="instance-notif-sound">
+				Enable notification sound
+			</label>
+
+			<hr>
+
+			<h4>Filter Notifications</h4>
+			<label>
+				<input type="checkbox" id="instance-filter-notif">
+				Filter desktop notifications you receive by owner or repository
+			</label>
+
+			<p id="multi-status" class="status-message hidden"></p>
+		</section>
+	</div>
+</div>
+
+<hr>
+
+<section id="global-settings">
+	<h3>Tab Handling</h3>
+	<label>
+		<input type="checkbox" name="reuseTabs" data-request-permission="tabs">
+		Reuse notifications tabs when possible
+	</label>
+	<label>
+		<input type="checkbox" name="updateCountOnNavigation" data-request-permission="tabs">
+		Update notification count after opening a notification
+	</label>
+</section>
+
+<!-- Repository Filter Modal -->
+<div id="repos-modal" class="modal hidden">
+	<div class="modal-content">
+		<h3>Filter Repositories</h3>
+		<p class="small">Select the repositories you want to receive notifications for.</p>
+		<div id="repos-loading" class="loading">
+			<span class="loader"></span> Loading repositories...
+		</div>
+		<div id="repos-error" class="error-message hidden"></div>
+		<div id="repos-list" class="repo-wrapper"></div>
+		<div class="modal-buttons">
+			<button type="button" id="close-repos" class="button">Close</button>
+		</div>
+	</div>
+</div>
+
+<script type="module" src="options-multi.js"></script>

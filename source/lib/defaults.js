@@ -29,12 +29,14 @@ export const errorSymbols = new Map([
 
 export const warningTitles = new Map([
 	['default', 'Unknown warning'],
-	['offline', 'No Internet connnection']
+	['offline', 'No Internet connnection'],
+	['setup', 'Click to set up GitHub instances']
 ]);
 
 export const warningSymbols = new Map([
 	['default', 'warn'],
-	['offline', 'off']
+	['offline', 'off'],
+	['setup', '...']
 ]);
 
 export const colors = new Map([

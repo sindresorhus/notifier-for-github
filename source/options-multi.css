@@ -1,0 +1,346 @@
+:root {
+	--github-green: #28a745;
+	--github-red: #cb2431;
+	--text-color: #24292e;
+	--text-secondary: #666;
+	--bg-hover: #f0f0f0;
+	--border-color: rgb(170 170 170 / 25%);
+	--badge-bg: #eee;
+}
+
+@media (prefers-color-scheme: dark) {
+	:root {
+		--text-color: #e8eaed;
+		--text-secondary: #9aa0a6;
+		--bg-hover: #3c3d41;
+		--border-color: rgb(255 255 255 / 12%);
+		--badge-bg: #3c3d41;
+	}
+}
+
+html:not(.is-edgium) {
+	min-width: 550px;
+	overflow-x: hidden;
+}
+
+h2,
+h3,
+h4 {
+	width: 100%;
+	margin-top: 0;
+	margin-bottom: 0.25rem;
+}
+
+hr {
+	margin: 1rem 0;
+}
+
+.small {
+	font-size: 0.875em;
+	color: var(--text-secondary);
+}
+
+label {
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	width: 100%;
+	margin: 0.5em 0;
+}
+
+label input[type='checkbox'],
+label input[type='radio'] {
+	margin-right: 0.5em;
+}
+
+input:not([type='checkbox']):not([type='radio']) {
+	font-family: SFMono-Regular, Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+	font-size: 11px;
+}
+
+input:not([type='checkbox']):not([type='radio']):invalid {
+	color: var(--github-red);
+	border: 1px solid !important;
+}
+
+.hidden {
+	display: none;
+}
+
+.status-message {
+	font-size: 0.875em;
+	margin: 0.5em 0;
+}
+
+.status-message.error {
+	color: var(--github-red);
+}
+
+.status-message.success {
+	color: var(--github-green);
+}
+
+/* Confirm / Undo banners */
+.confirm-banner,
+.undo-banner {
+	padding: 0.5em 0;
+	font-size: 0.875em;
+	color: var(--text-secondary);
+}
+
+.undo-countdown {
+	color: var(--text-secondary);
+	font-size: 0.8em;
+}
+
+.confirm-banner a,
+.undo-banner a {
+	margin-left: 0.5em;
+	font-weight: 600;
+}
+
+/* Instance list */
+.instances-list {
+	margin: 0.5em 0;
+}
+
+.instance-item {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 0.5em 0;
+	border-bottom: 1px solid var(--border-color);
+}
+
+.instance-item:last-child {
+	border-bottom: none;
+}
+
+.instance-item.disabled {
+	opacity: 50%;
+}
+
+.instance-info {
+	flex: 1;
+}
+
+.instance-name {
+	font-weight: 600;
+}
+
+.instance-url {
+	font-size: 0.85em;
+	color: var(--text-secondary);
+}
+
+.instance-color-dot {
+	display: inline-block;
+	width: 8px;
+	height: 8px;
+	border-radius: 50%;
+	margin-right: 0.4em;
+	vertical-align: middle;
+}
+
+.instance-badge {
+	display: inline-block;
+	padding: 1px 6px;
+	border-radius: 10px;
+	font-size: 0.75em;
+	font-weight: 500;
+	margin-left: 0.5em;
+}
+
+.instance-badge.count {
+	background: var(--github-green);
+	color: #fff;
+}
+
+.instance-actions {
+	display: flex;
+	gap: 0.5em;
+	align-items: center;
+}
+
+.instance-actions button {
+	font-size: 0.8em;
+	padding: 0.25em 0.75em;
+	cursor: pointer;
+}
+
+.button {
+	padding: 0.35em 1em;
+	border: 1px solid #888;
+	border-radius: 4px;
+	background: transparent;
+	color: var(--text-color);
+	font-size: inherit;
+	cursor: pointer;
+}
+
+.button:hover {
+	background: var(--bg-hover);
+}
+
+.button.primary {
+	background: var(--github-green);
+	color: #fff;
+	border-color: var(--github-green);
+}
+
+.button.primary:hover {
+	background: #22863a;
+}
+
+.button.primary:disabled {
+	opacity: 50%;
+	cursor: default;
+}
+
+.button.danger {
+	color: var(--github-red);
+	border-color: var(--github-red);
+}
+
+.button.danger:hover {
+	background: rgb(203 36 49 / 15%);
+}
+
+.button.danger.confirming {
+	background: var(--github-red);
+	color: #fff;
+}
+
+.empty-state {
+	color: var(--text-secondary);
+	padding: 1em 0;
+}
+
+/* Editor header with toggle */
+.editor-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin-bottom: 0.25rem;
+}
+
+.editor-header h3 {
+	margin-bottom: 0;
+}
+
+.editor-color-dot {
+	display: inline-block;
+	width: 12px;
+	height: 12px;
+	border-radius: 50%;
+	margin-right: 0.5em;
+	vertical-align: middle;
+}
+
+.toggle-label {
+	display: flex;
+	align-items: center;
+	margin: 0;
+	width: auto;
+	font-size: 0.85em;
+	color: var(--text-secondary);
+	cursor: pointer;
+}
+
+.toggle-text {
+	color: var(--github-red);
+}
+
+.toggle-label input:checked + .toggle-text {
+	color: var(--github-green);
+}
+
+/* Modal (repos filter only) */
+.modal {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background: rgb(0 0 0 / 50%);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 1000;
+}
+
+.modal.hidden {
+	display: none;
+}
+
+.modal-content {
+	background: var(--in-content-box-background, #fff);
+	color: var(--text-color);
+	border-radius: 6px;
+	padding: 1.5em;
+	max-width: 700px;
+	width: 90%;
+	max-height: 90vh;
+	overflow-y: auto;
+	box-shadow: 0 4px 24px rgb(0 0 0 / 30%);
+}
+
+.modal-buttons {
+	display: flex;
+	justify-content: flex-end;
+	gap: 0.5em;
+	margin-top: 1.5em;
+}
+
+/* Repository filter */
+.repo-wrapper {
+	max-height: 400px;
+	overflow-y: auto;
+	border: 1px solid var(--border-color);
+	border-radius: 4px;
+	padding: 0.5em;
+}
+
+.repo-group {
+	margin-bottom: 1em;
+}
+
+.repo-group h4 {
+	margin: 0.5em 0;
+	padding: 0.25em 0;
+	border-bottom: 1px solid var(--border-color);
+}
+
+/* Loading / error */
+.loading {
+	text-align: center;
+	padding: 1em;
+	color: var(--text-secondary);
+}
+
+.loader {
+	display: inline-block;
+	width: 0.8em;
+	height: 0.8em;
+}
+
+.loader::after {
+	content: ' ';
+	display: block;
+	width: 0.7em;
+	height: 0.7em;
+	border-radius: 50%;
+	border: 2px solid var(--github-red);
+	border-color: var(--github-red) transparent;
+	animation: spin 1.2s linear infinite;
+}
+
+@keyframes spin {
+	to {
+		transform: rotate(360deg);
+	}
+}
+
+.error-message {
+	color: var(--github-red);
+}

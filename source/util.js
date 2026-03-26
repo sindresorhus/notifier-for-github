@@ -9,10 +9,12 @@ export function parseFullName(fullName) {
 	return {owner, repository};
 }
 
-export async function isNotificationTargetPage(url) {
+export async function isNotificationTargetPage(url, githubOrigin) {
 	const urlObject = new URL(url);
 
-	if (urlObject.origin !== (await getGitHubOrigin())) {
+	const origin = githubOrigin || (await getGitHubOrigin());
+
+	if (urlObject.origin !== origin) {
 		return false;
 	}
 

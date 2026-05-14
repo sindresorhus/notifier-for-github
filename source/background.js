@@ -6,6 +6,7 @@ import {openTab} from './lib/tabs-service.js';
 import {queryPermission} from './lib/permissions-service.js';
 import {getNotificationCount, getTabUrl} from './lib/api.js';
 import {renderCount, renderError, renderWarning} from './lib/badge.js';
+import {addConnectionStatusListeners} from './lib/connection-status.js';
 import {checkNotifications, openNotification} from './lib/notifications-service.js';
 import {isChrome, isNotificationTargetPage} from './util.js';
 
@@ -135,6 +136,10 @@ async function init() {
 
 	browser.runtime.onMessage.addListener(onMessage);
 	browser.runtime.onInstalled.addListener(handleInstalled);
+	addConnectionStatusListeners({
+		onOnline: update,
+		onOffline: handleOfflineStatus
+	});
 
 	// Chrome specific API
 	if (isChrome(navigator.userAgent)) {

@@ -142,6 +142,7 @@ async function init() {
 	}
 
 	browser.action.onClicked.addListener(handleBrowserActionClick);
+	window.addEventListener('online', update);
 
 	await createOffscreenDocument();
 	addHandlers();

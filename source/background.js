@@ -6,6 +6,7 @@ import {openTab} from './lib/tabs-service.js';
 import {queryPermission} from './lib/permissions-service.js';
 import {getNotificationCount, getTabUrl} from './lib/api.js';
 import {renderCount, renderError, renderWarning} from './lib/badge.js';
+import {addConnectionChangeListeners, isNetworkError} from './lib/connection.js';
 import {checkNotifications, openNotification} from './lib/notifications-service.js';
 import {isChrome, isNotificationTargetPage} from './util.js';
 
@@ -48,6 +49,11 @@ async function updateNotificationCount() {
 }
 
 function handleError(error) {
+	if (isNetworkError(error)) {
+		handleOfflineStatus();
+		return;
+	}
+
 	scheduleNextAlarm();
 	renderError(error);
 }
@@ -131,6 +137,10 @@ async function addHandlers() {
 
 async function init() {
 	browser.alarms.onAlarm.addListener(update);
+	addConnectionChangeListeners({
+		onOnline: update,
+		onOffline: handleOfflineStatus
+	});
 	scheduleNextAlarm();
 
 	browser.runtime.onMessage.addListener(onMessage);

@@ -6,8 +6,7 @@ import {openTab} from './lib/tabs-service.js';
 import {queryPermission} from './lib/permissions-service.js';
 import {getNotificationCount, getTabUrl} from './lib/api.js';
 import {renderCount, renderError, renderWarning} from './lib/badge.js';
-import {addConnectionStatusListeners} from './lib/connection-status.js';
-import {isNetworkError} from './lib/network-error.js';
+import {addConnectionChangeListeners, isNetworkError} from './lib/connection.js';
 import {checkNotifications, openNotification} from './lib/notifications-service.js';
 import {isChrome, isNotificationTargetPage} from './util.js';
 
@@ -138,14 +137,14 @@ async function addHandlers() {
 
 async function init() {
 	browser.alarms.onAlarm.addListener(update);
+	addConnectionChangeListeners({
+		onOnline: update,
+		onOffline: handleOfflineStatus
+	});
 	scheduleNextAlarm();
 
 	browser.runtime.onMessage.addListener(onMessage);
 	browser.runtime.onInstalled.addListener(handleInstalled);
-	addConnectionStatusListeners({
-		onOnline: update,
-		onOffline: handleOfflineStatus
-	});
 
 	// Chrome specific API
 	if (isChrome(navigator.userAgent)) {
